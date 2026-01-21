@@ -24,6 +24,7 @@ add_subdirectory(src/pplist)
 add_subdirectory(tests/ppvector-common)
 add_subdirectory(tests/pplist-common)
 add_subdirectory(tests/pplist-mytests)
+add_subdirectory(tests/pplist-swap-move-copy)
 
 # add_subdirectory(examples/ppvector-sum-int)
 # add_subdirectory(examples/ppvector-sum-double)

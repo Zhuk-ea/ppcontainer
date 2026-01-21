@@ -1,0 +1,30 @@
+### ppList
+
+#### Нужно реализовать:
+
+- [x] size()
+- [ ] empty()
+- [x] clear()
+- [x] move()
+- [x] swap()
+- [x] copy()
+- [ ] Iterator
+	- [ ] begin()
+	- [ ] end()
+	- [ ] rbegin()
+	- [ ] rend()
+- [x] push_back()
+- [x] push_front()
+- [x] pop_back()
+- [x] pop_front()
+- [ ] insert()
+- [ ] emplace()
+- [ ] erase()
+- [ ] remove()
+- [ ] remove_if()
+- [ ] merge()
+- [ ] splice()
+- [ ] unique()
+- [ ] reverse()
+- [x] front()
+- [x] back()

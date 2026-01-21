@@ -1,4 +1,4 @@
-// test-pp-list-common.c - тестирование обобщенного списка ppList
+// test-pp-list-mytests.c - тестирование обобщенного списка ppList
 #include <stdio.h>
 #include "pplist.h"
 

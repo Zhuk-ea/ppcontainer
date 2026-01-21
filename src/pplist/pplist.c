@@ -266,7 +266,6 @@ void ppList_pop_current(ppList* l) {
 //------------------------------------------------------------------------------
 // Очистка списка от всех узлов
 void ppList_clear(ppList* l) {
-  // l->current = l->tail;
   while(l->size != 0) {
     ppList_pop_back(l);
   }
@@ -275,66 +274,77 @@ void ppList_clear(ppList* l) {
 //------------------------------------------------------------------------------
 // Обмен содержимым между двумя однотипными списками
 void ppList_swap(ppList* l1, ppList* l2) {
-  // // Проверка однотипности списоков
-  // if(spec_index_cmp(v1, v2) < 1) {
-  //   // Или обобщение или специализации не совпадают
-  //   printf("Incompatible specializations in swap function\n");
-  //   exit(-1);
-  // }
-  // // Или осуществление обмена
-  // uint32_t tmp = v1->size; v1->size = v2->size; v2->size = tmp;
-  // tmp = v1->capacity; v1->capacity = v2->capacity; v2->capacity = tmp;
-  // void* tmp_memory_ptr = v1->vec_memory;
-  // v1->vec_memory = v2->vec_memory;
-  // v2->vec_memory = tmp_memory_ptr;
+  // Проверка однотипности списоков
+  if(spec_index_cmp(l1, l2) < 1) {
+  // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in swap function\n");
+    exit(-1);
+  }
+  // Осуществление обмена
+  uint32_t tmp = l1->size; l1->size = l2->size; l2->size = tmp;
+  struct ppListNode* tmp_node_ptr = l1->current; l1->current = l2->current; l2->current = tmp_node_ptr;
+  tmp_node_ptr = l1->head; l1->head = l2->head; l2->head = tmp_node_ptr;
+  tmp_node_ptr = l1->tail; l1->tail = l2->tail; l2->tail = tmp_node_ptr;
 }
 
 //------------------------------------------------------------------------------
 // Пересылка данных из одного списка в другой. Списки однотипные
 void ppList_move(ppList* dest, ppList* src) {
-  // // Проверка однотипности списоков
-  // if(spec_index_cmp(dest, src) < 1) {
-  //   // Или обобщение или специализации не совпадают
-  //   printf("Incompatible specializations in move function\n");
-  //   exit(-1);
-  // }
-  // // Или осуществление пересылки
-  // if(dest->vec_memory != NULL) {  // Нужно убрать выделенный массив, если есть.
-  //   free(dest->vec_memory);
-  // }
-  // dest->size = src->size; src->size = 0;
-  // dest->capacity = src->capacity; src->capacity = 0;
-  // dest->vec_memory = src->vec_memory;
-  // src->vec_memory = NULL;
+  // Проверка однотипности списоков
+  if(spec_index_cmp(dest, src) < 1) {
+    // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in move function\n");
+    exit(-1);
+  }
+  // Или осуществление пересылки
+  // Очистка списка в который идёт перессылка
+  ppList_clear(dest);
+
+  dest->size = src->size; src->size = 0;
+  dest->current = src->current; src->current = NULL;
+  dest->head = src->head; src->head = NULL;
+  dest->tail = src->tail; src->tail = NULL;
+
 }
 
 //------------------------------------------------------------------------------
 // Копирование данных из одного списка в другой. Списки однотипные
 void ppList_copy(ppList* dest, ppList* src) {
-  // // Проверка однотипности списоков
-  // if(spec_index_cmp(dest, src) < 1) {
-  //   // Или обобщение или специализации не совпадают
-  //   printf("Incompatible specializations in copy function\n");
-  //   exit(-1);
-  // }
-  // // Если массив в источнике отсутствует, то обнулить массив и в приемнике
-  // if(src->vec_memory == NULL) {
-  //   if(dest->vec_memory != NULL) {
-  //     free(dest->vec_memory);
-  //     dest->vec_memory = NULL;
-  //     dest->size = 0;
-  //     dest->capacity = 0;
-  //     return;
-  //   } else { // Тоже пусто. Нечего копировать.
-  //     return;
-  //   }
-  // }
-  // // Или осуществление копирования. В начале релокация приемника
-  // dest->vec_memory = reallocarray(dest->vec_memory,
-  //                                 src->size, dest->foundation_size);
-  // // Копирование данных из источника в приемник.
-  // memcpy(dest->vec_memory, src-> vec_memory, src->size * src->foundation_size);
-  // dest->size = src->size;
-  // dest->capacity = src->size;
+  // Проверка однотипности списоков
+  if(spec_index_cmp(dest, src) < 1) {
+    // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in copy function\n");
+    exit(-1);
+  }
+  // Очистка списка в который идёт копирование
+  ppList_clear(dest);
+  // Осуществление копирования
+  struct ppListNode * now = src->head;
+  while(now != NULL) {
+    
+    // Создание элемента списка под данные размером в основу специализации
+    struct ppListNode* node = malloc(sizeof(struct ppListNode) + dest->foundation_size);
+    if(node == NULL) {
+      printf("Incorrect node creation in ppList_copy function\n");
+      exit(-1);
+    }
+    // Перенос значения узла в узел
+    memcpy(node->data, now->data, dest->foundation_size);
+    // Прикрепление созданного узла к концу двунаправленного линейного списка
+    if(dest->head==NULL) { // Занесение в пустой список
+      dest->head = node;
+      dest->tail = node;
+      // Формирование пустых концов
+      node->next = node->prev = NULL;
+    } else { // В противном случае формируемый элемент заносится в хвост списка
+      node->next = NULL;
+      node->prev = dest->tail;
+      dest->tail->next = node;
+      dest->tail = node;
+    }
+    dest->current = node;    // добавляемый узел становится текущим
+    ++(dest->size);          // на один элемент стало больше
+    now = now->next;
+  }
 }
 

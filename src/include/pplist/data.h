@@ -30,8 +30,14 @@ typedef struct ppListNode {
 
 //Итератор для списка
 typedef struct ppListIterator {
+  struct ppList * list; // указатель на список с которым связан
   struct ppListNode* node; // указатель на элемент
 } ppListIterator;
 
+//Обратный итератор для списка
+typedef struct ppListRIterator {
+  struct ppList * list; // указатель на список с которым связан
+  struct ppListNode* node; // указатель на элемент
+} ppListRIterator;
 
 #endif // __pplist_data__

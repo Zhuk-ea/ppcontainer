@@ -78,4 +78,40 @@ void ppList_move(ppList* dest, ppList* src);
 // Копирование данных из одного списка в другой. Списки однотипные
 void ppList_copy(ppList* dest, ppList* src);
 
+// Получение итератора указывающего на первый элемент
+struct ppListIterator* ppList_begin(ppList* l);
+
+// Получение итератора указывающего на последний элемент
+struct ppListIterator* ppList_end(ppList* l);
+
+// Получение итератора указывающего на текущий элемент
+struct ppListIterator* ppList_current_iterator(ppList* l);
+
+// Смещение итератора на один элемент вперёд
+void ppListIterator_next(ppListIterator* iter);
+
+// Смещение итератора на один элемент назад
+void ppListIterator_prev(ppListIterator* iter);
+
+// Фиксация в основе специализации списка значения элемента на который ссылается итератор
+void ppListIterator_get_value(ppListIterator* iter);
+
+// Получение итератора указывающего на первый элемент
+struct ppListRIterator* ppList_rbegin(ppList* l);
+
+// Получение итератора указывающего на последний элемент
+struct ppListRIterator* ppList_rend(ppList* l);
+
+// Получение обратного итератора указывающего на текущий элемент
+struct ppListRIterator* ppList_current_riterator(ppList* l);
+
+// Смещение итератора на один элемент назад
+void ppListRIterator_next(ppListRIterator* riter);
+
+// Смещение итератора на один элемент вперёд
+void ppListRIterator_prev(ppListRIterator* riter);
+
+// Фиксация в основе специализации списка значения элемента на который ссылается итератор
+void ppListRIterator_get_value(ppListRIterator* riter);
+
 #endif // __pplist_interface__

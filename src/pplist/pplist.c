@@ -348,3 +348,93 @@ void ppList_copy(ppList* dest, ppList* src) {
   }
 }
 
+//------------------------------------------------------------------------------
+// Получение итератора указывающего на первый элемент
+struct ppListIterator* ppList_begin(ppList* l) {
+  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+  iter->list = l;
+  iter->node = l->head;
+  return iter;
+}
+
+//------------------------------------------------------------------------------
+// Получение итератора указывающего на последний элемент
+struct ppListIterator* ppList_end(ppList* l) {
+  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+  iter->list = l;
+  iter->node = l->tail;
+  return iter;
+}
+
+//------------------------------------------------------------------------------
+// Получение итератора указывающего на текущий элемент
+struct ppListIterator* ppList_current_iterator(ppList* l) {
+  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+  iter->list = l;
+  iter->node = l->current;
+  return iter;
+}
+
+//------------------------------------------------------------------------------
+// Смещение итератора на один элемент вперёд
+void ppListIterator_next(ppListIterator* iter) {
+  iter->node = iter->node->next;
+}
+
+//------------------------------------------------------------------------------
+// Смещение итератора на один элемент назад
+void ppListIterator_prev(ppListIterator* iter) {
+  iter->node = iter->node->prev;
+}
+
+//------------------------------------------------------------------------------
+// Фиксация в основе специализации списка значения элемента на который ссылается итератор
+void ppListIterator_get_value(ppListIterator* iter) {
+  memcpy(iter->list->foundation_addr, iter->node->data, iter->list->foundation_size);
+}
+
+
+//------------------------------------------------------------------------------
+// Получение обратного итератора указывающего на первый элемент
+struct ppListRIterator* ppList_rbegin(ppList* l) {
+  struct ppListRIterator* riter = malloc(sizeof(ppListIterator));
+  riter->list = l;
+  riter->node = l->head;
+  return riter;
+}
+
+//------------------------------------------------------------------------------
+// Получение обратного итератора указывающего на последний элемент
+struct ppListRIterator* ppList_rend(ppList* l) {
+  struct ppListRIterator* riter = malloc(sizeof(ppListRIterator));
+  riter->list = l;
+  riter->node = l->tail;
+  return riter;
+}
+
+//------------------------------------------------------------------------------
+// Получение обратного итератора указывающего на текущий элемент
+struct ppListRIterator* ppList_current_riterator(ppList* l) {
+  struct ppListRIterator* riter = malloc(sizeof(ppListRIterator));
+  riter->list = l;
+  riter->node = l->current;
+  return riter;
+}
+
+//------------------------------------------------------------------------------
+// Смещение обратного итератора на один элемент назад
+void ppListRIterator_next(ppListRIterator* riter) {
+  riter->node = riter->node->prev;
+}
+
+//------------------------------------------------------------------------------
+// Смещение обратного итератора на один элемент вперёд
+void ppListRIterator_prev(ppListRIterator* riter) {
+  riter->node = riter->node->next;
+}
+
+//------------------------------------------------------------------------------
+// Фиксация в основе специализации списка значения элемента на который ссылается обратный итератор
+void ppListRIterator_get_value(ppListRIterator* riter) {
+  memcpy(riter->list->foundation_addr, riter->node->data, riter->list->foundation_size);
+}

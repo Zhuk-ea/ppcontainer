@@ -75,5 +75,10 @@ ppList_back((ppList*)&list_name); destination = list_name.@;
 #define ppList_GET_CURRENT_VAL(destination, list_name) \
 ppList_current((ppList*)&list_name); destination = list_name.@;
 
+// Макрос для занесения первого элемента списка в указанную переменную
+#define ppList_GET_ITERATOR_VAL(destination, iterator_name) \
+memcpy(&destination, iterator_name->node->data, iterator_name->list->foundation_size);
+
+
 
 #endif // __pplist_macro__

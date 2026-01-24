@@ -114,4 +114,10 @@ void ppListRIterator_prev(ppListRIterator* riter);
 // Фиксация в основе специализации списка значения элемента на который ссылается итератор
 void ppListRIterator_get_value(ppListRIterator* riter);
 
+// Вставка нового узла(со значением, записанным в основу специализации) после узла, на который указывает итератор
+void ppListIterator_insert_after(ppListIterator* iter);
+
+// Вставка нового узла перед текущим
+void ppListIterator_insert_before(ppListIterator* iter);
+
 #endif // __pplist_interface__

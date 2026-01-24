@@ -76,9 +76,15 @@ ppList_back((ppList*)&list_name); destination = list_name.@;
 ppList_current((ppList*)&list_name); destination = list_name.@;
 
 // Макрос для занесения первого элемента списка в указанную переменную
-#define ppList_GET_ITERATOR_VAL(destination, iterator_name) \
-memcpy(&destination, iterator_name->node->data, iterator_name->list->foundation_size);
+#define ppListIterator_GET_VAL(destination, iterator_name) \
+memcpy(&destination, iterator_name->node->data, (size_t)iterator_name->list->foundation_size);
 
+
+// Макрос, используемый для занесения значения перед элементом на который ссылается итератор
+// Обертывает функцию ppListIterator_insert_before и предварительное присваивание
+// пересылаемого значения внутренней переменной
+// #define ppListIterator_INSERT_BEFORE(iterator_name, value) \
+// (iterator_name->list).@ = (value);  ppListIterator_insert_before(iterator_name);
 
 
 #endif // __pplist_macro__

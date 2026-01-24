@@ -40,35 +40,55 @@ int main(void) {
   struct ppListIterator* iter = ppList_begin((ppList*)&l_int);
   int val; 
   printf("iter = l_int.begin()\n");
-  ppList_GET_ITERATOR_VAL(val, iter)
+  ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("next(iter)\n");
   ppListIterator_next(iter);
-  ppList_GET_ITERATOR_VAL(val, iter)
+  ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("prev(iter)\n");
   ppListIterator_prev(iter);
-  ppList_GET_ITERATOR_VAL(val, iter)
+  ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("\n -------------------------------------------\n\n");
   
   struct ppListRIterator* riter = ppList_rbegin((ppList*)&l_int);
   printf("riter = l_int.rbegin()\n");
-  ppList_GET_ITERATOR_VAL(val, riter)
+  ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
 
   printf("prev(riter)\n");
   ppListRIterator_prev(riter);
-  ppList_GET_ITERATOR_VAL(val, riter)
+  ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
 
   printf("next(riter)\n");
   ppListRIterator_next(riter);
-  ppList_GET_ITERATOR_VAL(val, riter)
+  ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
+
+  printf("\n -------------------------------------------\n\n");
+  printf("l_int:\n");
+  ppList_print(stdout, (ppList*)&l_int);
+  printf("iter\n");
+  ppListIterator_next(iter); ppListIterator_next(iter); ppListIterator_next(iter);
+  ppListIterator_GET_VAL(val, iter)
+  printf("val: %i\n", val);
+
+  printf("\n -------------------------------------------\n\n");
+
+  // printf("insert_before(iter, 10):\n");
+  // ppListIterator_INSERT_BEFORE(iter, 10);
+
+  printf("l_int:\n");
+  ppList_print(stdout, (ppList*)&l_int);
+
+
+
+  
 
 
 

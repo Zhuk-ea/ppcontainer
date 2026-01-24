@@ -438,3 +438,59 @@ void ppListRIterator_prev(ppListRIterator* riter) {
 void ppListRIterator_get_value(ppListRIterator* riter) {
   memcpy(riter->list->foundation_addr, riter->node->data, riter->list->foundation_size);
 }
+
+//------------------------------------------------------------------------------
+// Вставка нового узла(со значением, записанным в основу специализации) после узла, на который указывает итератор
+void ppListIterator_insert_after(ppListIterator* iter) {
+  if(iter->node == NULL) {
+    printf("Incorrect current value in ppListIterator_insert_after function\n");
+    exit(-1);
+  }
+  // Создание элемента списка под данные размером в основу специализации
+  ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
+  ppList * l = iter->list;
+  if(node == NULL) {
+    printf("Incorrect node creation in ppListIterator_insert_after function\n");
+    exit(-1);
+  }
+  // Перенос значения из специализации в узел
+  memcpy(node->data, iter->list->foundation_addr, iter->list->foundation_size);
+  // Прикрепление созданного узла после того, на который указывает итератор
+  node->next = iter->node->next;
+  node->prev = iter->node;
+  iter->node->next = node;
+  if(l->tail == iter->node) { // Для последнего элемента нужно перемещение
+    l->tail = node;
+  } else { // связь следующего узла с создаваемым
+    node->next->prev = node;
+  }
+  ++(l->size);          // на один элемент стало больше
+}
+
+//------------------------------------------------------------------------------
+// Вставка нового узла перед текущим
+void ppListIterator_insert_before(ppListIterator* iter) {
+  if(iter->node == NULL) {
+    printf("Incorrect current value in ppListIterator_insert_before function\n");
+    exit(-1);
+  }
+  // Создание элемента списка под данные размером в основу специализации
+  ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
+  ppList * l = iter->list;
+  if(node == NULL) {
+    printf("Incorrect node creation in ppListIterator_insert_before function\n");
+    exit(-1);
+  }
+  // Перенос значения из специализации в узел
+  memcpy(node->data, iter->list->foundation_addr, iter->list->foundation_size);
+  // Прикрепление созданного узла перед тем, на который указывает итератор
+  node->prev = iter->node->prev;
+  node->next = iter->node;
+  iter->node->prev = node;
+  if(l->head == iter->node) { // Для первого элемента нужно перемещение
+    l->head = node;
+  } else { // связь следующего узла с создаваемым
+    node->prev->next = node;
+  }
+  ++(l->size);          // на один элемент стало больше
+}

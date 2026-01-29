@@ -1,4 +1,4 @@
-// test-pp-list-iterator.c - тестирование итераторов обобщенного списка ppList
+// test-pp-list-iterator.c - тестирование базовых функций итераторов обобщенного списка ppList
 #include <stdio.h>
 #include "pplist.h"
 
@@ -7,6 +7,8 @@
 //==============================================================================
 
 ppList+<int;>; // Целочисленная специализация списка
+ppListIterator+<int;>; // Целочисленная специализация итератора
+ppListRIterator+<int;>; // Целочисленная специализация обратного итератора
 
 //------------------------------------------------------------------------------
 // Обработчик специализации, обеспечивающий вывод целочисленного элемента
@@ -37,36 +39,38 @@ int main(void) {
     ppList_PUSH_BACK(l_int, i)
   }
 
-  struct ppListIterator* iter = ppList_begin((ppList*)&l_int);
-  int val; 
+  ppListIterator_VAR(int, iter);
+  ppList_begin((ppList*)&l_int, (ppListIterator*)&iter);
+  int val = 0; 
   printf("iter = l_int.begin()\n");
   ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("next(iter)\n");
-  ppListIterator_next(iter);
+  ppListIterator_next((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("prev(iter)\n");
-  ppListIterator_prev(iter);
+  ppListIterator_prev((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("\n -------------------------------------------\n\n");
   
-  struct ppListRIterator* riter = ppList_rbegin((ppList*)&l_int);
+  ppListRIterator_VAR(int, riter);
+  ppList_rbegin((ppList*)&l_int, (ppListRIterator*)&riter);
   printf("riter = l_int.rbegin()\n");
   ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
 
   printf("prev(riter)\n");
-  ppListRIterator_prev(riter);
+  ppListRIterator_prev((ppListRIterator*)&riter);
   ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
 
   printf("next(riter)\n");
-  ppListRIterator_next(riter);
+  ppListRIterator_next((ppListRIterator*)&riter);
   ppListIterator_GET_VAL(val, riter)
   printf("val: %i\n", val);
 
@@ -74,19 +78,14 @@ int main(void) {
   printf("l_int:\n");
   ppList_print(stdout, (ppList*)&l_int);
   printf("iter\n");
-  ppListIterator_next(iter); ppListIterator_next(iter); ppListIterator_next(iter);
+  ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("val: %i\n", val);
 
   printf("\n -------------------------------------------\n\n");
 
-  // printf("insert_before(iter, 10):\n");
-  // ppListIterator_INSERT_BEFORE(iter, 10);
-
   printf("l_int:\n");
   ppList_print(stdout, (ppList*)&l_int);
-
-
 
 
   return 0;

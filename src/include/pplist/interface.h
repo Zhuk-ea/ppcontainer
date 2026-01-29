@@ -79,13 +79,13 @@ void ppList_move(ppList* dest, ppList* src);
 void ppList_copy(ppList* dest, ppList* src);
 
 // Получение итератора указывающего на первый элемент
-struct ppListIterator* ppList_begin(ppList* l);
+void ppList_begin(ppList* l, ppListIterator* iter) ;
 
 // Получение итератора указывающего на последний элемент
-struct ppListIterator* ppList_end(ppList* l);
+void ppList_end(ppList* l, ppListIterator* iter);
 
 // Получение итератора указывающего на текущий элемент
-struct ppListIterator* ppList_current_iterator(ppList* l);
+void ppList_current_iterator(ppList* l, ppListIterator* iter);
 
 // Смещение итератора на один элемент вперёд
 void ppListIterator_next(ppListIterator* iter);
@@ -97,13 +97,13 @@ void ppListIterator_prev(ppListIterator* iter);
 void ppListIterator_get_value(ppListIterator* iter);
 
 // Получение итератора указывающего на первый элемент
-struct ppListRIterator* ppList_rbegin(ppList* l);
+void ppList_rbegin(ppList* l, ppListRIterator* iter);
 
 // Получение итератора указывающего на последний элемент
-struct ppListRIterator* ppList_rend(ppList* l);
+void ppList_rend(ppList* l, ppListRIterator* iter);
 
 // Получение обратного итератора указывающего на текущий элемент
-struct ppListRIterator* ppList_current_riterator(ppList* l);
+void ppList_current_riterator(ppList* l, ppListRIterator* iter);
 
 // Смещение итератора на один элемент назад
 void ppListRIterator_next(ppListRIterator* riter);
@@ -120,7 +120,7 @@ void ppListIterator_insert_after(ppListIterator* iter);
 // Вставка нового узла перед текущим
 void ppListIterator_insert_before(ppListIterator* iter);
 
-// Удаление из списка элемента на который ссылается обратный итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
+// Удаление из списка элемента на который ссылается итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
 void ppListIterator_erase(ppListIterator* iter);
 
 // Удаление из списка всех элементов, равных значению, занесённому в специализацию

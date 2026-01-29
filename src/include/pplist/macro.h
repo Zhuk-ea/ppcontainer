@@ -69,16 +69,30 @@ ppList_back((ppList*)&list_name); destination = list_name.@;
 #define ppList_GET_CURRENT_VAL(destination, list_name) \
 ppList_current((ppList*)&list_name); destination = list_name.@;
 
-// Макрос для занесения первого элемента списка в указанную переменную
+// Макрос для занесения значения из элемента на который указывает итератор(или обратный итератор) в указанную переменную
 #define ppListIterator_GET_VAL(destination, iterator_name) \
-memcpy(&destination, iterator_name->node->data, (size_t)iterator_name->list->foundation_size);
+memcpy(&destination, iterator_name.node->data, (size_t)iterator_name.list->foundation_size);
+
+//------------------------------------------------------------------------------
+// Макроопределение, используемое для формирования специализации по шаблону
+// Скрывает дополнительные манипуляции, связанные с установкой
+// внутренних параметров
+#define ppListIterator_VAR(foundation_type, iterator_name)      \
+struct ppListIterator.foundation_type iterator_name;          \
+
+//------------------------------------------------------------------------------
+// Макроопределение, используемое для формирования специализации по шаблону
+// Скрывает дополнительные манипуляции, связанные с установкой
+// внутренних параметров
+#define ppListRIterator_VAR(foundation_type, riterator_name)      \
+struct ppListRIterator.foundation_type riterator_name;          \
 
 
 // Макрос, используемый для занесения значения перед элементом на который ссылается итератор
 // Обертывает функцию ppListIterator_insert_before и предварительное присваивание
 // пересылаемого значения внутренней переменной
-// #define ppListIterator_INSERT_BEFORE(iterator_name, value) \
-// (iterator_name->list).@ = (value);  ppListIterator_insert_before(iterator_name);
+#define ppListIterator_INSERT_BEFORE(iterator_name, value) \
+iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterator_name.@), (size_t)iterator_name.list->foundation_size); ppListIterator_insert_before((ppListIterator*)&iterator_name);
 
 
 #endif // __pplist_macro__

@@ -32,12 +32,12 @@ typedef struct ppListNode {
 typedef struct ppListIterator {
   struct ppList * list; // указатель на список с которым связан
   struct ppListNode* node; // указатель на элемент
-} ppListIterator;
+} <> ppListIterator;
 
 //Обратный итератор для списка
 typedef struct ppListRIterator {
   struct ppList * list; // указатель на список с которым связан
   struct ppListNode* node; // указатель на элемент
-} ppListRIterator;
+} <> ppListRIterator;
 
 #endif // __pplist_data__

@@ -350,29 +350,23 @@ void ppList_copy(ppList* dest, ppList* src) {
 
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на первый элемент
-struct ppListIterator* ppList_begin(ppList* l) {
-  struct ppListIterator * iter = malloc(sizeof(ppListIterator));
+void ppList_begin(ppList* l, ppListIterator* iter) {
   iter->list = l;
   iter->node = l->head;
-  return iter;
 }
 
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на последний элемент
-struct ppListIterator* ppList_end(ppList* l) {
-  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+void ppList_end(ppList* l, ppListIterator* iter) {
   iter->list = l;
   iter->node = l->tail;
-  return iter;
 }
 
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на текущий элемент
-struct ppListIterator* ppList_current_iterator(ppList* l) {
-  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+void ppList_current_iterator(ppList* l, ppListIterator* iter) {
   iter->list = l;
   iter->node = l->current;
-  return iter;
 }
 
 //------------------------------------------------------------------------------
@@ -396,29 +390,23 @@ void ppListIterator_get_value(ppListIterator* iter) {
 
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на первый элемент
-struct ppListRIterator* ppList_rbegin(ppList* l) {
-  struct ppListRIterator* riter = malloc(sizeof(ppListIterator));
+void ppList_rbegin(ppList* l, ppListRIterator* riter) {
   riter->list = l;
   riter->node = l->head;
-  return riter;
 }
 
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на последний элемент
-struct ppListRIterator* ppList_rend(ppList* l) {
-  struct ppListRIterator* riter = malloc(sizeof(ppListRIterator));
+void ppList_rend(ppList* l, ppListRIterator* riter) {
   riter->list = l;
   riter->node = l->tail;
-  return riter;
 }
 
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на текущий элемент
-struct ppListRIterator* ppList_current_riterator(ppList* l) {
-  struct ppListRIterator* riter = malloc(sizeof(ppListRIterator));
+void ppList_current_riterator(ppList* l, ppListRIterator* riter) {
   riter->list = l;
   riter->node = l->current;
-  return riter;
 }
 
 //------------------------------------------------------------------------------

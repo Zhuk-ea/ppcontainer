@@ -7,6 +7,7 @@
 //==============================================================================
 
 ppList+<int;>; // Целочисленная специализация списка
+ppListIterator+<int;>; // Целочисленная специализация списка
 
 //------------------------------------------------------------------------------
 // Обработчик специализации, обеспечивающий вывод целочисленного элемента
@@ -32,7 +33,8 @@ int main(void) {
     ppList_PUSH_BACK(l_int, i)
   }
 
-  struct ppListIterator* iter = ppList_begin((ppList*)&l_int);
+  ppListIterator_VAR(int, iter)
+  ppList_begin((ppList*)&l_int, (ppListIterator*)&iter);
 
   printf("l_int:\n");
   ppList_print(stdout, (ppList*)&l_int);
@@ -43,7 +45,7 @@ int main(void) {
   printf("\n -------------------------------------------\n\n");
 
   printf("iter.erase()\n");
-  ppListIterator_erase(iter);
+  ppListIterator_erase((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("iter_val: %i\n", val);
   printf("l_int:\n");
@@ -52,13 +54,13 @@ int main(void) {
   printf("\n -------------------------------------------\n\n");
 
 
-  iter = ppList_end((ppList*)&l_int);
+  ppList_end((ppList*)&l_int, (ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("iter = l_int.end()\n");
   printf("iter_val: %i\n", val);
 
   printf("iter.erase()\n");
-  ppListIterator_erase(iter);
+  ppListIterator_erase((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("iter_val: %i\n", val);
   printf("l_int:\n");
@@ -66,14 +68,14 @@ int main(void) {
 
   printf("\n -------------------------------------------\n\n");
 
-  ppListIterator_prev(iter); ppListIterator_prev(iter); ppListIterator_prev(iter);
+  ppListIterator_prev((ppListIterator*)&iter); ppListIterator_prev((ppListIterator*)&iter); ppListIterator_prev((ppListIterator*)&iter);
 
   ppListIterator_GET_VAL(val, iter)
   printf("iter.prev(); iter.prev(); iter.prev();\n");
   printf("iter_val: %i\n", val);
 
   printf("iter.erase()\n");
-  ppListIterator_erase(iter);
+  ppListIterator_erase((ppListIterator*)&iter);
   ppListIterator_GET_VAL(val, iter)
   printf("iter_val: %i\n", val);
   printf("l_int:\n");

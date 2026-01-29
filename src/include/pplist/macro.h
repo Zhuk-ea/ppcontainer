@@ -53,12 +53,6 @@ list_name.@ = (value); ppList_push_before_current((ppList*)&list_name);
 #define ppList_REPLACE_CURRENT(list_name, value) \
 list_name.@ = (value); ppList_replace_cerrunt((ppList*)&list_name);
 
-//------------------------------------------------------------------------------
-// Макрос, используемый для чтения элемента из списка в заданную переменну.
-// Обертывает функцию ppList_index и присваивание внутренней переменной
-// указанной внешней переменной
-// #define ppList_GET_VAL_INDEX(destination, list_name, index) \
-// ppList_index((ppList*)&list_name, (index)); destination = list_name.@;
 
 //------------------------------------------------------------------------------
 // Макрос для занесения первого элемента списка в указанную переменную

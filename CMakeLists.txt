@@ -26,10 +26,6 @@ add_subdirectory(tests/pplist-common)
 add_subdirectory(tests/pplist-mytests)
 add_subdirectory(tests/pplist-swap-move-copy)
 add_subdirectory(tests/pplist-iterator)
-
-# add_subdirectory(examples/ppvector-sum-int)
-# add_subdirectory(examples/ppvector-sum-double)
-# add_subdirectory(examples/ppvector-sum-int-ptr)
-# add_subdirectory(examples/ppvector-figures)
-
-# add_subdirectory(examples/pplist-sum-int)
+add_subdirectory(tests/pplist-erase)
+add_subdirectory(tests/pplist-remove)
+add_subdirectory(tests/pplist-remove-if)

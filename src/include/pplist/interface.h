@@ -120,4 +120,10 @@ void ppListIterator_insert_after(ppListIterator* iter);
 // Вставка нового узла перед текущим
 void ppListIterator_insert_before(ppListIterator* iter);
 
+// Удаление из списка элемента на который ссылается обратный итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
+void ppListIterator_erase(ppListIterator* iter);
+
+// Удаление из списка всех элементов, равных значению, занесённому в специализацию
+void ppList_remove(ppList* l);
+
 #endif // __pplist_interface__

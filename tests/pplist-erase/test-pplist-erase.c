@@ -1,4 +1,4 @@
-// test-pp-list-iterator.c - тестирование итераторов обобщенного списка ppList
+// test-pplist-erase.c - тестирование функции erase обобщенного списка ppList
 #include <stdio.h>
 #include "pplist.h"
 
@@ -26,67 +26,58 @@ void ppList_element_print<ppList.int* l>(FILE* f) {//, int index) {
 int main(void) {
 
   ppList_VAR(int, l_int);
+  int val;
 
-  //Вывод параметров настройки l_int
-  printf("l_int.(foundation_size = %u, foundation_addr = %p, size = %u)\n",
-        l_int.foundation_size, l_int.foundation_addr, l_int.size);
-
-  printf("\n -------------------------------------------\n\n");
-
-  for (int i = 0; i > -10; --i) {
+  for (int i = 0; i < 10; ++i) {
     ppList_PUSH_BACK(l_int, i)
   }
 
   struct ppListIterator* iter = ppList_begin((ppList*)&l_int);
-  int val; 
+
+  printf("l_int:\n");
+  ppList_print(stdout, (ppList*)&l_int);
+  ppListIterator_GET_VAL(val, iter)
   printf("iter = l_int.begin()\n");
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("next(iter)\n");
-  ppListIterator_next(iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("prev(iter)\n");
-  ppListIterator_prev(iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("\n -------------------------------------------\n\n");
-  
-  struct ppListRIterator* riter = ppList_rbegin((ppList*)&l_int);
-  printf("riter = l_int.rbegin()\n");
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("prev(riter)\n");
-  ppListRIterator_prev(riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("next(riter)\n");
-  ppListRIterator_next(riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("\n -------------------------------------------\n\n");
-  printf("l_int:\n");
-  ppList_print(stdout, (ppList*)&l_int);
-  printf("iter\n");
-  ppListIterator_next(iter); ppListIterator_next(iter); ppListIterator_next(iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
+  printf("iter_val: %i\n", val);
 
   printf("\n -------------------------------------------\n\n");
 
-  // printf("insert_before(iter, 10):\n");
-  // ppListIterator_INSERT_BEFORE(iter, 10);
-
+  printf("iter.erase()\n");
+  ppListIterator_erase(iter);
+  ppListIterator_GET_VAL(val, iter)
+  printf("iter_val: %i\n", val);
   printf("l_int:\n");
   ppList_print(stdout, (ppList*)&l_int);
 
+  printf("\n -------------------------------------------\n\n");
 
+
+  iter = ppList_end((ppList*)&l_int);
+  ppListIterator_GET_VAL(val, iter)
+  printf("iter = l_int.end()\n");
+  printf("iter_val: %i\n", val);
+
+  printf("iter.erase()\n");
+  ppListIterator_erase(iter);
+  ppListIterator_GET_VAL(val, iter)
+  printf("iter_val: %i\n", val);
+  printf("l_int:\n");
+  ppList_print(stdout, (ppList*)&l_int);
+
+  printf("\n -------------------------------------------\n\n");
+
+  ppListIterator_prev(iter); ppListIterator_prev(iter); ppListIterator_prev(iter);
+
+  ppListIterator_GET_VAL(val, iter)
+  printf("iter.prev(); iter.prev(); iter.prev();\n");
+  printf("iter_val: %i\n", val);
+
+  printf("iter.erase()\n");
+  ppListIterator_erase(iter);
+  ppListIterator_GET_VAL(val, iter)
+  printf("iter_val: %i\n", val);
+  printf("l_int:\n");
+  ppList_print(stdout, (ppList*)&l_int);
 
 
   return 0;

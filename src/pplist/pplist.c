@@ -351,7 +351,7 @@ void ppList_copy(ppList* dest, ppList* src) {
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на первый элемент
 struct ppListIterator* ppList_begin(ppList* l) {
-  struct ppListIterator* iter = malloc(sizeof(ppListIterator));
+  struct ppListIterator * iter = malloc(sizeof(ppListIterator));
   iter->list = l;
   iter->node = l->head;
   return iter;
@@ -471,7 +471,7 @@ void ppListIterator_insert_after(ppListIterator* iter) {
 // Вставка нового узла перед текущим
 void ppListIterator_insert_before(ppListIterator* iter) {
   if(iter->node == NULL) {
-    printf("Incorrect current value in ppListIterator_insert_before function\n");
+    printf("Incorrect node value in ppListIterator_insert_before function\n");
     exit(-1);
   }
   // Создание элемента списка под данные размером в основу специализации
@@ -493,4 +493,82 @@ void ppListIterator_insert_before(ppListIterator* iter) {
     node->prev->next = node;
   }
   ++(l->size);          // на один элемент стало больше
+}
+
+//------------------------------------------------------------------------------
+// Удаление из списка элемента на который ссылается обратный итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
+void ppListIterator_erase(ppListIterator* iter) {
+  ppListNode * t;
+  if(iter->node == NULL) {
+    printf("Incorrect node value in ppListIterator_erase function\n");
+    exit(-1);
+  }
+  if (iter->node->prev) {
+    iter->node->prev->next = iter->node->next;
+  } else {
+    iter->list->head = iter->list->head->next;
+  }
+  if (iter->node->next) {
+    iter->node->next->prev = iter->node->prev;
+    t = iter->node->next;
+  } else {
+    iter->list->tail = iter->list->tail->prev;
+    t = iter->node->prev;
+    t->next = NULL;
+  }
+  if (iter->node == iter->list->current) {
+    iter->list->current = t;
+  }
+  free(iter->node);
+  --iter->list->size;
+  iter->node = t;
+}
+
+//------------------------------------------------------------------------------
+// Удаление из списка всех элементов, равных значению, занесённому в специализацию
+void ppList_remove(ppList* l) {
+  ppListNode * node = l->head;
+  while (node) {
+    if (!memcmp(node->data, l->foundation_addr, l->foundation_size)) {
+      ppListNode *t = node;
+      if(node->prev) {
+        node->prev->next = node->next;
+      } else {
+        l->head = l->head->next;
+      }
+      if (node->next) {
+        node->next->prev = node->prev;
+      } else {
+        l->tail = l->tail->prev;
+      }
+      node = node->next;
+      free(t);
+    } else {
+      node = node->next;
+    }
+  }
+}
+
+// Удаление из списка всех элементов, соответствующих предикату
+void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
+  ppListNode * node = l->head;
+  while (node) {
+    if (pred(node->data)) {
+      ppListNode *t = node;
+      if(node->prev) {
+        node->prev->next = node->next;
+      } else {
+        l->head = l->head->next;
+      }
+      if (node->next) {
+        node->next->prev = node->prev;
+      } else {
+        l->tail = l->tail->prev;
+      }
+      node = node->next;
+      free(t);
+    } else {
+      node = node->next;
+    }
+  }
 }

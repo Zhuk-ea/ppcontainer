@@ -94,5 +94,11 @@ struct ppListRIterator.foundation_type riterator_name;          \
 #define ppListIterator_INSERT_BEFORE(iterator_name, value) \
 iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterator_name.@), (size_t)iterator_name.list->foundation_size); ppListIterator_insert_before((ppListIterator*)&iterator_name);
 
+// Макрос, используемый для занесения значения перед элементом на который ссылается итератор
+// Обертывает функцию ppListIterator_insert_after и предварительное присваивание
+// пересылаемого значения внутренней переменной
+#define ppListIterator_INSERT_AFTER(iterator_name, value) \
+iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterator_name.@), (size_t)iterator_name.list->foundation_size); ppListIterator_insert_after((ppListIterator*)&iterator_name);
+
 
 #endif // __pplist_macro__

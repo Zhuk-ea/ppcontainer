@@ -273,18 +273,18 @@ void ppList_clear(ppList* l) {
 
 //------------------------------------------------------------------------------
 // Обмен содержимым между двумя однотипными списками
-void ppList_swap(ppList* l1, ppList* l2) {
+void ppList_swap(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
-  if(spec_index_cmp(l1, l2) < 1) {
+  if(spec_index_cmp(dest, src) < 1) {
   // Или обобщение или специализации не совпадают
     printf("Incompatible specializations in swap function\n");
     exit(-1);
   }
   // Осуществление обмена
-  uint32_t tmp = l1->size; l1->size = l2->size; l2->size = tmp;
-  struct ppListNode* tmp_node_ptr = l1->current; l1->current = l2->current; l2->current = tmp_node_ptr;
-  tmp_node_ptr = l1->head; l1->head = l2->head; l2->head = tmp_node_ptr;
-  tmp_node_ptr = l1->tail; l1->tail = l2->tail; l2->tail = tmp_node_ptr;
+  uint32_t tmp = dest->size; dest->size = src->size; src->size = tmp;
+  struct ppListNode* tmp_node_ptr = dest->current; dest->current = src->current; src->current = tmp_node_ptr;
+  tmp_node_ptr = dest->head; dest->head = src->head; src->head = tmp_node_ptr;
+  tmp_node_ptr = dest->tail; dest->tail = src->tail; src->tail = tmp_node_ptr;
 }
 
 //------------------------------------------------------------------------------
@@ -477,7 +477,7 @@ void ppListIterator_insert_before(ppListIterator* iter) {
   iter->node->prev = node;
   if(l->head == iter->node) { // Для первого элемента нужно перемещение
     l->head = node;
-  } else { // связь следующего узла с создаваемым
+  } else { // связь предыдущего узла с создаваемым
     node->prev->next = node;
   }
   ++(l->size);          // на один элемент стало больше
@@ -537,6 +537,8 @@ void ppList_remove(ppList* l) {
   }
 }
 
+
+//------------------------------------------------------------------------------
 // Удаление из списка всех элементов, соответствующих предикату
 void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
   ppListNode * node = l->head;
@@ -559,4 +561,84 @@ void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
       node = node->next;
     }
   }
+}
+
+
+//------------------------------------------------------------------------------
+// Объединение двух отсортированных однотипных списков (если один или оба списка не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
+// Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
+void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b)) {
+  if (dest == src || src->size == 0) return;
+  if (dest->size == 0) {
+    dest->size = src->size;
+    dest->head = src->head;
+    dest->tail = src->tail;
+    dest->current = src -> current;
+    src->size = 0;
+    src->head = NULL;
+    src->current = NULL;
+    src->tail = NULL;
+    return;
+  }
+  ppListNode * now_dest = dest->head;
+  ppListNode * now_src = src->head;
+
+  while (now_dest != dest->tail) { // пока не прошли по всему первому списку, или не закончился второй
+    if (!now_src) {
+      break;
+    }
+    if (cmp(now_dest->data, now_src->data)) {
+      now_dest = now_dest->next;
+    } else {
+      ppListNode * temp = now_src->next;
+      now_src->prev = now_dest->prev; 
+      now_dest->prev = now_src;
+      now_src->next = now_dest;
+
+      if(dest->head == now_dest) { //замена головы первого списка
+        dest->head = now_src;
+      } else {
+        now_src->prev->next = now_src;
+      }
+      now_src = temp;
+    }
+  }
+  while (now_src && !cmp(now_dest->data, now_src->data)) { // == !cmp(dest_tail->data, now_src->data)
+    ppListNode * temp = now_src->next;
+    now_src->prev = now_dest->prev;
+    now_dest->prev = now_src;
+    now_src->next = now_dest;
+
+    if(dest->head == now_dest) { //замена головы первого списка
+      dest->head = now_src;
+    } else {
+      now_src->prev->next = now_src;
+    }
+    now_src = temp;
+  }
+  if (now_src) {
+    now_dest->next = now_src;
+    now_src->prev = now_dest;
+    dest->tail = src->tail;
+  }
+  dest->size += src->size;
+  src->size = 0;
+  src->head = NULL;
+  src->current = NULL;
+  src->tail = NULL;
+}
+
+//------------------------------------------------------------------------------
+// Сравнение двух однотипных списков на равенство(Равны ли все элементы)
+// Требует указание размера типа списков в байтах
+_Bool ppList_is_equal(ppList* l1, ppList* l2, int size) {
+  if (l1->size != l2->size) return 0;
+  ppListNode * now1 = l1->head;
+  ppListNode * now2 = l2->head;
+  while (now1) {
+    if (memcmp(now1->data, now2->data, size)) return 0;
+    now1 = now1->next;
+    now2 = now2->next;
+  }
+  return 1;
 }

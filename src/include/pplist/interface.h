@@ -70,7 +70,7 @@ void ppList_pop_current(ppList* l);
 void ppList_clear(ppList* l);
 
 // Обмен содержимым между двумя однотипными списками
-void ppList_swap(ppList* l1, ppList* l2);
+void ppList_swap(ppList* dest, ppList* src);
 
 // Пересылка данных из одного списка в другой. Списки однотипные
 void ppList_move(ppList* dest, ppList* src);
@@ -125,5 +125,12 @@ void ppListIterator_erase(ppListIterator* iter);
 
 // Удаление из списка всех элементов, равных значению, занесённому в специализацию
 void ppList_remove(ppList* l);
+
+// Объединение двух отсортированных однотипных списков
+// Требует функцию сравнения, реализованную для типа хранимых в списках данных
+void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b));
+
+// Сравнение двух однотипных списков с на равенство
+_Bool ppList_is_equal(ppList* l1, ppList* l2, int size);
 
 #endif // __pplist_interface__

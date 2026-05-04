@@ -1,4 +1,4 @@
-// test-pp-list-iterator.c - тестирование базовых функций итераторов обобщенного списка ppList
+// test-pp-list-replace.c - тестирование функции replace итераторов обобщенного списка ppList
 #include <stdio.h>
 #include "pplist.h"
 
@@ -46,45 +46,16 @@ int main(void) {
   int val = 0; 
   printf("iter = l_int.begin()\n");
   ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("next(iter)\n");
-  ppListIterator_next((ppListIterator*)&iter);
+  printf("iter_val: %i\n", val);
+  printf("iter.replace(10)\n");
+  ppListIterator_REPLACE(iter, 10);
   ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("prev(iter)\n");
-  ppListIterator_prev((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
-
-  printf("\n -------------------------------------------\n\n");
-  
-  ppListRIterator_VAR(int, riter);
-  ppList_rbegin((ppList*)&l_int, (ppListRIterator*)&riter);
-  printf("riter = l_int.rbegin()\n");
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("prev(riter)\n");
-  ppListRIterator_prev((ppListRIterator*)&riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("next(riter)\n");
-  ppListRIterator_next((ppListRIterator*)&riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
-
-  printf("\n -------------------------------------------\n\n");
+  printf("iter_val: %i\n", val);
   printf("l_int: ");
   ppList_print2(stdout, (ppList*)&l_int);
-  printf("iter\n");
-  ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
 
   printf("\n -------------------------------------------\n\n");
+
 
   return 0;
 } // end main

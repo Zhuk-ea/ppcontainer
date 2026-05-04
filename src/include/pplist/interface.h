@@ -117,8 +117,11 @@ void ppListRIterator_get_value(ppListRIterator* riter);
 // Вставка нового узла(со значением, записанным в основу специализации) после узла, на который указывает итератор
 void ppListIterator_insert_after(ppListIterator* iter);
 
-// Вставка нового узла перед текущим
+// Вставка нового узла перед узлом, на который указывает итератор
 void ppListIterator_insert_before(ppListIterator* iter);
+
+// Установка нового значения в узле, на который указывает итератор
+void ppListIterator_replace(ppListIterator* iter);
 
 // Удаление из списка элемента на который ссылается итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
 void ppListIterator_erase(ppListIterator* iter);
@@ -130,7 +133,13 @@ void ppList_remove(ppList* l);
 // Требует функцию сравнения, реализованную для типа хранимых в списках данных
 void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b));
 
-// Сравнение двух однотипных списков с на равенство
+// Объединение двух отсортированных диапозонов из однотипных списков
+// Требует функцию сравнения, реализованную для типа хранимых в списках данных
+void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b));
+
+// Сравнение двух однотипных списков на равенство
 _Bool ppList_is_equal(ppList* l1, ppList* l2, int size);
+
+
 
 #endif // __pplist_interface__

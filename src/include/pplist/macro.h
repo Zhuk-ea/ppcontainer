@@ -101,4 +101,45 @@ iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterato
 iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterator_name.@), (size_t)iterator_name.list->foundation_size); ppListIterator_insert_after((ppListIterator*)&iterator_name);
 
 
+// Макрос, используемый для изменения значения узла на который указавает итератор
+// Обертывает функцию ppListIterator_replace и предварительное присваивание
+// пересылаемого значения внутренней переменной
+#define ppListIterator_REPLACE(iterator_name, value) \
+iterator_name.@ = (value); memcpy(iterator_name.list->foundation_addr, &(iterator_name.@), (size_t)iterator_name.list->foundation_size); ppListIterator_replace((ppListIterator*)&iterator_name);
+
+// Макрос, используемый для объединения двух списков
+// Обертывает функцию ppList_merge
+#define ppList_MERGE(dest_name, src_name, cmp_name) \
+ppList_merge((ppList*)&dest_name, (ppList*)&src_name, cmp_name);
+
+// Макрос, используемый для объединения диапазонов из двух списков
+// Обертывает функцию ppList_merge_ranges
+#define ppListIterator_MERGE_RANGES(dest_begi, dest_end, src_begin, src_end, cmp_name) \
+ppListIterator_merge_ranges((ppListIterator*)&dest_begin, (ppListIterator*)&dest_end, (ppListIterator*)&src_begin, (ppListIterator*)&src_end, cmp_name);
+
+// Макрос, используемый для перемещения итератора на один узел вперёд
+// Обертывает функцию ppListIterator_next
+#define ppListIterator_NEXT(iterator_name) \
+ppListIterator_next((ppListIterator*)&iterator_name);
+
+// Макрос, используемый для перемещения итератора на один узел назад
+// Обертывает функцию ppListIterator_prev
+#define ppListIterator_PREV(iterator_name) \
+ppListIterator_prev((ppListIterator*)&iterator_name);
+
+// Макрос, используемый для получение итератора на начало списка
+// Обертывает функцию ppList_begin
+#define ppList_BEGIN(list_name, iterator_name) \
+ppList_begin((ppList*)&list_name, (ppListIterator*)&iterator_name);
+
+// Макрос, используемый для получение итератора на конец списка
+// Обертывает функцию ppList_end
+#define ppList_END(list_name, iterator_name) \
+ppList_end((ppList*)&list_name, (ppListIterator*)&iterator_name);
+
+// Макрос, используемый для очистки списка
+// Обертывает функцию ppList_clear
+#define ppList_CLEAR(list_name) \
+ppList_clear((ppList*)&list_name);
+
 #endif // __pplist_macro__

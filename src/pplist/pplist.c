@@ -349,15 +349,23 @@ void ppList_copy(ppList* dest, ppList* src) {
 }
 
 //------------------------------------------------------------------------------
-// Получение итератора указывающего на первый элемент
+// Получение итератора указывающего на первый элемент списка
 void ppList_begin(ppList* l, ppListIterator* iter) {
+  if(l->head == NULL) {
+    printf("Trying to get the beginning of an empty list in ppListIterator_begin function\n");
+    exit(-1);
+  }
   iter->list = l;
   iter->node = l->head;
 }
 
 //------------------------------------------------------------------------------
-// Получение итератора указывающего на последний элемент
+// Получение итератора указывающего на последний элемент списка
 void ppList_end(ppList* l, ppListIterator* iter) {
+  if(l->tail == NULL) {
+    printf("Trying to get the end of an empty list in ppListIterator_end function\n");
+    exit(-1);
+  }
   iter->list = l;
   iter->node = l->tail;
 }
@@ -391,6 +399,10 @@ void ppListIterator_get_value(ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на первый элемент
 void ppList_rbegin(ppList* l, ppListRIterator* riter) {
+  if(l->head == NULL) {
+    printf("Trying to get the beginning of an empty list in ppListRIterator_begin function\n");
+    exit(-1);
+  }
   riter->list = l;
   riter->node = l->head;
 }
@@ -398,6 +410,10 @@ void ppList_rbegin(ppList* l, ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на последний элемент
 void ppList_rend(ppList* l, ppListRIterator* riter) {
+  if(l->tail == NULL) {
+    printf("Trying to get the end of an empty list in ppListRIterator_end function\n");
+    exit(-1);
+  }
   riter->list = l;
   riter->node = l->tail;
 }
@@ -456,7 +472,7 @@ void ppListIterator_insert_after(ppListIterator* iter) {
 }
 
 //------------------------------------------------------------------------------
-// Вставка нового узла перед текущим
+// Вставка нового узла(со значением, записанным в основу специализации) перед узлом, на который указывает итератор
 void ppListIterator_insert_before(ppListIterator* iter) {
   if(iter->node == NULL) {
     printf("Incorrect node value in ppListIterator_insert_before function\n");
@@ -482,6 +498,17 @@ void ppListIterator_insert_before(ppListIterator* iter) {
   }
   ++(l->size);          // на один элемент стало больше
 }
+
+//------------------------------------------------------------------------------
+// Вставка нового значения(записаного в основу специализации) в узел, на который указывает итератор
+void ppListIterator_replace(ppListIterator* iter) {
+  if(iter->node == NULL) {
+    printf("Incorrect node value in ppListIterator_replace function\n");
+    exit(-1);
+  }
+  memcpy(iter->node->data, iter->list->foundation_addr, iter->list->foundation_size);
+}
+
 
 //------------------------------------------------------------------------------
 // Удаление из списка элемента на который ссылается обратный итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
@@ -567,66 +594,126 @@ void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
 //------------------------------------------------------------------------------
 // Объединение двух отсортированных однотипных списков (если один или оба списка не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
 // Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
-void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b)) {
+void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
   if (dest == src || src->size == 0) return;
+
   if (dest->size == 0) {
-    dest->size = src->size;
     dest->head = src->head;
     dest->tail = src->tail;
-    dest->current = src -> current;
+    dest->current = src->current;
+    dest->size = src->size;
+    src->head = src->tail = src->current = NULL;
     src->size = 0;
-    src->head = NULL;
-    src->current = NULL;
-    src->tail = NULL;
     return;
   }
-  ppListNode * now_dest = dest->head;
-  ppListNode * now_src = src->head;
 
-  while (now_dest != dest->tail) { // пока не прошли по всему первому списку, или не закончился второй
-    if (!now_src) {
-      break;
-    }
-    if (cmp(now_dest->data, now_src->data)) {
-      now_dest = now_dest->next;
+  ppListNode **dest_ptr = &dest->head;
+  ppListNode *now_src = src->head;
+
+  while (*dest_ptr && now_src) {
+    if (cmp((*dest_ptr)->data, now_src->data)) {
+      dest_ptr = &(*dest_ptr)->next;
     } else {
-      ppListNode * temp = now_src->next;
-      now_src->prev = now_dest->prev; 
-      now_dest->prev = now_src;
-      now_src->next = now_dest;
+      ppListNode *temp = now_src->next;
 
-      if(dest->head == now_dest) { //замена головы первого списка
-        dest->head = now_src;
-      } else {
-        now_src->prev->next = now_src;
-      }
+      now_src->prev = (*dest_ptr)->prev;
+      now_src->next = *dest_ptr;
+      (*dest_ptr)->prev = now_src;
+      *dest_ptr = now_src;
+      dest_ptr = &now_src->next;
+
       now_src = temp;
     }
   }
-  while (now_src && !cmp(now_dest->data, now_src->data)) { // == !cmp(dest_tail->data, now_src->data)
-    ppListNode * temp = now_src->next;
-    now_src->prev = now_dest->prev;
-    now_dest->prev = now_src;
-    now_src->next = now_dest;
 
-    if(dest->head == now_dest) { //замена головы первого списка
-      dest->head = now_src;
-    } else {
-      now_src->prev->next = now_src;
-    }
-    now_src = temp;
-  }
   if (now_src) {
-    now_dest->next = now_src;
-    now_src->prev = now_dest;
+    *dest_ptr = now_src;
+    now_src->prev = dest->tail;
     dest->tail = src->tail;
   }
+
   dest->size += src->size;
+  src->head = src->tail = src->current = NULL;
   src->size = 0;
-  src->head = NULL;
-  src->current = NULL;
-  src->tail = NULL;
 }
+
+//------------------------------------------------------------------------------
+// Объединение двух диапазонов из однотипных списков (если один или оба диапозона не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
+// Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
+// Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
+// Переставляет current для списка из которого взят второй интервал на первый элемент после диапазона(если он есть, если нет, то на последний элемент диапазона)
+void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
+  //В процессе разработки
+  if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
+    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
+    exit(-1);
+  }
+  if (src_begin->node == src_end->node) return;
+
+  ppList *dest = dest_begin->list;
+  ppList *src  = src_begin->list;
+
+  // dest
+  ppListNode *dest_before = dest_begin->node ? dest_begin->node->prev : dest->tail;
+  ppListNode *dest_after = dest_end->node;
+  ppListNode **dest_link = dest_before ? &dest_before->next : &dest->head;
+
+  // src
+  ppListNode *src_before = src_begin->node ? src_begin->node->prev : src->tail;
+  ppListNode *src_after  = src_end->node;
+  ppListNode **src_link  = src_before ? &src_before->next : &src->head;
+
+  ppList tmp_dest = {0};
+  ppList tmp_src  = {0};
+
+  if (dest_begin->node && dest_begin->node != dest_after) {
+      ppListNode *dest_last = dest_after ? dest_after->prev : dest->tail;
+      *dest_link = dest_after;
+
+      ppListNode **prev_link = dest_after ? &dest_after->prev : &dest->tail;
+      *prev_link = dest_before;
+
+      tmp_dest.head = dest_begin->node;
+      tmp_dest.tail = dest_last;
+      tmp_dest.head->prev = NULL;
+      tmp_dest.tail->next = NULL;
+      for (ppListNode *t = tmp_dest.head; t; t = t->next) ++tmp_dest.size;
+  }
+
+  if (src_begin->node && src_begin->node != src_after) {
+      ppListNode *src_last = src_after ? src_after->prev : src->tail;
+      *src_link = src_after;
+      ppListNode **prev_link = src_after ? &src_after->prev : &src->tail;
+      *prev_link = src_before;
+
+      tmp_src.head = src_begin->node;
+      tmp_src.tail = src_last;
+      tmp_src.head->prev = NULL;
+      tmp_src.tail->next = NULL;
+      for (ppListNode *t = tmp_src.head; t; t = t->next) ++tmp_src.size;
+  }
+
+  ppList_merge(&tmp_dest, &tmp_src, cmp);
+
+  if (tmp_dest.head) {
+      *dest_link = tmp_dest.head;
+      tmp_dest.head->prev = dest_before;
+      if (dest_after) {
+          tmp_dest.tail->next = dest_after;
+          dest_after->prev = tmp_dest.tail;
+      } else {
+          dest->tail = tmp_dest.tail;
+          tmp_dest.tail->next = NULL;
+      }
+  }
+
+  dest->size += tmp_dest.size;
+  src->size -= tmp_src.size;
+
+  src->current = src_after ? src_after : src_before;
+}
+
+
 
 //------------------------------------------------------------------------------
 // Сравнение двух однотипных списков на равенство(Равны ли все элементы)

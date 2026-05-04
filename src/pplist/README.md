@@ -18,7 +18,7 @@
 - [x] pop_back()
 - [x] pop_front()
 - [x] insert()
-- [ ] emplace() ?
+- [x] replace()
 - [x] erase()
 - [x] remove()
 - [x] remove_if()

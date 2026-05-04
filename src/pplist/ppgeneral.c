@@ -44,11 +44,9 @@ void ppList_print(FILE* f, ppList* l) {
 
 void ppList_print2(FILE* f, ppList* l) {
   if(l->head == NULL) { // Нет данных
-    fprintf(f, "\n");
     return;
   }
   // Цикл с обходом элементов и переносом их в специализацию
-  int i = 0;              // номер текущего элемента
   l->current = l->head;   // начало списка
   do {
     memcpy(l->foundation_addr, l->current->data, l->foundation_size);

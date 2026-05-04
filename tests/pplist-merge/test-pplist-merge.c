@@ -1,4 +1,4 @@
-// test-pp-list-insert.c - тестирование функций "семейства" insert
+// test-pp-list-merge.c - тестирование функции merge для списка
 #include <stdio.h>
 #include "pplist.h"
 
@@ -53,7 +53,7 @@ int main(void) {
 
   printf("Merge empty lists: ");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
   is_correct((ppList*)&l1, (ppList*)&anw);
 
 
@@ -76,7 +76,7 @@ int main(void) {
 
   printf("Merge not empty with empty: ");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
   is_correct((ppList*)&l1, (ppList*)&anw);
 
 
@@ -99,7 +99,7 @@ int main(void) {
 
   printf("Merge empty with not empty: ");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
   is_correct((ppList*)&l1, (ppList*)&anw);
 
 
@@ -131,7 +131,7 @@ int main(void) {
 
   printf("Merge sorted lists: ");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
   is_correct((ppList*)&l1, (ppList*)&anw);
 
   printf("l1: ");
@@ -163,12 +163,14 @@ int main(void) {
 
   printf("Merge sorted lists with replacing head: ");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
   is_correct((ppList*)&l1, (ppList*)&anw);
 
 
   printf("l1: ");
   ppList_print2(stdout, (ppList*)&l1);
+  printf("anw: ");
+  ppList_print2(stdout, (ppList*)&anw);
 
 
   printf("\n-------------------------------------------\n\n");
@@ -191,7 +193,7 @@ int main(void) {
 
   printf("Merge unsorted lists\n");
 
-  ppList_merge((ppList*)&l1, (ppList*)&l2, cmp_int);
+  ppList_MERGE(l1, l2, cmp_int);
 
 
   printf("l1: ");

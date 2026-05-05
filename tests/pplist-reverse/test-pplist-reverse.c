@@ -1,4 +1,4 @@
-// test-pplist-unique.c - тестирование функции unique для списка
+// test-pplist-reverse.c - тестирование функции reverse для списка
 #include <stdio.h>
 #include "pplist.h"
 
@@ -35,103 +35,96 @@ int main(void) {
 
   ppList_VAR(int, l);
   ppList_VAR(int, anw);
-  ppList_VAR(int, empty); // пустой список для сравнения
+  ppList_VAR(int, empty);
 
   // --------------------------------------------------------------
   // Тест 1: пустой список
+
   ppList_CLEAR(l); ppList_CLEAR(anw);
-  printf("Test 1: Empty list\n");
+  printf("Test 1: empty list\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&empty);
   printf("\n-------------------------------------------\n\n");
 
   // --------------------------------------------------------------
-  // Тест 2: список из одного элемента
+  // Тест 2: один элемент
+
   ppList_CLEAR(l); ppList_CLEAR(anw);
   int arr2[] = {42};
   ppList_FILL_FROM_ARRAY(l, arr2);
   ppList_FILL_FROM_ARRAY(anw, arr2);
-  printf("Test 2: Single element\n");
+  printf("Test 2: single element\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&anw);
   printf("\n-------------------------------------------\n\n");
 
   // --------------------------------------------------------------
-  // Тест 3: все элементы различны (нет последовательных дубликатов)
+  // Тест 3: два элемента
+
   ppList_CLEAR(l); ppList_CLEAR(anw);
-  int arr3[] = {1,2,3,4,5};
+  int arr3[] = {1,2};
   ppList_FILL_FROM_ARRAY(l, arr3);
-  ppList_FILL_FROM_ARRAY(anw, arr3);
-  printf("Test 3: All distinct, no consecutive duplicates\n");
+  int expected3[] = {2,1};
+  ppList_FILL_FROM_ARRAY(anw, expected3);
+  printf("Test 3: two elements\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&anw);
   printf("\n-------------------------------------------\n\n");
 
   // --------------------------------------------------------------
-  // Тест 4: последовательные дубликаты в середине
+  // Тест 4: три элемента (нечётное)
+
   ppList_CLEAR(l); ppList_CLEAR(anw);
-  int arr4[] = {1,2,2,2,3,4};
+  int arr4[] = {1,2,3};
   ppList_FILL_FROM_ARRAY(l, arr4);
-  int expected4[] = {1,2,3,4};
+  int expected4[] = {3,2,1};
   ppList_FILL_FROM_ARRAY(anw, expected4);
-  printf("Test 4: Consecutive duplicates in middle\n");
+  printf("Test 4: three elements (odd)\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&anw);
   printf("\n-------------------------------------------\n\n");
 
   // --------------------------------------------------------------
-  // Тест 5: дубликаты в начале и в конце
+  // Тест 5: четыре элемента (чётное)
+
   ppList_CLEAR(l); ppList_CLEAR(anw);
-  int arr5[] = {1,1,2,3,3,3,4,5,5};
+  int arr5[] = {1,2,3,4};
   ppList_FILL_FROM_ARRAY(l, arr5);
-  int expected5[] = {1,2,3,4,5};
+  int expected5[] = {4,3,2,1};
   ppList_FILL_FROM_ARRAY(anw, expected5);
-  printf("Test 5: Duplicates at head and tail\n");
+  printf("Test 5: four elements (even)\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&anw);
   printf("\n-------------------------------------------\n\n");
 
   // --------------------------------------------------------------
-  // Тест 6: все элементы одинаковы
+  // Тест 6: разворот уже развёрнутого
+  
   ppList_CLEAR(l); ppList_CLEAR(anw);
-  int arr6[] = {7,7,7,7,7};
+  int arr6[] = {5,6,7,8};
   ppList_FILL_FROM_ARRAY(l, arr6);
-  int expected6[] = {7};
-  ppList_FILL_FROM_ARRAY(anw, expected6);
-  printf("Test 6: All elements identical\n");
+  ppList_FILL_FROM_ARRAY(anw, arr6);
+  printf("Test 6: reverse twice (should restore original)\n");
   printf("l: ");
   ppList_print2(stdout, (ppList*)&l);
   printf("\n");
-  ppList_ENIQUE(l);
-  print_test_results((ppList*)&l, (ppList*)&anw);
-  printf("\n-------------------------------------------\n\n");
-
-  // --------------------------------------------------------------
-  // Тест 7: не последовательные дубликаты (не удаляются)
-  ppList_CLEAR(l); ppList_CLEAR(anw);
-  int arr7[] = {1,2,1,2,1};
-  ppList_FILL_FROM_ARRAY(l, arr7);
-  ppList_FILL_FROM_ARRAY(anw, arr7);
-  printf("Test 7: Non-consecutive duplicates (not removed)\n");
-  printf("l: ");
-  ppList_print2(stdout, (ppList*)&l);
-  printf("\n");
-  ppList_ENIQUE(l);
+  ppList_REVERSE(l);
+  ppList_REVERSE(l);
   print_test_results((ppList*)&l, (ppList*)&anw);
   printf("\n-------------------------------------------\n\n");
 

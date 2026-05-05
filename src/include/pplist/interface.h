@@ -155,4 +155,13 @@ void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppList
 // Требует указание размера элементов хранимых в списках
 void ppList_unique(ppList* l, size_t size);
 
+// Проверка, пуст ли список. 
+//Так же проверяет, не "испорчены" ли данные в основной структуре списка и в таком случае выдаёт ошибку
+_Bool ppList_empty(ppList* list);
+
+// Переворачивание списка
+void ppList_reverse(ppList* l);
+
+
 #endif // __pplist_interface__
+

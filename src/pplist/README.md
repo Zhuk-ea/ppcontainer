@@ -3,7 +3,7 @@
 #### Нужно реализовать:
 
 - [x] size()
-- [ ] empty()
+- [x] empty()
 - [x] clear()
 - [x] move()
 - [x] swap()
@@ -24,8 +24,8 @@
 - [x] remove_if()
 - [x] merge()
 - [x] splice()
-- [ ] unique()
-- [ ] reverse()
+- [x] unique()
+- [x] reverse()
 - [x] front()
 - [x] back()
 - [x] is_equal()

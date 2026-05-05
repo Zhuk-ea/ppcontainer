@@ -21,6 +21,10 @@ void ppList_init(ppList* l) {
 //------------------------------------------------------------------------------
 // Определение текущего размера списка
 uint32_t ppList_size(ppList* l) {
+  if(!l) {
+    printf("Incorrect list in  ppList_size function\n");
+    exit(-1);
+  }
   return l->size;
 }
 
@@ -835,4 +839,54 @@ void ppList_unique(ppList* l, size_t size) {
       now = now->next;
     }
   }
+}
+
+//------------------------------------------------------------------------------
+// Проверка, пуст ли список. 
+// Так же проверяет, не "испорчены" ли данные в основной структуре списка 
+// (есть указатели куда-либо, несмотря на то, что размер = 0) и в таком случае выдаёт ошибку
+_Bool ppList_empty(ppList* list) {
+  if(!list) {
+    printf("Incorrect list in ppList_empty function\n");
+    exit(-1);
+  }
+  if (list->size != 0) {
+    if (list->head == NULL || list->tail== NULL) {
+      printf("Incorrect head or tail in non-empty list in ppList_empty function\n");
+      exit(-1);
+    }
+    return 0;
+  }
+  if (list->size == 0) {
+    if (list->head != NULL || list->tail != NULL) {
+      printf("Incorrect head or tail in empty list in ppList_empty function\n");
+      exit(-1);
+    }
+  }
+  return 1;
+}
+
+
+//------------------------------------------------------------------------------
+// Переворачивание списка
+void ppList_reverse(ppList* l) {
+  if(!l) {
+    printf("Incorrect list in ppList_reverse function\n");
+    exit(-1);
+  }
+  if (ppList_empty(l)) return;
+
+  ppListNode *current = l->head;
+  ppListNode *temp = NULL;
+
+  while (current != NULL) {
+      temp = current->next;
+      current->next = current->prev;
+      current->prev = temp;
+      current = temp;
+  }
+
+  temp = l->head;
+  l->head = l->tail;
+  l->tail = temp;
 }

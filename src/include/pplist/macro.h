@@ -168,5 +168,9 @@ do {                                                  \
 #define ppList_ENIQUE(list_name) \
 ppList_unique((ppList*)&list_name, list_name.foundation_size) 
 
+// Макрос, используемый для разворачивания списка
+// Обертывает функцию pList_reverse
+#define ppList_REVERSE(list_name) \
+ppList_reverse((ppList*)&list_name)
 
 #endif // __pplist_macro__

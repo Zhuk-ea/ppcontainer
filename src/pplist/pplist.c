@@ -380,12 +380,20 @@ void ppList_current_iterator(ppList* l, ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент вперёд
 void ppListIterator_next(ppListIterator* iter) {
+  if(iter->node == NULL) {
+    printf("Trying to get next node from NULL node in ppListIterator_next function\n");
+    exit(-1);
+  }
   iter->node = iter->node->next;
 }
 
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент назад
 void ppListIterator_prev(ppListIterator* iter) {
+  if(iter->node == NULL) {
+    printf("Trying to get prev node from NULL node in ppListIterator_prev function\n");
+    exit(-1);
+  }
   iter->node = iter->node->prev;
 }
 
@@ -650,67 +658,66 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
   }
   if (src_begin->node == src_end->node) return;
 
-  ppList *dest = dest_begin->list;
-  ppList *src  = src_begin->list;
+    ppList *dest = dest_begin->list;
+    ppList *src  = src_begin->list;
 
-  // dest
-  ppListNode *dest_before = dest_begin->node ? dest_begin->node->prev : dest->tail;
-  ppListNode *dest_after = dest_end->node;
-  ppListNode **dest_link = dest_before ? &dest_before->next : &dest->head;
+    // dest
+    ppListNode *dest_before = dest_begin->node ? dest_begin->node->prev : dest->tail;
+    ppListNode *dest_after  = dest_end->node;
+    ppListNode **dest_link = dest_before ? &dest_before->next : &dest->head;
 
-  // src
-  ppListNode *src_before = src_begin->node ? src_begin->node->prev : src->tail;
-  ppListNode *src_after  = src_end->node;
-  ppListNode **src_link  = src_before ? &src_before->next : &src->head;
+    // src
+    ppListNode *src_before = src_begin->node ? src_begin->node->prev : src->tail;
+    ppListNode *src_after  = src_end->node;
+    ppListNode **src_link  = src_before ? &src_before->next : &src->head;
 
-  ppList tmp_dest = {0};
-  ppList tmp_src  = {0};
+    ppList tmp_dest = {0};
+    ppList tmp_src  = {0};
 
-  if (dest_begin->node && dest_begin->node != dest_after) {
-      ppListNode *dest_last = dest_after ? dest_after->prev : dest->tail;
-      *dest_link = dest_after;
+    if (dest_begin->node && dest_begin->node != dest_after) {
+        ppListNode *dest_last = dest_after ? dest_after->prev : dest->tail;
+        *dest_link = dest_after;
+        ppListNode **prev_link = dest_after ? &dest_after->prev : &dest->tail;
+        *prev_link = dest_before;
 
-      ppListNode **prev_link = dest_after ? &dest_after->prev : &dest->tail;
-      *prev_link = dest_before;
+        tmp_dest.head = dest_begin->node;
+        tmp_dest.tail = dest_last;
+        tmp_dest.head->prev = NULL;
+        tmp_dest.tail->next = NULL;
+        for (ppListNode *t = tmp_dest.head; t; t = t->next) ++tmp_dest.size;
+        dest->size -= tmp_dest.size;
+    }
 
-      tmp_dest.head = dest_begin->node;
-      tmp_dest.tail = dest_last;
-      tmp_dest.head->prev = NULL;
-      tmp_dest.tail->next = NULL;
-      for (ppListNode *t = tmp_dest.head; t; t = t->next) ++tmp_dest.size;
-  }
+    if (src_begin->node && src_begin->node != src_after) {
+        ppListNode *src_last = src_after ? src_after->prev : src->tail;
+        *src_link = src_after;
+        ppListNode **prev_link = src_after ? &src_after->prev : &src->tail;
+        *prev_link = src_before;
 
-  if (src_begin->node && src_begin->node != src_after) {
-      ppListNode *src_last = src_after ? src_after->prev : src->tail;
-      *src_link = src_after;
-      ppListNode **prev_link = src_after ? &src_after->prev : &src->tail;
-      *prev_link = src_before;
+        tmp_src.head = src_begin->node;
+        tmp_src.tail = src_last;
+        tmp_src.head->prev = NULL;
+        tmp_src.tail->next = NULL;
+        for (ppListNode *t = tmp_src.head; t; t = t->next) ++tmp_src.size;
+        src->size -= tmp_src.size;
+    }
 
-      tmp_src.head = src_begin->node;
-      tmp_src.tail = src_last;
-      tmp_src.head->prev = NULL;
-      tmp_src.tail->next = NULL;
-      for (ppListNode *t = tmp_src.head; t; t = t->next) ++tmp_src.size;
-  }
+    ppList_merge(&tmp_dest, &tmp_src, cmp);
 
-  ppList_merge(&tmp_dest, &tmp_src, cmp);
+    if (tmp_dest.head) {
+        *dest_link = tmp_dest.head;
+        tmp_dest.head->prev = dest_before;
+        if (dest_after) {
+            tmp_dest.tail->next = dest_after;
+            dest_after->prev = tmp_dest.tail;
+        } else {
+            dest->tail = tmp_dest.tail;
+            tmp_dest.tail->next = NULL;
+        }
+        dest->size += tmp_dest.size;
+    }
 
-  if (tmp_dest.head) {
-      *dest_link = tmp_dest.head;
-      tmp_dest.head->prev = dest_before;
-      if (dest_after) {
-          tmp_dest.tail->next = dest_after;
-          dest_after->prev = tmp_dest.tail;
-      } else {
-          dest->tail = tmp_dest.tail;
-          tmp_dest.tail->next = NULL;
-      }
-  }
-
-  dest->size += tmp_dest.size;
-  src->size -= tmp_src.size;
-
-  src->current = src_after ? src_after : src_before;
+    src->current = src_after ? src_after : src_before;
 }
 
 

@@ -114,7 +114,7 @@ ppList_merge((ppList*)&dest_name, (ppList*)&src_name, cmp_name);
 
 // Макрос, используемый для объединения диапазонов из двух списков
 // Обертывает функцию ppList_merge_ranges
-#define ppListIterator_MERGE_RANGES(dest_begi, dest_end, src_begin, src_end, cmp_name) \
+#define ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_name) \
 ppListIterator_merge_ranges((ppListIterator*)&dest_begin, (ppListIterator*)&dest_end, (ppListIterator*)&src_begin, (ppListIterator*)&src_end, cmp_name);
 
 // Макрос, используемый для перемещения итератора на один узел вперёд
@@ -141,5 +141,26 @@ ppList_end((ppList*)&list_name, (ppListIterator*)&iterator_name);
 // Обертывает функцию ppList_clear
 #define ppList_CLEAR(list_name) \
 ppList_clear((ppList*)&list_name);
+
+// Макрос, используемый для вставки диапазона в список после узла на который указывает итератор(списки однотипные)
+// Обертывает функцию ppList_splice_after
+#define ppList_SPLICE_AFTER(pos, src_begin, src_end) \
+ppList_splice_after((ppListIterator*)&pos, (ppListIterator*)&src_begin, (ppListIterator*)&src_end) 
+
+
+// Макрос, используемый для вставки диапазона в список перед узлом на который указывает итератор(списки однотипные)
+// Обертывает функцию ppList_splice_before
+#define ppList_SPLICE_BEFORE(pos, src_begin, src_end) \
+ppList_splice_before((ppListIterator*)&pos, (ppListIterator*)&src_begin, (ppListIterator*)&src_end) 
+
+
+// Макрос, используемый для заполнение списка из массива того же типа
+#define ppList_FILL_FROM_ARRAY(list, array)           \
+do {                                                  \
+  size_t _size = sizeof(array) / sizeof((array)[0]);  \
+  for (size_t _i = 0; _i < _size; ++_i) {             \
+    ppList_PUSH_BACK((list), (array)[_i]);            \
+  }                                                   \
+} while(0)
 
 #endif // __pplist_macro__

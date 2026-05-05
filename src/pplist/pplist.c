@@ -646,83 +646,6 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
 }
 
 //------------------------------------------------------------------------------
-// Объединение двух диапазонов из однотипных списков (если один или оба диапозона не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
-// Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
-// Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
-// Переставляет current для списка из которого взят второй интервал на первый элемент после диапазона(если он есть, если нет, то на последний элемент диапазона)
-void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
-  //В процессе разработки
-  if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
-    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
-    exit(-1);
-  }
-  if (src_begin->node == src_end->node) return;
-
-    ppList *dest = dest_begin->list;
-    ppList *src  = src_begin->list;
-
-    // dest
-    ppListNode *dest_before = dest_begin->node ? dest_begin->node->prev : dest->tail;
-    ppListNode *dest_after  = dest_end->node;
-    ppListNode **dest_link = dest_before ? &dest_before->next : &dest->head;
-
-    // src
-    ppListNode *src_before = src_begin->node ? src_begin->node->prev : src->tail;
-    ppListNode *src_after  = src_end->node;
-    ppListNode **src_link  = src_before ? &src_before->next : &src->head;
-
-    ppList tmp_dest = {0};
-    ppList tmp_src  = {0};
-
-    if (dest_begin->node && dest_begin->node != dest_after) {
-        ppListNode *dest_last = dest_after ? dest_after->prev : dest->tail;
-        *dest_link = dest_after;
-        ppListNode **prev_link = dest_after ? &dest_after->prev : &dest->tail;
-        *prev_link = dest_before;
-
-        tmp_dest.head = dest_begin->node;
-        tmp_dest.tail = dest_last;
-        tmp_dest.head->prev = NULL;
-        tmp_dest.tail->next = NULL;
-        for (ppListNode *t = tmp_dest.head; t; t = t->next) ++tmp_dest.size;
-        dest->size -= tmp_dest.size;
-    }
-
-    if (src_begin->node && src_begin->node != src_after) {
-        ppListNode *src_last = src_after ? src_after->prev : src->tail;
-        *src_link = src_after;
-        ppListNode **prev_link = src_after ? &src_after->prev : &src->tail;
-        *prev_link = src_before;
-
-        tmp_src.head = src_begin->node;
-        tmp_src.tail = src_last;
-        tmp_src.head->prev = NULL;
-        tmp_src.tail->next = NULL;
-        for (ppListNode *t = tmp_src.head; t; t = t->next) ++tmp_src.size;
-        src->size -= tmp_src.size;
-    }
-
-    ppList_merge(&tmp_dest, &tmp_src, cmp);
-
-    if (tmp_dest.head) {
-        *dest_link = tmp_dest.head;
-        tmp_dest.head->prev = dest_before;
-        if (dest_after) {
-            tmp_dest.tail->next = dest_after;
-            dest_after->prev = tmp_dest.tail;
-        } else {
-            dest->tail = tmp_dest.tail;
-            tmp_dest.tail->next = NULL;
-        }
-        dest->size += tmp_dest.size;
-    }
-
-    src->current = src_after ? src_after : src_before;
-}
-
-
-
-//------------------------------------------------------------------------------
 // Сравнение двух однотипных списков на равенство(Равны ли все элементы)
 // Требует указание размера типа списков в байтах
 _Bool ppList_is_equal(ppList* l1, ppList* l2, int size) {
@@ -735,4 +658,153 @@ _Bool ppList_is_equal(ppList* l1, ppList* l2, int size) {
     now2 = now2->next;
   }
   return 1;
+}
+
+// Вспомогательная структура для хранения диапазона(в виде временного списка) и узлов между которыми его нужно будет вставить
+typedef struct {
+  ppList list;
+  ppListNode *prev;
+  ppListNode *next;
+} ExtractedRange;
+
+// Вспомогательная функция
+// Вырезает диапазон [src_begin, src_end) из списка (в качестве next и prev берутся узлы, между которыми диапазон находился в исходном списке)
+static ExtractedRange extract_range(ppListIterator* src_begin, ppListIterator* src_end) {
+  ExtractedRange range = {0};
+  if (src_begin->node == src_end->node) return range;
+
+  ppList *src = src_begin->list;
+  ppListNode *first = src_begin->node;
+  ppListNode *last  = src_end->node ? src_end->node->prev : src->tail;
+  ppListNode *prev = first->prev;
+  ppListNode *next = src_end->node;
+
+  // подсчёт размера
+  int size = 0;
+  for (ppListNode *t = first; t != next; t = t->next) {
+    ++size;
+  }
+
+  ppListNode **prev_link = prev ? &prev->next : &src->head;
+  ppListNode **next_link = next ? &next->prev : &src->tail;
+
+  // отсоединение диапазона
+  *prev_link = next;
+  *next_link = prev;
+  first->prev = NULL;
+  last->next  = NULL;
+
+  range.list.head = first;
+  range.list.tail = last;
+  range.list.size = size;
+  range.list.current = NULL;
+
+  range.prev = prev;
+  range.next = next;
+
+  src->size -= size;
+  return range;
+}
+
+// Вспомогательная функция
+// Вставляет диапазон range между узлами prev и next в список target
+static void insert_range(ppList *target, ExtractedRange *range, ppListNode *prev, ppListNode *next) {
+  if (range->list.head == NULL) return;
+  ppListNode **link_head = prev ? &prev->next : &target->head;
+  ppListNode **link_tail = next ? &next->prev : &target->tail;
+
+  *link_head = range->list.head;
+  range->list.head->prev = prev;
+  *link_tail = range->list.tail;
+  range->list.tail->next = next;
+
+  target->size += range->list.size;
+}
+
+
+//------------------------------------------------------------------------------
+// Объединение списка и диапазона из другого списка (списки однотипны)
+// Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
+// Вставляет дианазон после указанной позиции (если pos->node == NULL, вставляет диапазон перед головой списка)
+void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  if(src_begin->list != src_end->list ) {
+    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_after function\n");
+    exit(-1);
+  }
+  if (!pos->list) {
+    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_after function\n");
+    exit(-1);
+  }
+  if (src_begin->node == src_end->node) return;
+  ExtractedRange range = extract_range(src_begin, src_end);
+  if (range.list.size == 0) return;
+
+  ppList *target = pos->list;
+  ppListNode *prev = pos->node;
+  ppListNode *next = prev ? prev->next : target->head;
+
+  insert_range(target, &range, prev, next);
+
+  ppList *src = src_begin->list;
+  src->current = range.next ? range.next : range.prev;
+}
+
+// Объединение списка и диапазона из другого списка (списки однотипны)
+// Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
+// Вставляет дианазон перед указанной позиции (если pos->node == NULL, вставляет диапазон после хвоста списка)
+void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  if(src_begin->list != src_end->list ) {
+    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_before function\n");
+    exit(-1);
+  }
+  if (!pos->list) {
+    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_before function\n");
+    exit(-1);
+  }
+  if (src_begin->node == src_end->node) return; // пустой диапазон
+  ExtractedRange range = extract_range(src_begin, src_end);
+  if (range.list.size == 0) return;
+
+  ppList *target = pos->list;
+  ppListNode *prev = pos->node ? pos->node->prev : target->tail;
+  ppListNode *next = pos->node;
+
+  insert_range(target, &range, prev, next);
+
+  ppList *src = src_begin->list;
+  src->current = range.next ? range.next : range.prev;
+}
+
+//------------------------------------------------------------------------------
+// Объединение двух диапазонов из однотипных списков (если один или оба диапозона не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
+// Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
+// Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
+// Переставляет current для списка из которого взят второй интервал на первый элемент после диапазона(если он есть, если нет, то на последний элемент перед диапазоном)
+void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
+  if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
+    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
+    exit(-1);
+  }
+  if (!pos->list) {
+    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_after function\n");
+    exit(-1);
+  }
+  if (src_begin->node == src_end->node) return;
+
+  // если пустой dest просто вставляем src перед dest_begin
+  if (dest_begin->node == dest_end->node) {
+    ppList_splice_before(dest_begin, src_begin, src_end);
+    return;
+  }
+
+  // вырезание диапазонов
+  ExtractedRange dest_range = extract_range(dest_begin, dest_end);
+  ExtractedRange src_range  = extract_range(src_begin, src_end);
+
+  ppList_merge(&dest_range.list, &src_range.list, cmp);
+
+  // вставка результата merge в dest
+  insert_range(dest_begin->list, &dest_range, dest_range.prev, dest_range.next);
+
+  src_begin->list->current = src_range.next ? src_range.next : src_range.prev;
 }

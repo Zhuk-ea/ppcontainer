@@ -141,5 +141,12 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
 _Bool ppList_is_equal(ppList* l1, ppList* l2, int size);
 
 
+// Объединение списка и диапазона из другого списка (списки однотипны)
+// Вставляет дианазон после указанной позиции (если pos->node == NULL, вставляет диапазон перед головой списка)
+void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end);
+
+// Объединение списка и диапазона из другого списка (списки однотипны)
+// Вставляет дианазон перед указанной позиции (если pos->node == NULL, вставляет диапазон после хвоста списка)
+void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end);
 
 #endif // __pplist_interface__

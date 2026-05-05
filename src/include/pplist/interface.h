@@ -137,8 +137,9 @@ void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b));
 // Требует функцию сравнения, реализованную для типа хранимых в списках данных
 void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b));
 
-// Сравнение двух однотипных списков на равенство
-_Bool ppList_is_equal(ppList* l1, ppList* l2, int size);
+// Сравнение двух однотипных списков на равенство. 
+//Требует указание размера элементов хранимых в списках
+_Bool ppList_is_equal(ppList* l1, ppList* l2, size_t size);
 
 
 // Объединение списка и диапазона из другого списка (списки однотипны)
@@ -148,5 +149,10 @@ void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListI
 // Объединение списка и диапазона из другого списка (списки однотипны)
 // Вставляет дианазон перед указанной позиции (если pos->node == NULL, вставляет диапазон после хвоста списка)
 void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end);
+
+// Удаление из списка ПОСЛЕДОВАТЕЛЬНЫХ дубликатов оставляя только первый встретившийся
+// Чтобы удалить все дубликаты, нужно сначала отсортировать список
+// Требует указание размера элементов хранимых в списках
+void ppList_unique(ppList* l, size_t size);
 
 #endif // __pplist_interface__

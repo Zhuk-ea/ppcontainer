@@ -648,7 +648,7 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
 //------------------------------------------------------------------------------
 // Сравнение двух однотипных списков на равенство(Равны ли все элементы)
 // Требует указание размера типа списков в байтах
-_Bool ppList_is_equal(ppList* l1, ppList* l2, int size) {
+_Bool ppList_is_equal(ppList* l1, ppList* l2, size_t size) {
   if (l1->size != l2->size) return 0;
   ppListNode * now1 = l1->head;
   ppListNode * now2 = l2->head;
@@ -785,10 +785,6 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
     exit(-1);
   }
-  if (!pos->list) {
-    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_after function\n");
-    exit(-1);
-  }
   if (src_begin->node == src_end->node) return;
 
   // если пустой dest просто вставляем src перед dest_begin
@@ -807,4 +803,36 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
   insert_range(dest_begin->list, &dest_range, dest_range.prev, dest_range.next);
 
   src_begin->list->current = src_range.next ? src_range.next : src_range.prev;
+}
+
+//------------------------------------------------------------------------------
+// Удаление из списка ПОСЛЕДОВАТЕЛЬНЫХ дубликатов оставляя только первый встретившийся
+// Чтобы удалить все дубликаты, нужно сначала отсортировать список
+// Требует указание размера элементов хранимых в списках
+void ppList_unique(ppList* l, size_t size) {
+  if(!l) {
+    printf("Incorrect list in ppList_unique function\n");
+    exit(-1);
+  }
+  if (l == NULL || l->head == NULL) return;
+
+  ppListNode *now = l->head;
+
+  while (now != NULL && now->next != NULL) {
+    if (memcmp(now->data, now->next->data, size) == 0) {
+
+      ppListNode *duplicate = now->next;
+      now->next = duplicate->next;
+      if (duplicate->next != NULL) {
+        duplicate->next->prev = now;
+      } else {
+        l->tail = now;
+      }
+
+      free(duplicate);
+      l->size--;
+    } else {
+      now = now->next;
+    }
+  }
 }

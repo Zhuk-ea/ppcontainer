@@ -23,7 +23,7 @@
 - [x] remove()
 - [x] remove_if()
 - [x] merge()
-- [ ] splice()
+- [x] splice()
 - [ ] unique()
 - [ ] reverse()
 - [x] front()

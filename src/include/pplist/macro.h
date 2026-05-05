@@ -163,4 +163,10 @@ do {                                                  \
   }                                                   \
 } while(0)
 
+// Макрос, используемый для удаления последовательных дубликатов из списка
+// Обертывает функцию pList_unique и получение размера типа
+#define ppList_ENIQUE(list_name) \
+ppList_unique((ppList*)&list_name, list_name.foundation_size) 
+
+
 #endif // __pplist_macro__

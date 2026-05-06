@@ -28,6 +28,13 @@ list_name.current = NULL;
 #define ppList_PUSH_BACK(list_name, value) \
 list_name.@ = (value); ppList_push_back((ppList*)&list_name);
 
+// Макрос, используемый для замены значения текущего элемента
+// Обертывает функцию ppList_replace_current и предварительное присваивание
+// пересылаемого значения внутренней переменной
+#define ppList_REPLACE_CURRENT(list_name, value) \
+list_name.@ = (value); ppList_replace_current((ppList*)&list_name);
+
+
 // Макрос, используемый для занесения значения в голову списка.
 // Обертывает функцию ppList_push_front и предварительное присваивание
 // пересылаемого значения внутренней переменной
@@ -45,14 +52,6 @@ list_name.@ = (value); ppList_push_after_current((ppList*)&list_name);
 // пересылаемого значения внутренней переменной
 #define ppList_PUSH_BEFORE_CURRENT(list_name, value) \
 list_name.@ = (value); ppList_push_before_current((ppList*)&list_name);
-
-
-// Макрос, используемый для замены значения текущего элемента
-// Обертывает функцию ppList_replace_current и предварительное присваивание
-// пересылаемого значения внутренней переменной
-#define ppList_REPLACE_CURRENT(list_name, value) \
-list_name.@ = (value); ppList_replace_cerrunt((ppList*)&list_name);
-
 
 //------------------------------------------------------------------------------
 // Макрос для занесения первого элемента списка в указанную переменную

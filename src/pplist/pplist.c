@@ -31,13 +31,13 @@ uint32_t ppList_size(ppList* l) {
 //------------------------------------------------------------------------------
 // Установка нового значения в существующий текущий элемент списка
 // из значения, находящегося в специализации
-void ppList_replace_current(ppList* l) {
+_Bool ppList_replace_current(ppList* l) {
   if(l->current == NULL) {
-    printf("Incorrect current value in ppList_replace_current function\n");
-    exit(-1);
+    return 0; // замена не произведена
   }
   // Перенос значения из специализации в текущий узел
   memcpy(l->current->data, l->foundation_addr, l->foundation_size);
+  return 1;
 }
 
 //------------------------------------------------------------------------------

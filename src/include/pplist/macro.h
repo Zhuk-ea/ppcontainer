@@ -70,7 +70,13 @@ ppList_current((ppList*)&list_name); destination = list_name.@;
 
 // Макрос для занесения значения из элемента на который указывает итератор(или обратный итератор) в указанную переменную
 #define ppListIterator_GET_VAL(destination, iterator_name) \
-memcpy(&destination, iterator_name.node->data, (size_t)iterator_name.list->foundation_size);
+do { \
+    if ((iterator_name).node == NULL) { \
+        fprintf(stderr, "Error: ppListIterator_GET_VAL called on NULL iterator\n"); \
+        exit(-1); \
+    } \
+    memcpy(&destination, (iterator_name).node->data, (size_t)iterator_name.list->foundation_size); \
+} while(0)
 
 //------------------------------------------------------------------------------
 // Макроопределение, используемое для формирования специализации по шаблону

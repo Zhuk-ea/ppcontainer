@@ -44,6 +44,7 @@ void ppList_print(FILE* f, ppList* l) {
 
 void ppList_print2(FILE* f, ppList* l) {
   if(l->head == NULL) { // Нет данных
+    fprintf(f, "\n");
     return;
   }
   // Цикл с обходом элементов и переносом их в специализацию

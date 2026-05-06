@@ -225,11 +225,18 @@ void ppList_pop_back(ppList* l) {
     return;
   }
   if(l->size == 1) {
-    l->head = NULL;
+    free(l->tail);
+    l->head = l->current = l->tail = NULL;
+    l->size = 0;
+    return;
   }
-  l->current = l->tail->prev;
+  ppListNode *new_tail = l->tail->prev;
+  if (l->current == l->tail) {
+    l->current = new_tail;
+  }
   free(l->tail);
-  l->tail = l->current;
+  l->tail = new_tail;
+  l->tail->next = NULL;
   --(l->size);
 }
 
@@ -240,20 +247,24 @@ void ppList_pop_front(ppList* l) {
     return;
   }
   if(l->size == 1) {
-    l->tail = NULL;
+    free(l->head);
+    l->head = l->current = l->tail = NULL;
+    l->size = 0;
+    return;
   }
-  l->current = l->head->next;
+  ppListNode *new_head = l->head->next;
+  if (l->current == l->head) {
+    l->current = new_head;
+  }
   free(l->head);
-  l->head = l->current;
+  l->head = new_head;
+  l->head->prev = NULL;
   --(l->size);
 }
 
 //------------------------------------------------------------------------------
 // Удаление текущего элемента списка
 void ppList_pop_current(ppList* l) {
-  // if(l->current == NULL) {
-  //   return;
-  // }
   if(l->current == l->head) {
     ppList_pop_front(l);
   } else if(l->current == l->tail) {
@@ -383,28 +394,32 @@ void ppList_current_iterator(ppList* l, ppListIterator* iter) {
 
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент вперёд
-void ppListIterator_next(ppListIterator* iter) {
+_Bool ppListIterator_next(ppListIterator* iter) {
   if(iter->node == NULL) {
-    printf("Trying to get next node from NULL node in ppListIterator_next function\n");
-    exit(-1);
+    return 0;
   }
   iter->node = iter->node->next;
+  return 1;
 }
 
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент назад
-void ppListIterator_prev(ppListIterator* iter) {
+_Bool ppListIterator_prev(ppListIterator* iter) {
   if(iter->node == NULL) {
-    printf("Trying to get prev node from NULL node in ppListIterator_prev function\n");
-    exit(-1);
+    return 0;
   }
   iter->node = iter->node->prev;
+  return 1;
 }
 
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации списка значения элемента на который ссылается итератор
-void ppListIterator_get_value(ppListIterator* iter) {
+_Bool ppListIterator_get_value(ppListIterator* iter) {
+  if (iter->node == NULL) {
+    return 0;
+  }
   memcpy(iter->list->foundation_addr, iter->node->data, iter->list->foundation_size);
+  return 1;
 }
 
 

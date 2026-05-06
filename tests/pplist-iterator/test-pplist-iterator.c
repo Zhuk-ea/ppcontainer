@@ -2,90 +2,245 @@
 #include <stdio.h>
 #include "pplist.h"
 
-//==============================================================================
+//====================================
 // Все, что сопровождает формируемую специализацию списка
-//==============================================================================
+//====================================
 
 ppList+<int;>; // Целочисленная специализация списка
 ppListIterator+<int;>; // Целочисленная специализация итератора
-ppListRIterator+<int;>; // Целочисленная специализация обратного итератора
 
 //------------------------------------------------------------------------------
-// Обработчик специализации, обеспечивающий вывод целочисленного элемента
-// Выводится текущий элемент списка с предварительным переводом
-// в область специализации
+// Обработчик вывода
 void ppList_element_print<ppList.int* l>(FILE* f) {
-  fprintf(f, "%d ", l->@);
+    fprintf(f, "%d ", l->@);
 }
 
-//==============================================================================
-// Тестовая функция
-//==============================================================================
-
-
 //------------------------------------------------------------------------------
+// Вспомогательные функции проверки
+// Вспомогательные функции
+void print_test_results(int condition, const char* msg) {
+    if (condition) printf("Correct | %s\n", msg);
+    else printf("Incorrect | %s\n", msg);
+}
+
+void print_list(ppList* l, const char* label) {
+    printf("%s: ", label);
+    ppList_print2(stdout, l);
+}
+
 int main(void) {
 
-  ppList_VAR(int, l_int);
+  ppList_VAR(int, l);
+  ppListIterator_VAR(int, it);
+  int val;
 
-  printf("\n -------------------------------------------\n\n");
-  //Вывод параметров настройки l_int
-  printf("l_int.(foundation_size = %u, foundation_addr = %p, size = %u)\n",
-        l_int.foundation_size, l_int.foundation_addr, l_int.size);
+  printf("\n-------------------------------------------\n\n");
+  // 1. Тесты для ppList_begin
+  printf("BEGIN\n\n");
 
-  for (int i = 0; i > -10; --i) {
-    ppList_PUSH_BACK(l_int, i)
-  }
+  // 1.1 Список из одного элемента
+  ppList_CLEAR(l);
+  ppList_PUSH_BACK(l, 99);
+  printf("Test 1.1: begin on single-element list\n");
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 99, "begin points to 99");
+  printf("\n");
 
-  printf("l_int: ");
-  ppList_print2(stdout, (ppList*)&l_int);
-  printf("\n -------------------------------------------\n\n");
+  // 1.2 Список из нескольких элементов
+  ppList_CLEAR(l);
+  int arr1[] = {10,20,30,40};
+  ppList_FILL_FROM_ARRAY(l, arr1);
+  printf("Test 1.2: begin on multi-element list\n");
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 10, "begin points to first element (10)");
+  printf("\n-------------------------------------------\n\n");
 
-  ppListIterator_VAR(int, iter);
-  ppList_begin((ppList*)&l_int, (ppListIterator*)&iter);
-  int val = 0; 
-  printf("iter = l_int.begin()\n");
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
+  // 2. Тесты для ppList_end
+  printf("END\n\n");
 
-  printf("next(iter)\n");
-  ppListIterator_next((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
+  // 2.1 Список из одного элемента
+  ppList_CLEAR(l);
+  ppList_PUSH_BACK(l, 55);
+  printf("Test 2.1: end on single-element list\n");
+  print_list((ppList*)&l, "l");
+  ppList_END(l, it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 55, "end points to 55 (last element)");
+  printf("\n");
 
-  printf("prev(iter)\n");
-  ppListIterator_prev((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
+  // 2.2 Список из нескольких элементов
+  ppList_CLEAR(l);
+  int arr2[] = {1,2,3,4,5};
+  ppList_FILL_FROM_ARRAY(l, arr2);
+  printf("Test 2.2: end on multi-element list\n");
+  print_list((ppList*)&l, "l");
+  ppList_END(l, it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 5, "end points to last element (5)");
+  printf("\n-------------------------------------------\n\n");
 
-  printf("\n -------------------------------------------\n\n");
-  
-  ppListRIterator_VAR(int, riter);
-  ppList_rbegin((ppList*)&l_int, (ppListRIterator*)&riter);
-  printf("riter = l_int.rbegin()\n");
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
+  // 3. Тесты для ppList_current_iterator
+  printf("CURRENT_ITERATOR\n\n");
 
-  printf("prev(riter)\n");
-  ppListRIterator_prev((ppListRIterator*)&riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
+  // 3.1 Пустой список
+  ppList_CLEAR(l);
+  printf("Test 3.1: current_iterator on empty list\n");
+  ppList_current_iterator((ppList*)&l, (ppListIterator*)&it);
+  print_test_results(it.node == NULL, "node is NULL");
+  printf("\n");
 
-  printf("next(riter)\n");
-  ppListRIterator_next((ppListRIterator*)&riter);
-  ppListIterator_GET_VAL(val, riter)
-  printf("val: %i\n", val);
+  // 3.2 Список из одного элемента
+  ppList_CLEAR(l);
+  ppList_PUSH_BACK(l, 77);
+  printf("Test 3.2: current_iterator on single element\n");
+  print_list((ppList*)&l, "l");
+  ppList_current_iterator((ppList*)&l, (ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 77, "current_iterator points to 77 (tail)");
+  printf("\n");
 
-  printf("\n -------------------------------------------\n\n");
-  printf("l_int: ");
-  ppList_print2(stdout, (ppList*)&l_int);
-  printf("iter\n");
-  ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter); ppListIterator_next((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("val: %i\n", val);
+  // 3.3 Список из нескольких элементов, current перемещён вручную
+  ppList_CLEAR(l);
+  int arr3[] = {100,200,300};
+  ppList_FILL_FROM_ARRAY(l, arr3);
+  printf("Test 3.3: current_iterator after moving current to head\n");
+  print_list((ppList*)&l, "l");
+  ppList_front_current((ppList*)&l);   // current = 100
+  ppList_current_iterator((ppList*)&l, (ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 100, "current_iterator points to head (100)");
+  printf("\n");
 
-  printf("\n -------------------------------------------\n\n");
+  printf("Test 3.4: current_iterator after moving current to tail\n");
+  ppList_back_current((ppList*)&l);    // current = 300
+  ppList_current_iterator((ppList*)&l, (ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 300, "current_iterator points to tail (300)");
+  printf("\n-------------------------------------------\n\n");
+
+  // 4. Тесты для ppListIterator_next
+  printf("NEXT\n\n");
+
+  // 4.1 Итератор с NULL
+  ppList_CLEAR(l);
+  it.list = (ppList*)&l;
+  it.node = NULL;
+  printf("Test 4.1: next on NULL iterator\n");
+  int res = ppListIterator_next((ppListIterator*)&it);
+  print_test_results(res == 0 && it.node == NULL, "returns 0, node stays NULL");
+  printf("\n");
+
+  // 4.2 Список из одного элемента: next переводит на NULL, возвращает 1
+  ppList_CLEAR(l);
+  ppList_PUSH_BACK(l, 42);
+  ppList_BEGIN(l, it);   // it на 42
+  printf("Test 4.2: next on single-element list\n");
+  print_list((ppList*)&l, "l");
+  res = ppListIterator_next((ppListIterator*)&it);
+  // после next итератор указывает на NULL, GET_VAL вызывать нельзя
+  print_test_results(res == 1 && it.node == NULL, "returns 1, node becomes NULL");
+  printf("\n");
+
+  // 4.3 Список из нескольких элементов: next до NULL и затем next возвращает 0
+  ppList_CLEAR(l);
+  int arr4[] = {5,6,7,8};
+  ppList_FILL_FROM_ARRAY(l, arr4);
+  ppList_BEGIN(l, it);   // it на 5
+  printf("Test 4.3: next through list to NULL\n");
+  print_list((ppList*)&l, "l");
+  res = ppListIterator_next((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 6, "first next -> 6, returns 1");
+  res = ppListIterator_next((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 7, "second next -> 7, returns 1");
+  res = ppListIterator_next((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 8, "third next -> 8, returns 1");
+  // четвёртый next переводит на NULL, возвращает 1
+  res = ppListIterator_next((ppListIterator*)&it);
+  print_test_results(res == 1 && it.node == NULL, "fourth next -> 1, node becomes NULL");
+  // пятый next на NULL возвращает 0, остаётся NULL
+  res = ppListIterator_next((ppListIterator*)&it);
+  print_test_results(res == 0 && it.node == NULL, "fifth next -> 0, stays NULL");
+  printf("\n-------------------------------------------\n\n");
+
+  // 5. Тесты для ppListIterator_prev
+  printf("PREV\n\n");
+
+  // 5.1 Итератор с NULL
+  it.list = (ppList*)&l;
+  it.node = NULL;
+  printf("Test 5.1: prev on NULL iterator\n");
+  res = ppListIterator_prev((ppListIterator*)&it);
+  print_test_results(res == 0 && it.node == NULL, "returns 0, node stays NULL");
+  printf("\n");
+
+  // 5.2 Список из одного элемента: prev переводит на NULL, возвращает 1
+  ppList_CLEAR(l);
+  ppList_PUSH_BACK(l, 99);
+  ppList_BEGIN(l, it);   // it на 99
+  printf("Test 5.2: prev on single-element list\n");
+  print_list((ppList*)&l, "l");
+  res = ppListIterator_prev((ppListIterator*)&it);
+  print_test_results(res == 1 && it.node == NULL, "returns 1, node becomes NULL");
+  printf("\n");
+
+  // 5.3 Список из нескольких элементов: prev до NULL и затем prev возвращает 0
+  ppList_CLEAR(l);
+  ppList_FILL_FROM_ARRAY(l, arr4);  // 5,6,7,8
+  ppList_END(l, it);                // it на 8
+  printf("Test 5.3: prev through list to NULL\n");
+  print_list((ppList*)&l, "l");
+  res = ppListIterator_prev((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 7, "first prev -> 7, returns 1");
+  res = ppListIterator_prev((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 6, "second prev -> 6, returns 1");
+  res = ppListIterator_prev((ppListIterator*)&it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(res == 1 && val == 5, "third prev -> 5, returns 1");
+  // четвёртый prev переводит на NULL, возвращает 1
+  res = ppListIterator_prev((ppListIterator*)&it);
+  print_test_results(res == 1 && it.node == NULL, "fourth prev -> 1, node becomes NULL");
+  // пятый prev на NULL возвращает 0
+  res = ppListIterator_prev((ppListIterator*)&it);
+  print_test_results(res == 0 && it.node == NULL, "fifth prev -> 0, stays NULL");
+  printf("\n-------------------------------------------\n\n");
+
+  // 6. Тесты для ppListIterator_get_value
+  printf("GET_VALUE\n\n");
+
+  // 6.1 Получение значений на разных позициях (итератор не NULL)
+  ppList_CLEAR(l);
+  int arr5[] = {1,2,3,4};
+  ppList_FILL_FROM_ARRAY(l, arr5);
+  printf("Test 6.1: get_value on begin, middle, end\n");
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  int v1, v2, v3;
+  ppListIterator_GET_VAL(v1, it);
+  ppListIterator_NEXT(it);
+  ppListIterator_NEXT(it); // now at 3
+  ppListIterator_GET_VAL(v2, it);
+  ppListIterator_NEXT(it); // now at 4
+  ppListIterator_GET_VAL(v3, it);
+  print_test_results(v1 == 1 && v2 == 3 && v3 == 4, "get_value returns 1,3,4 correctly");
+  printf("\n");
+
+  // 6.2 Проверка, что get_value не меняет итератор
+  printf("Test 6.2: get_value does not move iterator\n");
+  ppList_BEGIN(l, it);
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 1, "first get_value -> 1");
+  ppListIterator_GET_VAL(val, it);
+  print_test_results(val == 1, "second get_value still -> 1 (iterator unchanged)");
+  printf("\n-------------------------------------------\n\n");
 
   return 0;
-} // end main
-
+}

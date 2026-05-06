@@ -88,13 +88,13 @@ void ppList_end(ppList* l, ppListIterator* iter);
 void ppList_current_iterator(ppList* l, ppListIterator* iter);
 
 // Смещение итератора на один элемент вперёд
-void ppListIterator_next(ppListIterator* iter);
+_Bool ppListIterator_next(ppListIterator* iter);
 
 // Смещение итератора на один элемент назад
-void ppListIterator_prev(ppListIterator* iter);
+_Bool ppListIterator_prev(ppListIterator* iter);
 
 // Фиксация в основе специализации списка значения элемента на который ссылается итератор
-void ppListIterator_get_value(ppListIterator* iter);
+_Bool ppListIterator_get_value(ppListIterator* iter);
 
 // Получение итератора указывающего на первый элемент
 void ppList_rbegin(ppList* l, ppListRIterator* iter);

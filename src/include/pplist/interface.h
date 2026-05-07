@@ -106,13 +106,13 @@ void ppList_rend(ppList* l, ppListRIterator* iter);
 void ppList_current_riterator(ppList* l, ppListRIterator* iter);
 
 // Смещение итератора на один элемент назад
-void ppListRIterator_next(ppListRIterator* riter);
+_Bool ppListRIterator_next(ppListRIterator* riter);
 
 // Смещение итератора на один элемент вперёд
-void ppListRIterator_prev(ppListRIterator* riter);
+_Bool ppListRIterator_prev(ppListRIterator* riter);
 
 // Фиксация в основе специализации списка значения элемента на который ссылается итератор
-void ppListRIterator_get_value(ppListRIterator* riter);
+_Bool ppListRIterator_get_value(ppListRIterator* riter);
 
 // Вставка нового узла(со значением, записанным в основу специализации) после узла, на который указывает итератор
 void ppListIterator_insert_after(ppListIterator* iter);

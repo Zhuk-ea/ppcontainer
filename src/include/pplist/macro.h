@@ -68,7 +68,14 @@ ppList_back((ppList*)&list_name); destination = list_name.@;
 #define ppList_GET_CURRENT_VAL(destination, list_name) \
 ppList_current((ppList*)&list_name); destination = list_name.@;
 
-// Макрос для занесения значения из элемента на который указывает итератор(или обратный итератор) в указанную переменную
+//------------------------------------------------------------------------------
+// Макроопределение, используемое для формирования специализации по шаблону
+// Скрывает дополнительные манипуляции, связанные с установкой
+// внутренних параметров
+#define ppListIterator_VAR(foundation_type, iterator_name)      \
+struct ppListIterator.foundation_type iterator_name;          \
+
+// Макрос для занесения значения из элемента на который указывает итератор в указанную переменную
 #define ppListIterator_GET_VAL(destination, iterator_name) \
 do { \
     if ((iterator_name).node == NULL) { \
@@ -78,12 +85,26 @@ do { \
     memcpy(&destination, (iterator_name).node->data, (size_t)iterator_name.list->foundation_size); \
 } while(0)
 
-//------------------------------------------------------------------------------
-// Макроопределение, используемое для формирования специализации по шаблону
-// Скрывает дополнительные манипуляции, связанные с установкой
-// внутренних параметров
-#define ppListIterator_VAR(foundation_type, iterator_name)      \
-struct ppListIterator.foundation_type iterator_name;          \
+// Макрос, используемый для перемещения итератора на один узел вперёд
+// Обертывает функцию ppListIterator_next
+#define ppListIterator_NEXT(iterator_name) \
+ppListIterator_next((ppListIterator*)&iterator_name);
+
+
+// Макрос, используемый для перемещения итератора на один узел назад
+// Обертывает функцию ppListIterator_prev
+#define ppListIterator_PREV(iterator_name) \
+ppListIterator_prev((ppListIterator*)&iterator_name);
+
+// Макрос, используемый для получение итератора на начало списка
+// Обертывает функцию ppList_begin
+#define ppList_BEGIN(list_name, iterator_name) \
+ppList_begin((ppList*)&list_name, (ppListIterator*)&iterator_name);
+
+// Макрос, используемый для получение итератора на конец списка
+// Обертывает функцию ppList_end
+#define ppList_END(list_name, iterator_name) \
+ppList_end((ppList*)&list_name, (ppListIterator*)&iterator_name);
 
 //------------------------------------------------------------------------------
 // Макроопределение, используемое для формирования специализации по шаблону
@@ -92,6 +113,43 @@ struct ppListIterator.foundation_type iterator_name;          \
 #define ppListRIterator_VAR(foundation_type, riterator_name)      \
 struct ppListRIterator.foundation_type riterator_name;          \
 
+
+// Макрос для занесения значения из элемента на который указывает обратный итератор в указанную переменную
+#define ppListRIterator_GET_VAL(destination, riterator_name) \
+do { \
+    if ((riterator_name).node == NULL) { \
+        fprintf(stderr, "Error: ppListRIterator_GET_VAL called on NULL riterator\n"); \
+        exit(-1); \
+    } \
+    memcpy(&destination, (riterator_name).node->data, (size_t)riterator_name.list->foundation_size); \
+} while(0)
+
+
+// Макрос, используемый для перемещения обратного итератора на один узел назад
+// Обертывает функцию ppListIterator_next
+#define ppListRIterator_NEXT(riterator_name) \
+ppListRIterator_next((ppListRIterator*)&riterator_name)
+
+// Макрос, используемый для перемещения обратного итератора на один узел вперёд
+// Обертывает функцию ppListIterator_prev
+#define ppListRIterator_PREV(riterator_name) \
+ppListRIterator_prev((ppListRIterator*)&riterator_name)
+
+// Макрос, используемый для получение обратного итератора на начало списка
+// Обертывает функцию ppList_rbegin
+#define ppList_RBEGIN(list_name, riterator_name) \
+ppList_rbegin((ppList*)&list_name, (ppListRIterator*)&riterator_name)
+
+// Макрос, используемый для получение обратного итератора на конец списка
+// Обертывает функцию ppList_rend
+#define ppList_REND(list_name, riterator_name) \
+ppList_rend((ppList*)&list_name, (ppListRIterator*)&riterator_name)
+
+
+// Макрос, используемый для получение обратного итератора на текщий элемент списка
+// Обертывает функцию ppList_current_riterator
+#define ppList_CURRENT_RITERATOR(list_name, riterator_name) \
+ppList_current_riterator((ppList*)&list_name, (ppListRIterator*)&riterator_name)
 
 // Макрос, используемый для занесения значения перед элементом на который ссылается итератор
 // Обертывает функцию ppListIterator_insert_before и предварительное присваивание
@@ -122,25 +180,6 @@ ppList_merge((ppList*)&dest_name, (ppList*)&src_name, cmp_name);
 #define ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_name) \
 ppListIterator_merge_ranges((ppListIterator*)&dest_begin, (ppListIterator*)&dest_end, (ppListIterator*)&src_begin, (ppListIterator*)&src_end, cmp_name);
 
-// Макрос, используемый для перемещения итератора на один узел вперёд
-// Обертывает функцию ppListIterator_next
-#define ppListIterator_NEXT(iterator_name) \
-ppListIterator_next((ppListIterator*)&iterator_name);
-
-// Макрос, используемый для перемещения итератора на один узел назад
-// Обертывает функцию ppListIterator_prev
-#define ppListIterator_PREV(iterator_name) \
-ppListIterator_prev((ppListIterator*)&iterator_name);
-
-// Макрос, используемый для получение итератора на начало списка
-// Обертывает функцию ppList_begin
-#define ppList_BEGIN(list_name, iterator_name) \
-ppList_begin((ppList*)&list_name, (ppListIterator*)&iterator_name);
-
-// Макрос, используемый для получение итератора на конец списка
-// Обертывает функцию ppList_end
-#define ppList_END(list_name, iterator_name) \
-ppList_end((ppList*)&list_name, (ppListIterator*)&iterator_name);
 
 // Макрос, используемый для очистки списка
 // Обертывает функцию ppList_clear

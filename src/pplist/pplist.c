@@ -424,25 +424,25 @@ _Bool ppListIterator_get_value(ppListIterator* iter) {
 
 
 //------------------------------------------------------------------------------
-// Получение обратного итератора указывающего на первый элемент
+// Получение обратного итератора указывающего на последний элемент (хвост)
 void ppList_rbegin(ppList* l, ppListRIterator* riter) {
-  if(l->head == NULL) {
+  if(l->tail == NULL) {
     printf("Trying to get the beginning of an empty list in ppListRIterator_begin function\n");
     exit(-1);
   }
   riter->list = l;
-  riter->node = l->head;
+  riter->node = l->tail;
 }
 
 //------------------------------------------------------------------------------
-// Получение обратного итератора указывающего на последний элемент
+// Получение обратного итератора указывающего на первый элемент списка (голову)
 void ppList_rend(ppList* l, ppListRIterator* riter) {
-  if(l->tail == NULL) {
+  if(l->head == NULL) {
     printf("Trying to get the end of an empty list in ppListRIterator_end function\n");
     exit(-1);
   }
   riter->list = l;
-  riter->node = l->tail;
+  riter->node = l->head;
 }
 
 //------------------------------------------------------------------------------
@@ -454,20 +454,32 @@ void ppList_current_riterator(ppList* l, ppListRIterator* riter) {
 
 //------------------------------------------------------------------------------
 // Смещение обратного итератора на один элемент назад
-void ppListRIterator_next(ppListRIterator* riter) {
+_Bool ppListRIterator_next(ppListRIterator* riter) {
+  if (riter->node == NULL) {
+    return 0;
+  }
   riter->node = riter->node->prev;
+  return 1;
 }
 
 //------------------------------------------------------------------------------
 // Смещение обратного итератора на один элемент вперёд
-void ppListRIterator_prev(ppListRIterator* riter) {
+_Bool ppListRIterator_prev(ppListRIterator* riter) {
+  if (riter->node == NULL) {
+    return 0;
+  }
   riter->node = riter->node->next;
+  return 1;
 }
 
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации списка значения элемента на который ссылается обратный итератор
-void ppListRIterator_get_value(ppListRIterator* riter) {
+_Bool ppListRIterator_get_value(ppListRIterator* riter) {
+  if (riter->node == NULL) {
+    return 0;
+  }
   memcpy(riter->list->foundation_addr, riter->node->data, riter->list->foundation_size);
+  return 1;
 }
 
 //------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-// test-pp-list-merge-ranges.c - тестирование функции merge-ranges для итераторов по списку
+// test-pplist-merge-ranges.c - тестирование функции merge-ranges для итераторов по списку
 #include <stdio.h>
 #include "pplist.h"
 
@@ -6,17 +6,40 @@
 // Все, что сопровождает формируемую специализацию списка
 //==============================================================================
 
-ppList+<int;>; // Целочисленная специализация списка
-ppListIterator+<int;>; // Целочисленная специализация итератора
+ppList+<int;>;
+ppListIterator+<int;>;
 
 //------------------------------------------------------------------------------
 // Обработчик специализации, обеспечивающий вывод целочисленного элемента
-// Выводится текущий элемент списка с предварительным переводом
-// в область специализации
 void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
 }
 
+//------------------------------------------------------------------------------
+// Вспомогательные функции
+void check_condition(int condition, const char* msg, int* errors) {
+  if (condition) {
+    printf("Correct | %s\n", msg);
+  } else {
+    printf("Incorrect | %s\n", msg);
+    (*errors)++;
+  }
+}
+
+void check_list(ppList* l, ppList* anw, const char* name, int* errors) {
+  if (ppList_is_equal(l, anw, sizeof(int))) {
+    printf("Correct | %s: ", name);
+  } else {
+    printf("Incorrect | %s: ", name);
+    (*errors)++;
+  }
+  ppList_print2(stdout, l);
+}
+
+void print_list(ppList* l, const char* name) {
+  printf("%s: ", name);
+  ppList_print2(stdout, l);
+}
 
 int cmp_int(char* a, char* b) {
   int x, y;
@@ -25,28 +48,8 @@ int cmp_int(char* a, char* b) {
   return (x < y);
 }
 
-void is_correct(ppList* l, ppList* anw) {
-    if (ppList_is_equal(l, anw, sizeof(int))) printf("Correct ");
-    else printf("Incorrect ");
-}
-
-void print_2_lists(ppList* l1, ppList* l2) {
-    printf("l1: "); ppList_print2(stdout, l1);
-    printf("l2: "); ppList_print2(stdout, l2);
-}
-
-void print_test_results(ppList* l1, ppList* l2, ppList* anw1, ppList* anw2) {
-    printf("l1: ");
-    is_correct(l1, anw1);
-    printf(" | "); 
-    ppList_print2(stdout, l1);
-    printf("l2: ");
-    is_correct(l2, anw2);
-    printf(" | "); 
-    ppList_print2(stdout, l2); 
-}
-
 int main(void) {
+  int errors = 0;
   printf("\n-------------------------------------------\n\n");
 
   ppList_VAR(int, l1);
@@ -63,15 +66,10 @@ int main(void) {
   int arr2[] = {1,3,6,9,10,11};
   int val1, val2, val3, val4;
 
-  ppList_FILL_FROM_ARRAY(l1, arr1);
-  ppList_FILL_FROM_ARRAY(l2, arr2);
+  // Тесты для ppList_merge_ranges
+  printf("MERGE_RANGES\n\n");
 
-  print_2_lists((ppList*)&l1, (ppList*)&l2);
-
-  printf("\n-------------------------------------------\n\n");
-
-  // --------------------------------------------------------------
-  // Тест 1: пустой dest  в хвосте, src - весь l2
+  // Тест 1: пустой dest в хвосте, src - весь l2
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
   ppList_FILL_FROM_ARRAY(l2, arr2);
@@ -95,10 +93,10 @@ int main(void) {
   printf("Src range: [%d, NULL)\n", val1);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 2: пустой dest в середине, src - весь l2
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -124,10 +122,10 @@ int main(void) {
   printf("Src range: [%d, NULL)\n", val3);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 3: непустые диапазоны, без головы/хвоста
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -157,10 +155,10 @@ int main(void) {
   printf("Src range: [%d, %d)\n", val3, val4);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 4: пустой dest в голове, src - весь l2
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -185,10 +183,10 @@ int main(void) {
   printf("Src range: [%d, NULL)\n", val3);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 5: dest включает голову, src от середины до конца
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -216,13 +214,12 @@ int main(void) {
   printf("Src range: [%d, NULL)\n", val3);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 6: dest включает хвост, src весь список l2
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
-
   ppList_FILL_FROM_ARRAY(l1, arr1);
   ppList_FILL_FROM_ARRAY(l2, arr2);
 
@@ -246,10 +243,10 @@ int main(void) {
   printf("Src range: [%d, NULL)\n", val2);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 7: оба диапазона пустые (dest пуст, src пуст)
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -274,10 +271,10 @@ int main(void) {
   printf("Src range: [%d, %d)\n", val3, val4);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
-  printf("\n-------------------------------------------\n\n");
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
+  printf("\n");
 
-  // --------------------------------------------------------------
   // Тест 8: src пустой (ничего не делается)
   ppList_CLEAR(l1); ppList_CLEAR(l2); ppList_CLEAR(anw); ppList_CLEAR(anw2);
   ppList_FILL_FROM_ARRAY(l1, arr1);
@@ -301,8 +298,10 @@ int main(void) {
   printf("Src range: [%d, %d)\n", val3, val3);
 
   ppListIterator_MERGE_RANGES(dest_begin, dest_end, src_begin, src_end, cmp_int);
-  print_test_results((ppList*)&l1, (ppList*)&l2, (ppList*)&anw, (ppList*)&anw2);
+  check_list((ppList*)&l1, (ppList*)&anw, "l1", &errors);
+  check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
   printf("\n-------------------------------------------\n\n");
 
-  return 0;
+  printf("Total errors: %d\n", errors);
+  return errors;
 }

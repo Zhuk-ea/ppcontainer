@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-push ${SOURCE_FILES})
+add_test(NAME pplist-push COMMAND test-pplist-push)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-push

@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-riterator ${SOURCE_FILES})
+add_test(NAME pplist-riterator COMMAND test-pplist-riterator)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-riterator

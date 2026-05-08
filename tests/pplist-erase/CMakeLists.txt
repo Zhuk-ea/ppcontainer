@@ -21,6 +21,8 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-erase ${SOURCE_FILES})
+add_test(NAME pplist-erase COMMAND test-pplist-erase)
+
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-erase

@@ -10,7 +10,7 @@ set(SOURCE_FILES
     # headers
 
     #sources
-    test-pplist-mytests.c
+    test-pplist-splice.c
 )
 
 # Для того, чтобы clang понимал файлы с другим расширением (ppc, например)
@@ -20,10 +20,11 @@ set(SOURCE_FILES
 #     LANGUAGE C
 # )
 
-add_executable(test-pplist-mytests ${SOURCE_FILES})
+add_executable(test-pplist-splice ${SOURCE_FILES})
+add_test(NAME pplist-simple-splice COMMAND test-pplist-splice)
 
 # Линковка программы с библиотекой body
-target_link_libraries(test-pplist-mytests
+target_link_libraries(test-pplist-splice
   -Wl,--whole-archive
   pplist
   -Wl,--no-whole-archive

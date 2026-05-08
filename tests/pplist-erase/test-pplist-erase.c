@@ -6,82 +6,111 @@
 // Все, что сопровождает формируемую специализацию списка
 //==============================================================================
 
-ppList+<int;>; // Целочисленная специализация списка
-ppListIterator+<int;>; // Целочисленная специализация списка
+ppList+<int;>;
+ppListIterator+<int;>;
 
 //------------------------------------------------------------------------------
-// Обработчик специализации, обеспечивающий вывод целочисленного элемента
-// Выводится текущий элемент списка с предварительным переводом
-// в область специализации
-void ppList_element_print<ppList.int* l>(FILE* f) {//, int index) {
-  // ppList_index((ppList*)l, index);
-  fprintf(f, "%d\n", l->@);
+// Обработчик вывода
+void ppList_element_print<ppList.int* l>(FILE* f) {
+  fprintf(f, "%d ", l->@);
 }
 
-//==============================================================================
-// Тестовая функция
-//==============================================================================
+//------------------------------------------------------------------------------
+// Вспомогательные функции
+void check_condition(int condition, const char* msg, int* errors) {
+  if (condition) {
+    printf("Correct | %s\n", msg);
+  } else {
+    printf("Incorrect | %s\n", msg);
+      (*errors)++;
+  }
+}
 
+void check_lists(ppList* l, ppList* anw, int* errors) {
+  if (ppList_is_equal(l, anw, sizeof(int))) {
+    printf("Correct | l: ");
+  } else {
+    printf("Incorrect | l: ");
+    (*errors)++;
+  }
+  ppList_print2(stdout, l);
+}
+
+void print_list(ppList* l, const char* label) {
+  printf("%s: ", label);
+  ppList_print2(stdout, l);
+}
 
 //------------------------------------------------------------------------------
 int main(void) {
-
-  ppList_VAR(int, l_int);
+  int errors = 0;
+  ppList_VAR(int, l);
+  ppList_VAR(int, anw);
+  ppListIterator_VAR(int, it);
   int val;
 
-  for (int i = 0; i < 10; ++i) {
-    ppList_PUSH_BACK(l_int, i)
-  }
+  printf("\n-------------------------------------------\n\n");
+  // Тесты для ppListIterator_erase
+  printf("ERASE\n\n");
 
-  ppListIterator_VAR(int, iter)
-  ppList_begin((ppList*)&l_int, (ppListIterator*)&iter);
+  // 1. Удаление первого элемента (головы)
+  printf("Test 1: Erase head element\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr1[] = {10,20,30};
+  ppList_FILL_FROM_ARRAY(l, arr1);
+  int expected1[] = {20,30};
+  ppList_FILL_FROM_ARRAY(anw, expected1);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_erase((ppListIterator*)&it);
+  check_lists((ppList*)&l, (ppList*)&anw, &errors);
+  ppListIterator_GET_VAL(val, it);
+  check_condition(val == 20, "iterator points to 20", &errors);
+  printf("\n");
 
-  printf("l_int:\n");
-  ppList_print(stdout, (ppList*)&l_int);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter = l_int.begin()\n");
-  printf("iter_val: %i\n", val);
+  // 2. Удаление последнего элемента (хвоста)
+  printf("Test 2: Erase tail element\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr2[] = {10,20,30};
+  ppList_FILL_FROM_ARRAY(l, arr2);
+  int expected2[] = {10,20};
+  ppList_FILL_FROM_ARRAY(anw, expected2);
+  print_list((ppList*)&l, "l");
+  ppList_END(l, it);
+  ppListIterator_erase((ppListIterator*)&it);
+  check_lists((ppList*)&l, (ppList*)&anw, &errors);
+  ppListIterator_GET_VAL(val, it);
+  check_condition(val == 20, "iterator points to 20", &errors);
+  printf("\n");
 
-  printf("\n -------------------------------------------\n\n");
+  // 3. Удаление элемента в середине
+  printf("Test 3: Erase middle element\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr3[] = {10,20,30,40};
+  ppList_FILL_FROM_ARRAY(l, arr3);
+  int expected3[] = {10,30,40};
+  ppList_FILL_FROM_ARRAY(anw, expected3);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_NEXT(it);
+  ppListIterator_erase((ppListIterator*)&it);
+  check_lists((ppList*)&l, (ppList*)&anw, &errors);
+  ppListIterator_GET_VAL(val, it);
+  check_condition(val == 30, "iterator points to 30", &errors);
+  printf("\n");
 
-  printf("iter.erase()\n");
-  ppListIterator_erase((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter_val: %i\n", val);
-  printf("l_int:\n");
-  ppList_print(stdout, (ppList*)&l_int);
+  // 4. Удаление единственного элемента
+  printf("Test 4: Erase single element\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  ppList_PUSH_BACK(l, 42);
+  ppList_CLEAR(anw);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_erase((ppListIterator*)&it);
+  check_lists((ppList*)&l, (ppList*)&anw, &errors);
+  check_condition(it.node == NULL, "iterator is NULL", &errors);
+  printf("\n-------------------------------------------\n\n");
 
-  printf("\n -------------------------------------------\n\n");
-
-
-  ppList_end((ppList*)&l_int, (ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter = l_int.end()\n");
-  printf("iter_val: %i\n", val);
-
-  printf("iter.erase()\n");
-  ppListIterator_erase((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter_val: %i\n", val);
-  printf("l_int:\n");
-  ppList_print(stdout, (ppList*)&l_int);
-
-  printf("\n -------------------------------------------\n\n");
-
-  ppListIterator_prev((ppListIterator*)&iter); ppListIterator_prev((ppListIterator*)&iter); ppListIterator_prev((ppListIterator*)&iter);
-
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter.prev(); iter.prev(); iter.prev();\n");
-  printf("iter_val: %i\n", val);
-
-  printf("iter.erase()\n");
-  ppListIterator_erase((ppListIterator*)&iter);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter_val: %i\n", val);
-  printf("l_int:\n");
-  ppList_print(stdout, (ppList*)&l_int);
-
-
-  return 0;
-} // end main
-
+  printf("Total errors: %d\n", errors);
+  return errors;
+}

@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-swap-move-copy ${SOURCE_FILES})
+add_test(NAME pplist-simple-swap-move-copy COMMAND test-pplist-swap-move-copy)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-swap-move-copy

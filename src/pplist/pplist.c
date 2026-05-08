@@ -99,6 +99,7 @@ void ppList_push_front(ppList* l) {
 //------------------------------------------------------------------------------
 // Вставка нового узла после текущего
 void ppList_push_after_current(ppList* l) {
+  // Проверка существования текущего узла
   if(l->current == NULL) {
     printf("Incorrect current value in ppList_push_after_current function\n");
     exit(-1);
@@ -127,6 +128,7 @@ void ppList_push_after_current(ppList* l) {
 //------------------------------------------------------------------------------
 // Вставка нового узла перед текущим
 void ppList_push_before_current(ppList* l) {
+  // Проверка существования текущего узла
   if(l->current == NULL) {
     printf("Incorrect current value in ppList_push_before_current function\n");
     exit(-1);
@@ -143,7 +145,7 @@ void ppList_push_before_current(ppList* l) {
   node->prev = l->current->prev;
   node->next = l->current;
   l->current->prev = node;
-  if(l->head == l->current) { // Для последнего элемента нужно перемещение
+  if(l->head == l->current) { // Для первого элемента нужно перемещение
     l->head = node;
   } else { // связь предыдущего узла с создаваемым
     node->prev->next = node;
@@ -155,9 +157,8 @@ void ppList_push_before_current(ppList* l) {
 //------------------------------------------------------------------------------
 // Смещение указателя текущего элемента на следующий элемент списка
 _Bool ppList_next_current(ppList* l) {
-  // Если осуществляется вызов для пустого указателя, то ошибка
-  // Поэтому перед вызовом стоит делать проверку на последний элемент.
-  if(l->current == l->tail) { // Шаг приводит к ошибки и не делается
+  // Если текущий элемент – последний, переход невозможен
+  if(l->current == l->tail) {
     return 0;
   }
   l->current = l->current->next;
@@ -167,9 +168,8 @@ _Bool ppList_next_current(ppList* l) {
 //------------------------------------------------------------------------------
 // Смещение указателя текущего элемента на предыдущий элемент списка
 _Bool ppList_prev_current(ppList* l) {
-  // Если осуществляется вызов для пустого указателя, то ошибка
-  // Поэтому перед вызовом стоит делать проверку на первый элемент.
-  if(l->current == l->head) { // Шаг приводит к ошибки и не делается
+  // Если текущий элемент – первый, переход невозможен
+  if(l->current == l->head) {
     return 0;
   }
   l->current = l->current->prev;
@@ -203,18 +203,21 @@ _Bool ppList_is_tail(ppList* l) {
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации значения первого элемента списка
 void ppList_front(ppList* l) {
+  // Копирование данных головного узла в foundation_addr
   memcpy(l->foundation_addr, l->head->data, l->foundation_size);
 }
 
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации значения последнего элемента списка
 void ppList_back(ppList* l) {
+  // Копирование данных хвостового узла в foundation_addr
   memcpy(l->foundation_addr, l->tail->data, l->foundation_size);
 }
 
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации значения текущего элемента списка
 void ppList_current(ppList* l) {
+  // Копирование данных текущего узла в foundation_addr
   memcpy(l->foundation_addr, l->current->data, l->foundation_size);
 }
 
@@ -224,6 +227,7 @@ void ppList_pop_back(ppList* l) {
   if(l->tail == NULL) {
     return;
   }
+  // Если в списке один элемент, просто очищаем его
   if(l->size == 1) {
     free(l->tail);
     l->head = l->current = l->tail = NULL;
@@ -231,9 +235,11 @@ void ppList_pop_back(ppList* l) {
     return;
   }
   ppListNode *new_tail = l->tail->prev;
+  // Если current указывает на удаляемый хвост, сдвигаем его на новый хвост
   if (l->current == l->tail) {
     l->current = new_tail;
   }
+  // Удаляем старый хвост и обновляем связи
   free(l->tail);
   l->tail = new_tail;
   l->tail->next = NULL;
@@ -246,6 +252,7 @@ void ppList_pop_front(ppList* l) {
   if(l->head == NULL) {
     return;
   }
+  // Если в списке один элемент, просто очищаем его
   if(l->size == 1) {
     free(l->head);
     l->head = l->current = l->tail = NULL;
@@ -253,9 +260,11 @@ void ppList_pop_front(ppList* l) {
     return;
   }
   ppListNode *new_head = l->head->next;
+  // Если current указывает на удаляемую голову, сдвигаем его на новую голову
   if (l->current == l->head) {
     l->current = new_head;
   }
+  // Удаляем старую голову и обновляем связи
   free(l->head);
   l->head = new_head;
   l->head->prev = NULL;
@@ -265,14 +274,16 @@ void ppList_pop_front(ppList* l) {
 //------------------------------------------------------------------------------
 // Удаление текущего элемента списка
 void ppList_pop_current(ppList* l) {
-  if(l->current == l->head) {
+  if(l->current == l->head) {        // Если current указывает на голову – вызываем pop_front
     ppList_pop_front(l);
-  } else if(l->current == l->tail) {
+  } else if(l->current == l->tail) { // Если current указывает на хвост – вызываем pop_back
     ppList_pop_back(l);
-  } else { // где-то в середине
+  } else {                           // Иначе удаляем элемент из середины списка
+    // Переподвязываем соседей
     l->current->prev->next = l->current->next;
     l->current->next->prev = l->current->prev;
     free(l->current);
+    // current устанавливается на голову
     l->current = l->head;
     --(l->size);
   }
@@ -291,7 +302,6 @@ void ppList_clear(ppList* l) {
 void ppList_swap(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-  // Или обобщение или специализации не совпадают
     printf("Incompatible specializations in swap function\n");
     exit(-1);
   }
@@ -307,19 +317,18 @@ void ppList_swap(ppList* dest, ppList* src) {
 void ppList_move(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    // Или обобщение или специализации не совпадают
     printf("Incompatible specializations in move function\n");
     exit(-1);
   }
-  // Или осуществление пересылки
+
   // Очистка списка в который идёт перессылка
   ppList_clear(dest);
 
+  // Перенос всех полей из src в dest, обнуление src
   dest->size = src->size; src->size = 0;
   dest->current = src->current; src->current = NULL;
   dest->head = src->head; src->head = NULL;
   dest->tail = src->tail; src->tail = NULL;
-
 }
 
 //------------------------------------------------------------------------------
@@ -327,16 +336,15 @@ void ppList_move(ppList* dest, ppList* src) {
 void ppList_copy(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    // Или обобщение или специализации не совпадают
     printf("Incompatible specializations in copy function\n");
     exit(-1);
   }
   // Очистка списка в который идёт копирование
   ppList_clear(dest);
+
   // Осуществление копирования
   struct ppListNode * now = src->head;
   while(now != NULL) {
-    
     // Создание элемента списка под данные размером в основу специализации
     struct ppListNode* node = malloc(sizeof(struct ppListNode) + dest->foundation_size);
     if(node == NULL) {
@@ -349,7 +357,6 @@ void ppList_copy(ppList* dest, ppList* src) {
     if(dest->head==NULL) { // Занесение в пустой список
       dest->head = node;
       dest->tail = node;
-      // Формирование пустых концов
       node->next = node->prev = NULL;
     } else { // В противном случае формируемый элемент заносится в хвост списка
       node->next = NULL;
@@ -366,10 +373,12 @@ void ppList_copy(ppList* dest, ppList* src) {
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на первый элемент списка
 void ppList_begin(ppList* l, ppListIterator* iter) {
+  // Проверка, что список не пуст
   if(l->head == NULL) {
     printf("Trying to get the beginning of an empty list in ppListIterator_begin function\n");
     exit(-1);
   }
+  // Установка итератора на голову списка
   iter->list = l;
   iter->node = l->head;
 }
@@ -377,10 +386,12 @@ void ppList_begin(ppList* l, ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Получение итератора указывающего на последний элемент списка
 void ppList_end(ppList* l, ppListIterator* iter) {
+  // Проверка, что список не пуст
   if(l->tail == NULL) {
     printf("Trying to get the end of an empty list in ppListIterator_end function\n");
     exit(-1);
   }
+  // Установка итератора на хвост списка
   iter->list = l;
   iter->node = l->tail;
 }
@@ -395,6 +406,7 @@ void ppList_current_iterator(ppList* l, ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент вперёд
 _Bool ppListIterator_next(ppListIterator* iter) {
+  // Если итератор указывает на NULL, сдвиг невозможен
   if(iter->node == NULL) {
     return 0;
   }
@@ -405,6 +417,7 @@ _Bool ppListIterator_next(ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Смещение итератора на один элемент назад
 _Bool ppListIterator_prev(ppListIterator* iter) {
+  // Если итератор указывает на NULL, сдвиг невозможен
   if(iter->node == NULL) {
     return 0;
   }
@@ -415,17 +428,19 @@ _Bool ppListIterator_prev(ppListIterator* iter) {
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации списка значения элемента на который ссылается итератор
 _Bool ppListIterator_get_value(ppListIterator* iter) {
+  // Если итератор не указывает на реальный узел, возвращаем ошибку
   if (iter->node == NULL) {
     return 0;
   }
+  // Копирование данных узла в foundation_addr
   memcpy(iter->list->foundation_addr, iter->node->data, iter->list->foundation_size);
   return 1;
 }
 
-
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на последний элемент (хвост)
 void ppList_rbegin(ppList* l, ppListRIterator* riter) {
+  // Проверка, что список не пуст
   if(l->tail == NULL) {
     printf("Trying to get the beginning of an empty list in ppListRIterator_begin function\n");
     exit(-1);
@@ -437,6 +452,7 @@ void ppList_rbegin(ppList* l, ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Получение обратного итератора указывающего на первый элемент списка (голову)
 void ppList_rend(ppList* l, ppListRIterator* riter) {
+  // Проверка, что список не пуст
   if(l->head == NULL) {
     printf("Trying to get the end of an empty list in ppListRIterator_end function\n");
     exit(-1);
@@ -455,6 +471,7 @@ void ppList_current_riterator(ppList* l, ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Смещение обратного итератора на один элемент назад
 _Bool ppListRIterator_next(ppListRIterator* riter) {
+  // Если итератор пуст, движение невозможно
   if (riter->node == NULL) {
     return 0;
   }
@@ -465,6 +482,7 @@ _Bool ppListRIterator_next(ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Смещение обратного итератора на один элемент вперёд
 _Bool ppListRIterator_prev(ppListRIterator* riter) {
+  // Если итератор пуст, движение невозможно
   if (riter->node == NULL) {
     return 0;
   }
@@ -475,9 +493,11 @@ _Bool ppListRIterator_prev(ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Фиксация в основе специализации списка значения элемента на который ссылается обратный итератор
 _Bool ppListRIterator_get_value(ppListRIterator* riter) {
+  // Если итератор указывает на несуществующий узел, возвращаем 0
   if (riter->node == NULL) {
     return 0;
   }
+  // Копирование данных узла в foundation_addr
   memcpy(riter->list->foundation_addr, riter->node->data, riter->list->foundation_size);
   return 1;
 }
@@ -485,78 +505,82 @@ _Bool ppListRIterator_get_value(ppListRIterator* riter) {
 //------------------------------------------------------------------------------
 // Вставка нового узла(со значением, записанным в основу специализации) после узла, на который указывает итератор
 void ppListIterator_insert_after(ppListIterator* iter) {
+  // Проверка существования узла
   if(iter->node == NULL) {
     printf("Incorrect current value in ppListIterator_insert_after function\n");
     exit(-1);
   }
-  // Создание элемента списка под данные размером в основу специализации
+  // Создание нового узла
   ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
   ppList * l = iter->list;
   if(node == NULL) {
     printf("Incorrect node creation in ppListIterator_insert_after function\n");
     exit(-1);
   }
-  // Перенос значения из специализации в узел
+  // Копирование данных из специализации
   memcpy(node->data, iter->list->foundation_addr, iter->list->foundation_size);
-  // Прикрепление созданного узла после того, на который указывает итератор
+  // Вставка узла после iter->node
   node->next = iter->node->next;
   node->prev = iter->node;
   iter->node->next = node;
-  if(l->tail == iter->node) { // Для последнего элемента нужно перемещение
+  if(l->tail == iter->node) { // Если вставляем после хвоста, обновляем tail
     l->tail = node;
-  } else { // связь следующего узла с создаваемым
+  } else { // Иначе корректируем обратную связь следующего узла
     node->next->prev = node;
   }
-  ++(l->size);          // на один элемент стало больше
+  ++(l->size);
 }
 
 //------------------------------------------------------------------------------
 // Вставка нового узла(со значением, записанным в основу специализации) перед узлом, на который указывает итератор
 void ppListIterator_insert_before(ppListIterator* iter) {
+  // Проверка существования узла
   if(iter->node == NULL) {
     printf("Incorrect node value in ppListIterator_insert_before function\n");
     exit(-1);
   }
-  // Создание элемента списка под данные размером в основу специализации
+  // Создание нового узла
   ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
   ppList * l = iter->list;
   if(node == NULL) {
     printf("Incorrect node creation in ppListIterator_insert_before function\n");
     exit(-1);
   }
-  // Перенос значения из специализации в узел
+  // Копирование данных из специализации
   memcpy(node->data, iter->list->foundation_addr, iter->list->foundation_size);
-  // Прикрепление созданного узла перед тем, на который указывает итератор
+  // Вставка узла перед iter->node
   node->prev = iter->node->prev;
   node->next = iter->node;
   iter->node->prev = node;
-  if(l->head == iter->node) { // Для первого элемента нужно перемещение
+  if(l->head == iter->node) { // Если вставляем перед головой, обновляем head
     l->head = node;
-  } else { // связь предыдущего узла с создаваемым
+  } else { // Иначе корректируем прямую связь предыдущего узла
     node->prev->next = node;
   }
-  ++(l->size);          // на один элемент стало больше
+  ++(l->size);
 }
 
 //------------------------------------------------------------------------------
 // Вставка нового значения(записаного в основу специализации) в узел, на который указывает итератор
-void ppListIterator_replace(ppListIterator* iter) {
+_Bool ppListIterator_replace(ppListIterator* iter) {
+  // Если итератор не валиден, возвращаем 0
   if(iter->node == NULL) {
-    printf("Incorrect node value in ppListIterator_replace function\n");
-    exit(-1);
+    return 0;
   }
   memcpy(iter->node->data, iter->list->foundation_addr, iter->list->foundation_size);
+  return 1;
 }
 
-
 //------------------------------------------------------------------------------
-// Удаление из списка элемента на который ссылается обратный итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
+// Удаление из списка элемента на который ссылается итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
 void ppListIterator_erase(ppListIterator* iter) {
   ppListNode * t;
+  // Проверка валидности итератора
   if(iter->node == NULL) {
     printf("Incorrect node value in ppListIterator_erase function\n");
     exit(-1);
   }
+  // Переподвязываем связи, обходя удаляемый узел
   if (iter->node->prev) {
     iter->node->prev->next = iter->node->next;
   } else {
@@ -568,11 +592,13 @@ void ppListIterator_erase(ppListIterator* iter) {
   } else {
     iter->list->tail = iter->list->tail->prev;
     t = iter->node->prev;
-    t->next = NULL;
+    if (t) t->next = NULL;
   }
+  // Если удаляемый узел был текущим для списка, обновляем current
   if (iter->node == iter->list->current) {
     iter->list->current = t;
   }
+  // Освобождаем память и уменьшаем размер
   free(iter->node);
   --iter->list->size;
   iter->node = t;
@@ -582,9 +608,11 @@ void ppListIterator_erase(ppListIterator* iter) {
 // Удаление из списка всех элементов, равных значению, занесённому в специализацию
 void ppList_remove(ppList* l) {
   ppListNode * node = l->head;
+  // Проход по всем узлам списка
   while (node) {
-    if (!memcmp(node->data, l->foundation_addr, l->foundation_size)) {
+    if (!memcmp(node->data, l->foundation_addr, l->foundation_size)) { // Найден элемент, подлежащий удалению
       ppListNode *t = node;
+      // Переподвязываем соседей
       if(node->prev) {
         node->prev->next = node->next;
       } else {
@@ -597,19 +625,20 @@ void ppList_remove(ppList* l) {
       }
       node = node->next;
       free(t);
+      --l->size;
     } else {
       node = node->next;
     }
   }
 }
-
 
 //------------------------------------------------------------------------------
 // Удаление из списка всех элементов, соответствующих предикату
 void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
   ppListNode * node = l->head;
+  // Проход по всем узлам
   while (node) {
-    if (pred(node->data)) {
+    if (pred(node->data)) {// Найден узел удовлетворяющий предикату
       ppListNode *t = node;
       if(node->prev) {
         node->prev->next = node->next;
@@ -623,19 +652,20 @@ void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
       }
       node = node->next;
       free(t);
+      --l->size;
     } else {
       node = node->next;
     }
   }
 }
 
-
 //------------------------------------------------------------------------------
 // Объединение двух отсортированных однотипных списков (если один или оба списка не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
 // Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
 void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
+  // Если списки одинаковы или src пуст – ничего не делаем
   if (dest == src || src->size == 0) return;
-
+  // Если dest пуст, просто перемещаем все узлы из src
   if (dest->size == 0) {
     dest->head = src->head;
     dest->tail = src->tail;
@@ -645,32 +675,31 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
     src->size = 0;
     return;
   }
-
+  // Основной цикл слияния с использованием двойного указателя
   ppListNode **dest_ptr = &dest->head;
   ppListNode *now_src = src->head;
-
   while (*dest_ptr && now_src) {
     if (cmp((*dest_ptr)->data, now_src->data)) {
+      // Текущий элемент dest меньше – идём дальше
       dest_ptr = &(*dest_ptr)->next;
     } else {
+      // Вставляем now_src перед *dest_ptr
       ppListNode *temp = now_src->next;
-
       now_src->prev = (*dest_ptr)->prev;
       now_src->next = *dest_ptr;
       (*dest_ptr)->prev = now_src;
       *dest_ptr = now_src;
       dest_ptr = &now_src->next;
-
       now_src = temp;
     }
   }
-
+  // Если остались элементы src, присоединяем их в конец dest
   if (now_src) {
     *dest_ptr = now_src;
     now_src->prev = dest->tail;
     dest->tail = src->tail;
   }
-
+  // Обновляем размеры и очищаем src
   dest->size += src->size;
   src->head = src->tail = src->current = NULL;
   src->size = 0;
@@ -680,9 +709,11 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
 // Сравнение двух однотипных списков на равенство(Равны ли все элементы)
 // Требует указание размера типа списков в байтах
 _Bool ppList_is_equal(ppList* l1, ppList* l2, size_t size) {
+  // Размеры должны совпадать
   if (l1->size != l2->size) return 0;
   ppListNode * now1 = l1->head;
   ppListNode * now2 = l2->head;
+  // Сравнение поэлементно
   while (now1) {
     if (memcmp(now1->data, now2->data, size)) return 0;
     now1 = now1->next;
@@ -702,37 +733,33 @@ typedef struct {
 // Вырезает диапазон [src_begin, src_end) из списка (в качестве next и prev берутся узлы, между которыми диапазон находился в исходном списке)
 static ExtractedRange extract_range(ppListIterator* src_begin, ppListIterator* src_end) {
   ExtractedRange range = {0};
+  // Если диапазон пуст, возвращаем пустую структуру
   if (src_begin->node == src_end->node) return range;
-
   ppList *src = src_begin->list;
   ppListNode *first = src_begin->node;
   ppListNode *last  = src_end->node ? src_end->node->prev : src->tail;
   ppListNode *prev = first->prev;
   ppListNode *next = src_end->node;
-
-  // подсчёт размера
+  // Подсчёт размера диапазона
   int size = 0;
   for (ppListNode *t = first; t != next; t = t->next) {
     ++size;
   }
-
+  // Отсоединение диапазона с использованием двойных указателей
   ppListNode **prev_link = prev ? &prev->next : &src->head;
   ppListNode **next_link = next ? &next->prev : &src->tail;
-
-  // отсоединение диапазона
   *prev_link = next;
   *next_link = prev;
+  // Обнуляем связи внутри диапазона
   first->prev = NULL;
   last->next  = NULL;
-
+  // Заполнение временного списка
   range.list.head = first;
   range.list.tail = last;
   range.list.size = size;
   range.list.current = NULL;
-
   range.prev = prev;
   range.next = next;
-
   src->size -= size;
   return range;
 }
@@ -741,23 +768,26 @@ static ExtractedRange extract_range(ppListIterator* src_begin, ppListIterator* s
 // Вставляет диапазон range между узлами prev и next в список target
 static void insert_range(ppList *target, ExtractedRange *range, ppListNode *prev, ppListNode *next) {
   if (range->list.head == NULL) return;
+  
+  // Двойные указатели на места вставки (голова или prev->next, хвост или next->prev)
   ppListNode **link_head = prev ? &prev->next : &target->head;
   ppListNode **link_tail = next ? &next->prev : &target->tail;
-
+  // Привязка головы диапазона
   *link_head = range->list.head;
   range->list.head->prev = prev;
+  // Привязка хвоста диапазона
   *link_tail = range->list.tail;
   range->list.tail->next = next;
-
+  // Обновление размера целевого списка
   target->size += range->list.size;
 }
-
 
 //------------------------------------------------------------------------------
 // Объединение списка и диапазона из другого списка (списки однотипны)
 // Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
 // Вставляет дианазон после указанной позиции (если pos->node == NULL, вставляет диапазон перед головой списка)
 void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  // Проверки корректности итераторов
   if(src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_after function\n");
     exit(-1);
@@ -767,15 +797,16 @@ void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListI
     exit(-1);
   }
   if (src_begin->node == src_end->node) return;
+  // Вырезаем src-диапазон
   ExtractedRange range = extract_range(src_begin, src_end);
   if (range.list.size == 0) return;
-
+  // Определяем позицию вставки
   ppList *target = pos->list;
   ppListNode *prev = pos->node;
   ppListNode *next = prev ? prev->next : target->head;
-
+  // Вставляем диапазон
   insert_range(target, &range, prev, next);
-
+  // Обновляем current исходного списка src
   ppList *src = src_begin->list;
   src->current = range.next ? range.next : range.prev;
 }
@@ -784,6 +815,7 @@ void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListI
 // Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
 // Вставляет дианазон перед указанной позиции (если pos->node == NULL, вставляет диапазон после хвоста списка)
 void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  // Проверки корректности
   if(src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_before function\n");
     exit(-1);
@@ -792,16 +824,17 @@ void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppList
     printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_before function\n");
     exit(-1);
   }
-  if (src_begin->node == src_end->node) return; // пустой диапазон
+  if (src_begin->node == src_end->node) return;
+  // Вырезаем src-диапазон
   ExtractedRange range = extract_range(src_begin, src_end);
   if (range.list.size == 0) return;
-
+  // Определяем позицию вставки
   ppList *target = pos->list;
   ppListNode *prev = pos->node ? pos->node->prev : target->tail;
   ppListNode *next = pos->node;
-
+  // Вставляем
   insert_range(target, &range, prev, next);
-
+  // Обновляем current исходного списка
   ppList *src = src_begin->list;
   src->current = range.next ? range.next : range.prev;
 }
@@ -812,27 +845,25 @@ void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppList
 // Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
 // Переставляет current для списка из которого взят второй интервал на первый элемент после диапазона(если он есть, если нет, то на последний элемент перед диапазоном)
 void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
+  // Проверки
   if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
     exit(-1);
   }
   if (src_begin->node == src_end->node) return;
-
-  // если пустой dest просто вставляем src перед dest_begin
+  // Если dest-диапазон пуст, просто вставляем src перед dest_begin
   if (dest_begin->node == dest_end->node) {
     ppList_splice_before(dest_begin, src_begin, src_end);
     return;
   }
-
-  // вырезание диапазонов
+  // Вырезаем оба диапазона
   ExtractedRange dest_range = extract_range(dest_begin, dest_end);
   ExtractedRange src_range  = extract_range(src_begin, src_end);
-
+  // Сливаем временные списки
   ppList_merge(&dest_range.list, &src_range.list, cmp);
-
-  // вставка результата merge в dest
+  // Вставляем результат обратно в dest на место dest-диапазона
   insert_range(dest_begin->list, &dest_range, dest_range.prev, dest_range.next);
-
+  // Обновляем current исходного src-списка
   src_begin->list->current = src_range.next ? src_range.next : src_range.prev;
 }
 
@@ -841,25 +872,24 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
 // Чтобы удалить все дубликаты, нужно сначала отсортировать список
 // Требует указание размера элементов хранимых в списках
 void ppList_unique(ppList* l, size_t size) {
+  // Проверка корректности списка
   if(!l) {
     printf("Incorrect list in ppList_unique function\n");
     exit(-1);
   }
   if (l == NULL || l->head == NULL) return;
-
   ppListNode *now = l->head;
-
+  // Обход списка и удаление последовательных дубликатов
   while (now != NULL && now->next != NULL) {
     if (memcmp(now->data, now->next->data, size) == 0) {
-
       ppListNode *duplicate = now->next;
+      // Переподвязываем связи, пропуская duplicate
       now->next = duplicate->next;
       if (duplicate->next != NULL) {
         duplicate->next->prev = now;
       } else {
         l->tail = now;
       }
-
       free(duplicate);
       l->size--;
     } else {
@@ -877,6 +907,7 @@ _Bool ppList_empty(ppList* list) {
     printf("Incorrect list in ppList_empty function\n");
     exit(-1);
   }
+  // Если размер не нулевой, должны быть head и tail
   if (list->size != 0) {
     if (list->head == NULL || list->tail== NULL) {
       printf("Incorrect head or tail in non-empty list in ppList_empty function\n");
@@ -884,6 +915,7 @@ _Bool ppList_empty(ppList* list) {
     }
     return 0;
   }
+  // Если размер нулевой, head и tail должны быть NULL
   if (list->size == 0) {
     if (list->head != NULL || list->tail != NULL) {
       printf("Incorrect head or tail in empty list in ppList_empty function\n");
@@ -893,7 +925,6 @@ _Bool ppList_empty(ppList* list) {
   return 1;
 }
 
-
 //------------------------------------------------------------------------------
 // Переворачивание списка
 void ppList_reverse(ppList* l) {
@@ -902,17 +933,16 @@ void ppList_reverse(ppList* l) {
     exit(-1);
   }
   if (ppList_empty(l)) return;
-
   ppListNode *current = l->head;
   ppListNode *temp = NULL;
-
+  // Проход по списку, обмен next и prev у каждого узла
   while (current != NULL) {
-      temp = current->next;
-      current->next = current->prev;
-      current->prev = temp;
-      current = temp;
+    temp = current->next;
+    current->next = current->prev;
+    current->prev = temp;
+    current = temp;
   }
-
+  // Меняем местами голову и хвост
   temp = l->head;
   l->head = l->tail;
   l->tail = temp;

@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-reverse ${SOURCE_FILES})
+add_test(NAME pplist-reverse COMMAND test-pplist-reverse)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-reverse

@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-simple-head-tail-current-functions ${SOURCE_FILES})
+add_test(NAME pplist-simple-simple-head-tail-current-functions COMMAND test-pplist-simple-head-tail-current-functions)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-simple-head-tail-current-functions

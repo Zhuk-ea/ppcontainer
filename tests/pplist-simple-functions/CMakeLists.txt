@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-simple-functions ${SOURCE_FILES})
+add_test(NAME pplist-simple-functions COMMAND test-pplist-simple-functions)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-simple-functions

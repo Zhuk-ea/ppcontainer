@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-replace ${SOURCE_FILES})
+add_test(NAME pplist-replace COMMAND test-pplist-replace)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-replace

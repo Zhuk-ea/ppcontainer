@@ -21,6 +21,13 @@ list_name.head = NULL;                             \
 list_name.tail = NULL;                             \
 list_name.current = NULL;
 
+
+// Макрос для установки значения в специализацию
+#define SET_FOUNDATION(list, value) \
+(list).@ = (value); memcpy((list).foundation_addr, &(list).@, (list).foundation_size);
+
+
+
 //------------------------------------------------------------------------------
 // Макрос, используемый для занесения значения в хвост списка.
 // Обертывает функцию ppList_push_back и предварительное присваивание

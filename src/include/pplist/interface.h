@@ -121,7 +121,7 @@ void ppListIterator_insert_after(ppListIterator* iter);
 void ppListIterator_insert_before(ppListIterator* iter);
 
 // Установка нового значения в узле, на который указывает итератор
-void ppListIterator_replace(ppListIterator* iter);
+_Bool ppListIterator_replace(ppListIterator* iter);
 
 // Удаление из списка элемента на который ссылается итератор, итератор начинает указывать на следующий элемент(если он есть), или предыдущий(если элемент был последним)
 void ppListIterator_erase(ppListIterator* iter);

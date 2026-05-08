@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-remove ${SOURCE_FILES})
+add_test(NAME pplist-remove COMMAND test-pplist-remove)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-remove

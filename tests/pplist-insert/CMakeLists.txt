@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-insert ${SOURCE_FILES})
+add_test(NAME pplist-insert COMMAND test-pplist-insert)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-insert

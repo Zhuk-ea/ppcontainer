@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-merge ${SOURCE_FILES})
+add_test(NAME pplist-merge COMMAND test-pplist-merge)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-merge

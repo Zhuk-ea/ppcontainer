@@ -1,4 +1,4 @@
-// test-pp-list-replace.c - тестирование функции replace итераторов обобщенного списка ppList
+// test-pplist-replace.c - тестирование функции replace итераторов обобщенного списка ppList
 #include <stdio.h>
 #include "pplist.h"
 
@@ -6,57 +6,120 @@
 // Все, что сопровождает формируемую специализацию списка
 //==============================================================================
 
-ppList+<int;>; // Целочисленная специализация списка
-ppListIterator+<int;>; // Целочисленная специализация итератора
-ppListRIterator+<int;>; // Целочисленная специализация обратного итератора
+ppList+<int;>;
+ppListIterator+<int;>;
 
 //------------------------------------------------------------------------------
-// Обработчик специализации, обеспечивающий вывод целочисленного элемента
-// Выводится текущий элемент списка с предварительным переводом
-// в область специализации
+// Обработчик вывода
 void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
 }
 
-//==============================================================================
-// Тестовая функция
-//==============================================================================
+//------------------------------------------------------------------------------
+// Вспомогательные функции
+void check_condition(int condition, const char* msg, int* errors) {
+  if (condition) {
+    printf("Correct | %s\n", msg);
+  } else {
+    printf("Incorrect | %s\n", msg);
+    (*errors)++;
+  }
+}
 
+void check_list(ppList* l, ppList* anw, const char* name, int* errors) {
+  if (ppList_is_equal(l, anw, sizeof(int))) {
+    printf("Correct | %s: ", name);
+  } else {
+    printf("Incorrect | %s: ", name);
+    (*errors)++;
+  }
+  ppList_print2(stdout, l);
+}
+
+void print_list(ppList* l, const char* label) {
+  printf("%s: ", label);
+  ppList_print2(stdout, l);
+}
 
 //------------------------------------------------------------------------------
 int main(void) {
+  int errors = 0;
+  printf("\n-------------------------------------------\n\n");
 
-  ppList_VAR(int, l_int);
+  ppList_VAR(int, l);
+  ppList_VAR(int, anw);
+  ppListIterator_VAR(int, it);
+  int res;
 
-  printf("\n -------------------------------------------\n\n");
-  //Вывод параметров настройки l_int
-  printf("l_int.(foundation_size = %u, foundation_addr = %p, size = %u)\n",
-        l_int.foundation_size, l_int.foundation_addr, l_int.size);
+  // Тесты для ppListIterator_replace
+  printf("REPLACE\n\n");
 
-  for (int i = 0; i > -10; --i) {
-    ppList_PUSH_BACK(l_int, i)
-  }
+  // 1. Замена первого элемента (головы)
+  printf("Test 1: Replace head element (10 -> 99)\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr1[] = {10,20,30};
+  ppList_FILL_FROM_ARRAY(l, arr1);
+  int expected1[] = {99,20,30};
+  ppList_FILL_FROM_ARRAY(anw, expected1);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_REPLACE(it, 99);
+  check_list((ppList*)&l, (ppList*)&anw, "l", &errors);
+  printf("\n");
 
-  printf("l_int: ");
-  ppList_print2(stdout, (ppList*)&l_int);
-  printf("\n -------------------------------------------\n\n");
+  // 2. Замена хвоста
+  printf("Test 2: Replace tail element (30 -> 77)\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr2[] = {10,20,30};
+  ppList_FILL_FROM_ARRAY(l, arr2);
+  int expected2[] = {10,20,77};
+  ppList_FILL_FROM_ARRAY(anw, expected2);
+  print_list((ppList*)&l, "l");
+  ppList_END(l, it);
+  ppListIterator_REPLACE(it, 77);
+  check_list((ppList*)&l, (ppList*)&anw, "l", &errors);
+  printf("\n");
 
-  ppListIterator_VAR(int, iter);
-  ppList_begin((ppList*)&l_int, (ppListIterator*)&iter);
-  int val = 0; 
-  printf("iter = l_int.begin()\n");
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter_val: %i\n", val);
-  printf("iter.replace(10)\n");
-  ppListIterator_REPLACE(iter, 10);
-  ppListIterator_GET_VAL(val, iter)
-  printf("iter_val: %i\n", val);
-  printf("l_int: ");
-  ppList_print2(stdout, (ppList*)&l_int);
+  // 3. Замена элемента в середине
+  printf("Test 3: Replace middle element (20 -> 55)\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr3[] = {10,20,30,40};
+  ppList_FILL_FROM_ARRAY(l, arr3);
+  int expected3[] = {10,55,30,40};
+  ppList_FILL_FROM_ARRAY(anw, expected3);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_NEXT(it);
+  ppListIterator_REPLACE(it, 55);
+  check_list((ppList*)&l, (ppList*)&anw, "l", &errors);
+  printf("\n");
 
-  printf("\n -------------------------------------------\n\n");
+  // 4. Замена в списке из одного элемента
+  printf("Test 4: Replace single element (42 -> 100)\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  ppList_PUSH_BACK(l, 42);
+  int expected4[] = {100};
+  ppList_FILL_FROM_ARRAY(anw, expected4);
+  print_list((ppList*)&l, "l");
+  ppList_BEGIN(l, it);
+  ppListIterator_REPLACE(it, 100);
+  check_list((ppList*)&l, (ppList*)&anw, "l", &errors);
+  printf("\n");
 
+  // 5. Замена с итератором, указывающим на NULL
+  printf("Test 5: Replace with iterator pointing to NULL\n");
+  ppList_CLEAR(l); ppList_CLEAR(anw);
+  int arr5[] = {1,2,3};
+  ppList_FILL_FROM_ARRAY(l, arr5);
+  ppList_FILL_FROM_ARRAY(anw, arr5);
+  it.list = (ppList*)&l;
+  it.node = NULL;
+  print_list((ppList*)&l, "l");
+  res = ppListIterator_replace((ppListIterator*)&it);
+  check_condition(res == 0, "return value = 0 (no replacement)", &errors);
+  check_list((ppList*)&l, (ppList*)&anw, "l", &errors);
+  printf("\n-------------------------------------------\n\n");
 
-  return 0;
-} // end main
-
+  printf("Total errors: %d\n", errors);
+  return errors;
+}

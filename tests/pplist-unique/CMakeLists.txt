@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-unique ${SOURCE_FILES})
+add_test(NAME pplist-simple-unique COMMAND test-pplist-unique)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-unique

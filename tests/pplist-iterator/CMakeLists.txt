@@ -21,6 +21,7 @@ set(SOURCE_FILES
 # )
 
 add_executable(test-pplist-iterator ${SOURCE_FILES})
+add_test(NAME pplist-iterator COMMAND test-pplist-iterator)
 
 # Линковка программы с библиотекой body
 target_link_libraries(test-pplist-iterator

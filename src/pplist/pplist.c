@@ -302,7 +302,7 @@ void ppList_clear(ppList* l) {
 void ppList_swap(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in swap function\n");
+    printf("Incompatible specializations in ppList_swap function\n");
     exit(-1);
   }
   // Осуществление обмена
@@ -317,7 +317,7 @@ void ppList_swap(ppList* dest, ppList* src) {
 void ppList_move(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in move function\n");
+    printf("Incompatible specializations in ppList_move function\n");
     exit(-1);
   }
 
@@ -336,7 +336,7 @@ void ppList_move(ppList* dest, ppList* src) {
 void ppList_copy(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in copy function\n");
+    printf("Incompatible specializations in ppList_copy function\n");
     exit(-1);
   }
   // Очистка списка в который идёт копирование
@@ -663,6 +663,11 @@ void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
 // Объединение двух отсортированных однотипных списков (если один или оба списка не отсортированны, результат объединения так же не будет отсортирован, но функция ошибки не выдаст)
 // Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
 void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
+  // Проверка однотипности списоков
+  if(spec_index_cmp(dest, src) < 1) {
+    printf("Incompatible specializations in ppList_merge function\n");
+    exit(-1);
+  }
   // Если списки одинаковы или src пуст – ничего не делаем
   if (dest == src || src->size == 0) return;
   // Если dest пуст, просто перемещаем все узлы из src
@@ -709,6 +714,11 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
 // Сравнение двух однотипных списков на равенство(Равны ли все элементы)
 // Требует указание размера типа списков в байтах
 _Bool ppList_is_equal(ppList* l1, ppList* l2, size_t size) {
+  // Проверка однотипности списоков
+  if(spec_index_cmp(l1, l2) < 1) {
+    printf("Incompatible specializations in ppListIterator_is_equal function\n");
+    exit(-1);
+  }
   // Размеры должны совпадать
   if (l1->size != l2->size) return 0;
   ppListNode * now1 = l1->head;
@@ -787,6 +797,11 @@ static void insert_range(ppList *target, ExtractedRange *range, ppListNode *prev
 // Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
 // Вставляет дианазон после указанной позиции (если pos->node == NULL, вставляет диапазон перед головой списка)
 void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  // Проверка однотипности списоков
+  if(spec_index_cmp(pos->list, src_begin->list) < 1) {
+    printf("Incompatible specializations in ppListIterator_splice_after function\n");
+    exit(-1);
+  }
   // Проверки корректности итераторов
   if(src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_after function\n");
@@ -815,6 +830,11 @@ void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListI
 // Попытка объединить диапазоны из одного списка накладывающиеся друг на друга вызывает неопределённое поведение
 // Вставляет дианазон перед указанной позиции (если pos->node == NULL, вставляет диапазон после хвоста списка)
 void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
+  // Проверка однотипности списоков
+  if(spec_index_cmp(pos->list, src_begin->list) < 1) {
+    printf("Incompatible specializations in ppListIterator_splice_before function\n");
+    exit(-1);
+  }
   // Проверки корректности
   if(src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_before function\n");
@@ -845,7 +865,11 @@ void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppList
 // Требует реализованную функцию сравнения, которая возвращает 1, если первый элемент меньше второго, 0 в другом случае
 // Переставляет current для списка из которого взят второй интервал на первый элемент после диапазона(если он есть, если нет, то на последний элемент перед диапазоном)
 void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
-  // Проверки
+  // Проверка однотипности списоков
+  if(spec_index_cmp( dest_begin->list, src_begin->list) < 1) {
+    printf("Incompatible specializations in ppListIterator_merge_ranges function\n");
+    exit(-1);
+  }
   if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
     printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
     exit(-1);

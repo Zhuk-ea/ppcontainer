@@ -20,11 +20,11 @@ set(SOURCE_FILES
 #     LANGUAGE C
 # )
 
-add_executable(ppmap-insert-find-erase ${SOURCE_FILES})
-add_test(NAME ppmap-insert-find-erase COMMAND ppmap-insert-find-erase)
+add_executable(test-ppmap-insert-find-erase ${SOURCE_FILES})
+add_test(NAME ppmap-insert-find-erase COMMAND test-ppmap-insert-find-erase)
 
 # Линковка программы с библиотекой body
-target_link_libraries(ppmap-insert-find-erase
+target_link_libraries(test-ppmap-insert-find-erase
   -Wl,--whole-archive
   ppmap
   -Wl,--no-whole-archive

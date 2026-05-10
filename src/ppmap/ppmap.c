@@ -736,72 +736,103 @@ _Bool ppMapIterator_erase(ppMapIterator* it) {
 //------------------------------------------------------------------------------
 // Поиск итератора по ключу (ключ уже лежит в foundation_addr)
 _Bool ppMap_find_iterator(ppMap* m, ppMapIterator* it) {
-    it->map = m;
-    ppMapNode* node = find_node(m);
-    if (node) {
-        it->node = node;
-        return 1;
-    }
-    ppMap_end(m, it);   // установить на end()
-    return 0;
+  it->map = m;
+  ppMapNode* node = find_node(m);
+  if (node) {
+    it->node = node;
+    return 1;
+}
+  ppMap_end(m, it);   // установить на end()
+  return 0;
 }
 
 //------------------------------------------------------------------------------
 // Вспомогательная функция: найти первый узел с ключом >= заданному
 static ppMapNode* lower_bound_node(ppMap* m, void* key) {
-    ppMapNode* cur = m->root;
-    ppMapNode* result = NULL;
-    while (cur) {
-        int cmp = m->cmp(key, node_key(cur));
-        if (cmp <= 0) {               // ключ cur >= искомого
-            result = cur;
-            cur = cur->left;
-        } else {                      // ключ cur < искомого
-            cur = cur->right;
-        }
+  ppMapNode* cur = m->root;
+  ppMapNode* result = NULL;
+  while (cur) {
+    int cmp = m->cmp(key, node_key(cur));
+    if (cmp <= 0) {
+      result = cur;
+      cur = cur->left;
+    } else {
+      cur = cur->right;
     }
-    return result;   // может быть NULL
+  }
+  return result;   // может быть NULL
 }
 
 //------------------------------------------------------------------------------
 // Устанавливает итератор на первый элемент, ключ которого не меньше заданного (ключ берётся из специализации)
 void ppMap_lower_bound(ppMap* m, ppMapIterator* it) {
-    it->map = m;
-    void* key = m->foundation_addr;
-    ppMapNode* node = lower_bound_node(m, key);
-    if (node) {
-        it->node = node;
-    } else {
-        ppMap_end(m, it);   // ни один не подошёл
-    }
+  it->map = m;
+  void* key = m->foundation_addr;
+  ppMapNode* node = lower_bound_node(m, key);
+  if (node) {
+    it->node = node;
+  } else {
+    ppMap_end(m, it);   // ни один не подошёл
+  }
 }
 
 //------------------------------------------------------------------------------
 // Вспомогательная функция: найти первый узел с ключом > заданному
 static ppMapNode* upper_bound_node(ppMap* m, void* key) {
-    ppMapNode* cur = m->root;
-    ppMapNode* result = NULL;
-    while (cur) {
-        int cmp = m->cmp(key, node_key(cur));
-        if (cmp < 0) {               // ключ cur > искомого
-            result = cur;
-            cur = cur->left;
-        } else {                     // ключ cur <= искомого
-            cur = cur->right;
-        }
+  ppMapNode* cur = m->root;
+  ppMapNode* result = NULL;
+  while (cur) {
+    int cmp = m->cmp(key, node_key(cur));
+    if (cmp < 0) {
+      result = cur;
+      cur = cur->left;
+    } else {
+      cur = cur->right;
     }
-    return result;
+  }
+  return result;
 }
 
 //------------------------------------------------------------------------------
 // Устанавливает итератор на первый элемент, ключ которого строго больше заданного (ключ берётся из специализации)
 void ppMap_upper_bound(ppMap* m, ppMapIterator* it) {
-    it->map = m;
-    void* key = m->foundation_addr;
-    ppMapNode* node = upper_bound_node(m, key);
-    if (node) {
-        it->node = node;
-    } else {
-        ppMap_end(m, it);
-    }
+  it->map = m;
+  void* key = m->foundation_addr;
+  ppMapNode* node = upper_bound_node(m, key);
+  if (node) {
+      it->node = node;
+  } else {
+      ppMap_end(m, it);
+  }
+}
+
+//------------------------------------------------------------------------------
+// Удаление диапазона элементов [begin, end)
+// Возвращает количество удалённых элементов
+// begin сдвигается на узел, предшествующий удалённому диапазону (или end, если такого нет), end остаётся неизменным.
+uint32_t ppMapIterator_erase_range(ppMapIterator* begin, ppMapIterator* end) {
+  if (!begin->map || !end->map || begin->map != end->map) return 0;
+  if (begin->node == end->node) return 0;
+
+  ppMap* map = begin->map;
+  ppMapNode* first = begin->node;
+  ppMapNode* last = end->node;
+  ppMapNode* prev = tree_predecessor(first);
+  uint32_t count = 0;
+
+  ppMapNode* cur = first;
+  while (cur != last) {
+    ppMapNode* next = tree_successor(cur);
+    ppMap_erase_node(map, cur);
+    count++;
+    cur = next;
+  }
+
+  if (prev) {
+    begin->node = prev;
+  } else {
+    begin->node = last;
+  }
+
+  return count;
 }

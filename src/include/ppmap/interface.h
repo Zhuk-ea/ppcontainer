@@ -136,4 +136,11 @@ void ppMap_lower_bound(ppMap* m, ppMapIterator* it);
 // Если таких нет, итератор устанавливается на end()
 void ppMap_upper_bound(ppMap* m, ppMapIterator* it);
 
+//------------------------------------------------------------------------------
+// Удаление диапазона элементов [begin, end)
+// Возвращает количество удалённых элементов
+// После удаления итератор begin сдвигается на узел, предшествующий удалённому диапазону (или end())
+// итератор end остаётся неизменным (указывает на узел за диапазоном)
+uint32_t ppMapIterator_erase_range(ppMapIterator* begin, ppMapIterator* end);
+
 #endif // __ppmap_interface__

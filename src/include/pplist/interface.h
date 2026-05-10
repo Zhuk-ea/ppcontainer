@@ -162,6 +162,11 @@ _Bool ppList_empty(ppList* list);
 // Переворачивание списка
 void ppList_reverse(ppList* l);
 
+// Удаление диапазона элементов [begin, end) из списка
+// Возвращает количество удалённых элементов
+// begin сдвигается на узел, предшествующий удалённому диапазону (или на end, если такого нет), end остаётся неизменным.
+uint32_t ppListIterator_erase_range(ppListIterator* begin, ppListIterator* end);
+
 
 #endif // __pplist_interface__
 

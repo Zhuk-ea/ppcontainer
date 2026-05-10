@@ -224,4 +224,7 @@ ppList_unique((ppList*)&list_name, list_name.foundation_size)
 #define ppList_REVERSE(list_name) \
 ppList_reverse((ppList*)&list_name)
 
+#define ppListIterator_ERASE_RANGE(begin_iter, end_iter) \
+ppListIterator_erase_range((ppListIterator*)&(begin_iter), (ppListIterator*)&(end_iter))
+
 #endif // __pplist_macro__

@@ -971,3 +971,55 @@ void ppList_reverse(ppList* l) {
   l->head = l->tail;
   l->tail = temp;
 }
+
+//------------------------------------------------------------------------------
+// Удаление диапазона элементов [begin, end) из списка. Если begin и end поменяны местами, поведение не определено
+// Возвращает количество удалённых элементов
+// begin сдвигается на узел, предшествующий удалённому диапазону (или на end, если такого нет), end остаётся неизменным
+uint32_t ppListIterator_erase_range(ppListIterator* begin, ppListIterator* end) {
+  // Проверка корректности итераторов
+  if (!begin->list || !end->list || begin->list != end->list) return 0;
+  ppList* list = begin->list;
+  ppListNode* first = begin->node;
+  ppListNode* last  = end->node; 
+
+  if (first == last) return 0; // пустой диапазон
+
+  // Сохраняем предыдущий узел перед first (может быть NULL)
+  ppListNode* prev = first->prev;
+  uint32_t count = 0;
+
+  // Используем указатель на указатель для прохода по удаляемым узлам
+  ppListNode** cur_ptr = prev ? &prev->next : &list->head;
+
+  // Счётчик удаляемых узлов и проход по диапазону
+  ppListNode* cur = first;
+  while (cur != last) {
+    ppListNode* next = cur->next; 
+    if (list->current == cur) {
+      list->current = next ? next : prev;
+    }
+    free(cur);
+    count++;
+    cur = next;
+  }
+
+  *cur_ptr = last;
+
+  // Корректируем обратную связь от last к prev, если last существует
+  if (last) {
+    last->prev = prev;
+  } else {
+    // Если last == NULL, то диапазон доходил до конца списка – обновляем tail
+    list->tail = prev;
+  }
+
+  list->size -= count;
+
+  if (prev) {
+    begin->node = prev;
+  } else {
+    begin->node = last;
+  }
+  return count;
+}

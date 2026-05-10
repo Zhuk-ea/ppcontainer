@@ -178,7 +178,7 @@ do {                                                                            
     printf("Error: ppMapIterator_GET_KEY called on NULL iterator\n");                \
     exit(-1);                                                                        \
   }                                                                                  \
-  memcpy(&(destination), (iterator_name).node->data, (iterator_name).map->key_size); \
+  memcpy(&(destination), iterator_name.node->data, iterator_name.map->key_size); \
 } while(0)
 
 //------------------------------------------------------------------------------
@@ -223,26 +223,32 @@ ppMapIterator_erase((ppMapIterator*)&(iterator_name))
 
 //------------------------------------------------------------------------------
 // Поиск итератора по ключу (возвращает 1, если найден, иначе 0)
-#define ppMap_FIND_ITERATOR(map_name, key_val, iterator_name)     \
-({                                                                \
-  (map_name).@.key = (key_val);                                   \
-  ppMap_find_iterator((ppMap*)&(map_name), &(iterator_name));     \
+#define ppMap_FIND_ITERATOR(map_name, key_val, iterator_name)                \
+({                                                                       \
+  (map_name).@.key = (key_val);                                        \
+  ppMap_find_iterator((ppMap*)&(map_name), (ppMapIterator*)&(iterator_name)); \
 })
 
 //------------------------------------------------------------------------------
 // Установка итератора на lower_bound (первый ключ >= key_val)
-#define ppMap_LOWER_BOUND(map_name, key_val, iterator_name)       \
-do {                                                              \
-  (map_name).@.key = (key_val);                                   \
-  ppMap_lower_bound((ppMap*)&(map_name), &(iterator_name));       \
+#define ppMap_LOWER_BOUND(map_name, key_val, iterator_name)                  \
+do {                                                                     \
+  (map_name).@.key = (key_val);                                        \
+  ppMap_lower_bound((ppMap*)&(map_name), (ppMapIterator*)&(iterator_name)); \
 } while(0)
 
 //------------------------------------------------------------------------------
 // Установка итератора на upper_bound (первый ключ > key_val)
-#define ppMap_UPPER_BOUND(map_name, key_val, iterator_name)       \
-do {                                                              \
-  (map_name).@.key = (key_val);                                   \
-  ppMap_upper_bound((ppMap*)&(map_name), &(iterator_name));       \
+#define ppMap_UPPER_BOUND(map_name, key_val, iterator_name)                  \
+do {                                                                     \
+  (map_name).@.key = (key_val);                                        \
+  ppMap_upper_bound((ppMap*)&(map_name), (ppMapIterator*)&(iterator_name)); \
 } while(0)
+
+//------------------------------------------------------------------------------
+// Удаление из map диапазона
+// Обертывает функцию ppMapIterator_erase_range
+#define ppMapIterator_ERASE_RANGE(begin_iter, end_iter) \
+ppMapIterator_erase_range((ppMapIterator*)&(begin_iter), (ppMapIterator*)&(end_iter))
 
 #endif // __ppmap_macro__

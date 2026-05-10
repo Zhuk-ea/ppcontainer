@@ -73,4 +73,67 @@ void ppMap_copy(ppMap* dest, ppMap* src);
 // Возвращает 1, если ключ присутствует, иначе 0.
 _Bool ppMap_contains(ppMap* m);
 
+// Получение итератора на первый (минимальный) элемент
+void ppMap_begin(ppMap* m, ppMapIterator* it);
+
+// Получение итератора на последний (максимальный) элемент
+void ppMap_end(ppMap* m, ppMapIterator* it);
+
+// Получение обратного итератора на последний (максимальный) элемент
+void ppMap_rbegin(ppMap* m, ppMapRIterator* it);
+
+// Получение обратного итератора на первый (минимальный) элемент
+void ppMap_rend(ppMap* m, ppMapRIterator* it);
+
+// Смещение итератора на следующий элемент (прямой порядок)
+_Bool ppMapIterator_next(ppMapIterator* it);
+
+// Смещение итератора на предыдущий элемент (прямой порядок)
+_Bool ppMapIterator_prev(ppMapIterator* it);
+
+// Получение ключа текущего элемента (копирует в специализацию map)
+_Bool ppMapIterator_get_key(ppMapIterator* it);
+
+// Получение значения текущего элемента (копирует в специализацию map)
+_Bool ppMapIterator_get_value(ppMapIterator* it);
+
+// Сравнение двух прямых итераторов
+_Bool ppMapIterator_equal(ppMapIterator* a, ppMapIterator* b);
+
+// Смещение обратного итератора на следующий элемент (к меньшим ключам)
+_Bool ppMapRIterator_next(ppMapRIterator* it);
+
+// Смещение обратного итератора на предыдущий элемент (к большим ключам)
+_Bool ppMapRIterator_prev(ppMapRIterator* it);
+
+// Получение ключа для обратного итератора
+_Bool ppMapRIterator_get_key(ppMapRIterator* it);
+
+// Получение значения для обратного итератора
+_Bool ppMapRIterator_get_value(ppMapRIterator* it);
+
+// Сравнение двух обратных итераторов
+_Bool ppMapRIterator_equal(ppMapRIterator* a, ppMapRIterator* b);
+
+// Удаление элемента, на который указывает итератор
+// После удаления итератор сдвигается на родителя удалённого узла (если есть), иначе на NULL
+// Возвращает 1, если удаление выполнено
+_Bool ppMapIterator_erase(ppMapIterator* it);
+
+//------------------------------------------------------------------------------
+// Поиск итератора по ключу (ключ берётся из специализации)
+// Возвращает 1, если ключ найден, и устанавливает итератор на найденный узел
+// Если ключ не найден, итератор устанавливается на end() и возвращается 0
+_Bool ppMap_find_iterator(ppMap* m, ppMapIterator* it);
+
+//------------------------------------------------------------------------------
+// Устанавливает итератор на первый элемент, ключ которого не меньше заданного (ключ берётся из специализации)
+//Если все ключи меньше, итератор устанавливается на end()
+void ppMap_lower_bound(ppMap* m, ppMapIterator* it);
+
+//------------------------------------------------------------------------------
+// Устанавливает итератор на первый элемент, ключ которого строго больше заданного (ключ берётся из специализации)
+// Если таких нет, итератор устанавливается на end()
+void ppMap_upper_bound(ppMap* m, ppMapIterator* it);
+
 #endif // __ppmap_interface__

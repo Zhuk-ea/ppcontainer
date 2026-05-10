@@ -50,8 +50,7 @@ int main(void) {
   printf("\n-------------------------------------------\n");
   printf("TRAVERSE\n\n");
 
-  ppMap_VAR(IntPair, map);
-  ppMap_init((ppMap*)&map, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
 
   // 1. Вставка в произвольном порядке
   printf("Test 1: Insert elements in random order\n");

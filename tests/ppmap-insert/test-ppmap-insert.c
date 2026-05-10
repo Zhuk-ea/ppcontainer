@@ -25,10 +25,8 @@ int main(void) {
   printf("\n-------------------------------------------\n");
   printf("INSERT\n\n");
 
-  ppMap_VAR(IntPair, map);
-  ppMap_VAR(IntPair, expected);
-  ppMap_init((ppMap*)&map, cmp_int);
-  ppMap_init((ppMap*)&expected, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
+  ppMap_VAR(IntPair, expected, cmp_int);
 
   // 1. Вставка в пустое отображение
   printf("Test 1: Insert into empty map\n");

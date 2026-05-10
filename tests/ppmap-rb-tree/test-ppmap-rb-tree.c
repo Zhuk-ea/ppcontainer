@@ -27,8 +27,7 @@ int main(void) {
   int errors = 0;
   printf("Stress test with RB properties check\n");
 
-  ppMap_VAR(IntPair, map);
-  ppMap_init((ppMap*)&map, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
 
   const int N_OPS = 10000;
   const int KEY_RANGE = 500;

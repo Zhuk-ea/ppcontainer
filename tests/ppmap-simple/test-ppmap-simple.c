@@ -3,19 +3,19 @@
 #include <string.h>
 #include "ppmap.h"
 
-typedef struct IntIntPair{
+typedef struct IntPair{
   int key;
   int value;
-} IntIntPair;
+} IntPair;
 
-ppMap+<IntIntPair;>;
+ppMap+<IntPair;>;
 
 int cmp_int(const void* a, const void* b) {
   int ia = *(int*)a, ib = *(int*)b;
   return (ia > ib) - (ia < ib);
 }
 
-void ppMap_element_print<ppMap.IntIntPair* m>(FILE* f) {
+void ppMap_element_print<ppMap.IntPair* m>(FILE* f) {
   fprintf(f, "%d->%d ", m->@.key, m->@.value);
 }
 
@@ -45,13 +45,9 @@ void traverse_callback(void* key, void* value) {
 
 int main() {
   int errors = 0;
-  ppMap_VAR(IntIntPair, map);
-  ppMap_VAR(IntIntPair, map2);
-  ppMap_VAR(IntIntPair, empty);
-  
-  ppMap_init((ppMap*)&map, cmp_int);
-  ppMap_init((ppMap*)&map2, cmp_int);
-  ppMap_init((ppMap*)&empty, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
+  ppMap_VAR(IntPair, map2, cmp_int);
+  ppMap_VAR(IntPair, empty, cmp_int);
   
   printf(" Test ppMap_insert \n");
   ppMap_INSERT(map, 1, 100);

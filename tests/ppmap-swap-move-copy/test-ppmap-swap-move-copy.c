@@ -31,15 +31,10 @@ int main(void) {
   int errors = 0;
   printf("\n-------------------------------------------\n\n");
 
-  ppMap_VAR(IntPair, map1);
-  ppMap_VAR(IntPair, map2);
-  ppMap_VAR(IntPair, expected1);
-  ppMap_VAR(IntPair, expected2);
-
-  ppMap_init((ppMap*)&map1, cmp_int);
-  ppMap_init((ppMap*)&map2, cmp_int);
-  ppMap_init((ppMap*)&expected1, cmp_int);
-  ppMap_init((ppMap*)&expected2, cmp_int);
+  ppMap_VAR(IntPair, map1, cmp_int);
+  ppMap_VAR(IntPair, map2, cmp_int);
+  ppMap_VAR(IntPair, expected1, cmp_int);
+  ppMap_VAR(IntPair, expected2, cmp_int);
 
   // 1. SWAP
   printf("SWAP\n\n");

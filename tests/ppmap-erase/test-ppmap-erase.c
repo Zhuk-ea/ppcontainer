@@ -25,8 +25,7 @@ int main(void) {
   printf("\n-------------------------------------------\n");
   printf("ERASE\n\n");
 
-  ppMap_VAR(IntPair, map);
-  ppMap_init((ppMap*)&map, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
 
   // Подготовка: вставляем 1..7
   for (int i = 1; i <= 7; i++) {

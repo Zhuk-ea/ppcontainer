@@ -25,8 +25,7 @@ int main(void) {
   printf("\n-------------------------------------------\n");
   printf("TEST ppMap_AT\n\n");
 
-  ppMap_VAR(IntPair, map);
-  ppMap_init((ppMap*)&map, cmp_int);
+  ppMap_VAR(IntPair, map, cmp_int);
 
   // Подготовка: вставляем несколько пар
   int keys[] = {10, 20, 30, 40, 50};

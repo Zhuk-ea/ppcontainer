@@ -207,6 +207,38 @@ static ppMapNode* tree_minimum(ppMapNode* x) {
 }
 
 //------------------------------------------------------------------------------
+// Вспомогательная функция, возвращает узел с максимальным ключом в поддереве x
+static ppMapNode* tree_maximum(ppMapNode* x) {
+  while (x && x->right) x = x->right;
+  return x;
+}
+
+
+//------------------------------------------------------------------------------
+// Вспомогательная функция, возвращает следующий узел в порядке возрастани
+static ppMapNode* tree_successor(ppMapNode* x) {
+  if (x->right) return tree_minimum(x->right);
+  ppMapNode* y = x->parent;
+  while (y && x == y->right) {
+    x = y;
+    y = y->parent;
+  }
+  return y;
+}
+
+//------------------------------------------------------------------------------
+// Вспомогательная функция, возвращает предыдущий узел в порядке возрастания
+static ppMapNode* tree_predecessor(ppMapNode* x) {
+  if (x->left) return tree_maximum(x->left);
+  ppMapNode* y = x->parent;
+  while (y && x == y->left) {
+    x = y;
+    y = y->parent;
+  }
+  return y;
+}
+
+//------------------------------------------------------------------------------
 // Вспомогательная функция замены поддерева с корнем u на поддерево с корнем v
 static void transplant(ppMap* map, ppMapNode* u, ppMapNode* v) {
   if (u->parent == NULL) map->root = v;
@@ -535,4 +567,241 @@ void ppMap_copy(ppMap* dest, ppMap* src) {
 // Проверка наличия ключа в map (без возврата значения)
 _Bool ppMap_contains(ppMap* map) {
   return find_node(map) != NULL;
+}
+
+//------------------------------------------------------------------------------
+// Установка итератора на первый (минимальный) элемент
+void ppMap_begin(ppMap* m, ppMapIterator* it) {
+  it->map = m;
+  it->node = tree_minimum(m->root);
+}
+
+//------------------------------------------------------------------------------
+// Установка итератора на последний (максимальный) элемент
+void ppMap_end(ppMap* m, ppMapIterator* it) {
+  it->map = m;
+  it->node = tree_maximum(m->root);
+}
+
+//------------------------------------------------------------------------------
+// Переход к следующему элементу (возвращает 1, если переход возможен)
+_Bool ppMapIterator_next(ppMapIterator* it) {
+  if (!it->node) return 0;
+  ppMapNode* next = tree_successor(it->node);
+  it->node = next;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Переход к предыдущему элементу (возвращает 1, если переход возможен)
+_Bool ppMapIterator_prev(ppMapIterator* it) {
+  if (!it->node) return 0;
+  ppMapNode* prev = tree_predecessor(it->node);
+  it->node = prev;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение ключа текущего элемента (копирует в специализацию map)
+_Bool ppMapIterator_get_key(ppMapIterator* it) {
+  if (!it->node) return 0;
+  memcpy(it->map->foundation_addr, node_key(it->node), it->map->key_size);
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение значения текущего элемента (копирует в специализацию map)
+_Bool ppMapIterator_get_value(ppMapIterator* it) {
+  if (!it->node) return 0;
+  memcpy(it->map->foundation_addr + it->map->key_size, node_value(it->map, it->node), it->map->value_size);
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Сравнение двух прямых итераторов
+_Bool ppMapIterator_equal(ppMapIterator* a, ppMapIterator* b) {
+  return a->map == b->map && a->node == b->node;
+}
+
+//------------------------------------------------------------------------------
+// Установка обратного итератора на последний элемент (максимальный)
+void ppMap_rbegin(ppMap* m, ppMapRIterator* it) {
+  it->map = m;
+  it->node = tree_maximum(m->root);
+}
+
+//------------------------------------------------------------------------------
+// Установка обратного итератора на первый элемент (минимальный)
+void ppMap_rend(ppMap* m, ppMapRIterator* it) {
+  it->map = m;
+  it->node = tree_minimum(m->root);
+}
+
+//------------------------------------------------------------------------------
+// Переход обратного итератора к меньшим ключам (следующий в обратном порядке)
+_Bool ppMapRIterator_next(ppMapRIterator* it) {
+  if (!it->node) return 0;
+  ppMapNode* next = tree_predecessor(it->node);
+  it->node = next;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Переход обратного итератора к большим ключам (предыдущий в обратном порядке)
+_Bool ppMapRIterator_prev(ppMapRIterator* it) {
+  if (!it->node) return 0;
+  ppMapNode* prev = tree_successor(it->node);
+  it->node = prev;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение ключа для обратного итератора
+_Bool ppMapRIterator_get_key(ppMapRIterator* it) {
+  if (!it->node) return 0;
+  memcpy(it->map->foundation_addr, node_key(it->node), it->map->key_size);
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение значения для обратного итератора
+_Bool ppMapRIterator_get_value(ppMapRIterator* it) {
+  if (!it->node) return 0;
+  memcpy(it->map->foundation_addr + it->map->key_size, node_value(it->map, it->node), it->map->value_size);
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Сравнение двух обратных итераторов
+_Bool ppMapRIterator_equal(ppMapRIterator* a, ppMapRIterator* b) {
+  return a->map == b->map && a->node == b->node;
+}
+
+//------------------------------------------------------------------------------
+// Внутренняя функция удаления узла (возвращает родителя удалённого узла)
+static ppMapNode* ppMap_erase_node(ppMap* map, ppMapNode* z) {
+  ppMapNode* parent = z->parent;
+  ppMapNode* y = z;
+  ppMapNode* x = NULL;
+  ppMapNode* x_parent = NULL;
+  int y_original_color = y->color;
+
+  if (z->left == NULL) {
+      x = z->right;
+      x_parent = z->parent;
+      transplant(map, z, z->right);
+  } else if (z->right == NULL) {
+      x = z->left;
+      x_parent = z->parent;
+      transplant(map, z, z->left);
+  } else {
+      y = tree_minimum(z->right);
+      y_original_color = y->color;
+      x = y->right;
+      if (y->parent == z) {
+          x_parent = y;
+      } else {
+          x_parent = y->parent;
+          transplant(map, y, y->right);
+          y->right = z->right;
+          y->right->parent = y;
+      }
+      transplant(map, z, y);
+      y->left = z->left;
+      y->left->parent = y;
+      y->color = z->color;
+      if (x) x_parent = x->parent;
+  }
+
+  if (y_original_color == BLACK) {
+      fix_delete(map, x, x_parent);
+  }
+
+  free_node(z);
+  map->size--;
+  return parent;
+}
+
+//------------------------------------------------------------------------------
+// Удаление элемента, на который указывает итератор.
+// После удаления итератор сдвигается на родителя удалённого узла (или NULL).
+// Возвращает 1, если удаление выполнено.
+_Bool ppMapIterator_erase(ppMapIterator* it) {
+  if (!it->node || !it->map) return 0;
+  ppMapNode* parent = ppMap_erase_node(it->map, it->node);
+  it->node = parent; // может быть NULL
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Поиск итератора по ключу (ключ уже лежит в foundation_addr)
+_Bool ppMap_find_iterator(ppMap* m, ppMapIterator* it) {
+    it->map = m;
+    ppMapNode* node = find_node(m);
+    if (node) {
+        it->node = node;
+        return 1;
+    }
+    ppMap_end(m, it);   // установить на end()
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+// Вспомогательная функция: найти первый узел с ключом >= заданному
+static ppMapNode* lower_bound_node(ppMap* m, void* key) {
+    ppMapNode* cur = m->root;
+    ppMapNode* result = NULL;
+    while (cur) {
+        int cmp = m->cmp(key, node_key(cur));
+        if (cmp <= 0) {               // ключ cur >= искомого
+            result = cur;
+            cur = cur->left;
+        } else {                      // ключ cur < искомого
+            cur = cur->right;
+        }
+    }
+    return result;   // может быть NULL
+}
+
+//------------------------------------------------------------------------------
+// Устанавливает итератор на первый элемент, ключ которого не меньше заданного (ключ берётся из специализации)
+void ppMap_lower_bound(ppMap* m, ppMapIterator* it) {
+    it->map = m;
+    void* key = m->foundation_addr;
+    ppMapNode* node = lower_bound_node(m, key);
+    if (node) {
+        it->node = node;
+    } else {
+        ppMap_end(m, it);   // ни один не подошёл
+    }
+}
+
+//------------------------------------------------------------------------------
+// Вспомогательная функция: найти первый узел с ключом > заданному
+static ppMapNode* upper_bound_node(ppMap* m, void* key) {
+    ppMapNode* cur = m->root;
+    ppMapNode* result = NULL;
+    while (cur) {
+        int cmp = m->cmp(key, node_key(cur));
+        if (cmp < 0) {               // ключ cur > искомого
+            result = cur;
+            cur = cur->left;
+        } else {                     // ключ cur <= искомого
+            cur = cur->right;
+        }
+    }
+    return result;
+}
+
+//------------------------------------------------------------------------------
+// Устанавливает итератор на первый элемент, ключ которого строго больше заданного (ключ берётся из специализации)
+void ppMap_upper_bound(ppMap* m, ppMapIterator* it) {
+    it->map = m;
+    void* key = m->foundation_addr;
+    ppMapNode* node = upper_bound_node(m, key);
+    if (node) {
+        it->node = node;
+    } else {
+        ppMap_end(m, it);
+    }
 }

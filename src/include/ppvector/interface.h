@@ -69,4 +69,34 @@ void ppVector_move(ppVector* dest, ppVector* src);
 // Копирование данных из одного вектора в другой. Векторы однотипные
 void ppVector_copy(ppVector* dest, ppVector* src);
 
+// Получение итератора на первый элемент
+void ppVector_begin(ppVector* v, ppVectorIterator* it);
+
+// Получение итератора на последний элемент
+void ppVector_end(ppVector* v, ppVectorIterator* it);
+
+// Перемещение итератора вперёд (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorIterator_next(ppVectorIterator* it);
+
+// Перемещение итератора назад (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorIterator_prev(ppVectorIterator* it);
+
+// Получение значения элемента, на который указывает итератор (копирует в специализацию)
+_Bool ppVectorIterator_get_value(ppVectorIterator* it);
+
+// Получение обатного итератора на первый элемент с конца
+void ppVector_rbegin(ppVector* v, ppVectorRIterator* rit);
+
+// Получение обатного итератора на последний элемент с начала
+void ppVector_rend(ppVector* v, ppVectorRIterator* rit);
+
+// Перемещение обатного итератора вперёд(в сторону уменьшения индексов) (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorRIterator_next(ppVectorRIterator* rit);
+
+// Перемещение обатного итератора назаз(в сторону увеличения индексов) (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorRIterator_prev(ppVectorRIterator* rit);
+
+// Получение значения элемента, на который указывает обратный итератор (копирует в специализацию)
+_Bool ppVectorRIterator_get_value(ppVectorRIterator* rit);
+
 #endif // __ppvector_interface__

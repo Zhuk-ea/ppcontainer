@@ -11,11 +11,23 @@
 // Структура обобщенного вектора
 //==============================================================================
 typedef struct ppVector {
-  uint32_t  foundation_size;  // размер основы специализации
-  void*     foundation_addr;  // адрес основы специализации
-  uint32_t  size;             // текущий размер вектора (сколько элементов)
-  uint32_t  capacity;         // текущая вместимость (выделенных элементов)
-  void*     vec_memory;       // указатель на память, выделяемую вектору
+  uint32_t foundation_size; // размер основы специализации
+  void*   foundation_addr;  // адрес основы специализации
+  uint32_t size;            // текущий размер вектора (сколько элементов)
+  uint32_t capacity;        // текущая вместимость (выделенных элементов)
+  void*   vec_memory;       // указатель на память, выделяемую вектору
 }<> ppVector;
+
+// Итератор для вектора
+typedef struct ppVectorIterator {
+  struct ppVector* vector;  // указатель на вектор
+  uint32_t index;           // текущий индекс элемента
+}<> ppVectorIterator;
+
+// Обратный итератор для вектора
+typedef struct ppVectorRIterator {
+  struct ppVector* vector;  // указатель на вектор
+  uint32_t index;           // текущий индекс в обратном порядке (от size-1 до 0)
+}<> ppVectorRIterator;
 
 #endif // __ppvector_data__

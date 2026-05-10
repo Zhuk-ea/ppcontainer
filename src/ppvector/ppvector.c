@@ -322,3 +322,81 @@ void ppVector_copy(ppVector* dest, ppVector* src) {
   dest->capacity = src->size;
 }
 
+
+//------------------------------------------------------------------------------
+// Получение итератора на первый элемент
+void ppVector_begin(ppVector* v, ppVectorIterator* it) {
+  it->vector = v;
+  it->index = 0;
+}
+
+//------------------------------------------------------------------------------
+// Получение итератора на последний элемент
+void ppVector_end(ppVector* v, ppVectorIterator* it) {
+  it->vector = v;
+  it->index = v->size - 1;
+}
+
+//------------------------------------------------------------------------------
+// Перемещение итератора вперёд (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorIterator_next(ppVectorIterator* it) {
+  if (it->index + 1 >= it->vector->size) return 0;
+  it->index++;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Перемещение итератора назад (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorIterator_prev(ppVectorIterator* it) {
+  if (it->index == 0) return 0;
+  it->index--;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение значения элемента, на который указывает итератор (копирует в специализацию)
+_Bool ppVectorIterator_get_value(ppVectorIterator* it) {
+  if (it->index >= it->vector->size) return 0;
+  void* position = it->vector->vec_memory + it->index * it->vector->foundation_size;
+  memcpy(it->vector->foundation_addr, position, it->vector->foundation_size);
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение обатного итератора на первый элемент с конца
+void ppVector_rbegin(ppVector* v, ppVectorRIterator* rit) {
+  rit->vector = v;
+  rit->index = v->size - 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение обатного итератора на последний элемент с начала
+void ppVector_rend(ppVector* v, ppVectorRIterator* rit) {
+  rit->vector = v;
+  rit->index = 0;
+}
+
+//------------------------------------------------------------------------------
+// Перемещение обатного итератора вперёд(в сторону уменьшения индексов) (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorRIterator_next(ppVectorRIterator* rit) {
+  if (rit->index == 0) return 0;
+  rit->index--;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Перемещение обатного итератора назаз(в сторону увеличения индексов) (возвращает 1, если успешно, иначе 0)
+_Bool ppVectorRIterator_prev(ppVectorRIterator* rit) {
+  if (rit->index + 1 >= rit->vector->size) return 0;
+  rit->index++;
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+// Получение значения элемента, на который указывает обратный итератор (копирует в специализацию)
+_Bool ppVectorRIterator_get_value(ppVectorRIterator* rit) {
+  if (rit->index >= rit->vector->size) return 0;
+  void* position = rit->vector->vec_memory + rit->index * rit->vector->foundation_size;
+  memcpy(rit->vector->foundation_addr, position, rit->vector->foundation_size);
+  return 1;
+}

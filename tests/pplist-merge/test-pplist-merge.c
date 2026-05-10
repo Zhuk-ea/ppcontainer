@@ -1,6 +1,7 @@
 // test-pplist-merge.c - тестирование функции merge для списка
 #include <stdio.h>
 #include "pplist.h"
+#include "test-pplist-common.h"
 
 //==============================================================================
 // Все, что сопровождает формируемую специализацию списка
@@ -13,32 +14,6 @@ ppListIterator+<int;>;
 // Обработчик специализации, обеспечивающий вывод целочисленного элемента
 void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
-}
-
-//------------------------------------------------------------------------------
-// Вспомогательные функции
-void check_condition(int condition, const char* msg, int* errors) {
-  if (condition) {
-    printf("Correct | %s\n", msg);
-  } else {
-    printf("Incorrect | %s\n", msg);
-    (*errors)++;
-  }
-}
-
-void check_list(ppList* l, ppList* anw, const char* name, int* errors) {
-  if (ppList_is_equal(l, anw, sizeof(int))) {
-    printf("Correct | %s: ", name);
-  } else {
-    printf("Incorrect | %s: ", name);
-    (*errors)++;
-  }
-  ppList_print2(stdout, l);
-}
-
-void print_list(ppList* l, const char* name) {
-  printf("%s: ", name);
-  ppList_print2(stdout, l);
 }
 
 int cmp_int(char* a, char* b) {
@@ -195,9 +170,9 @@ int main(void) {
   size_t old_size2 = l2.size;
   ppList_MERGE(l1, l2, cmp_int);
   if (l1.size == old_size1 + old_size2 && l2.size == 0) {
-    printf("Correct | sizes: l1=%zu, l2=0\n", l1.size);
+    printf("Correct | sizes: l1=%u, l2=0\n", l1.size);
   } else {
-    printf("Incorrect | sizes: l1=%zu, l2=%zu\n", l1.size, l2.size);
+    printf("Incorrect | sizes: l1=%u, l2=%u\n", l1.size, l2.size);
     errors++;
   }
   printf("l1: ");

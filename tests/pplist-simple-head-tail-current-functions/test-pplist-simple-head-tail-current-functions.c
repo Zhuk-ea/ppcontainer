@@ -1,6 +1,7 @@
 // test-pplist-simple-head-tail-current-functions.c - тестирование простых функций связанных с head, tail и current
 #include <stdio.h>
 #include "pplist.h"
+#include "test-pplist-common.h"
 
 //==============================================================================
 // Все, что сопровождает формируемую специализацию списка
@@ -13,22 +14,6 @@ ppListIterator+<int;>;
 // Обработчик вывода
 void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
-}
-
-//------------------------------------------------------------------------------
-// Вспомогательные функции
-void check_condition(int condition, const char* msg, int* errors) {
-  if (condition) {
-    printf("Correct | %s\n", msg);
-  } else {
-    printf("Incorrect | %s\n", msg);
-    (*errors)++;
-  }
-}
-
-void print_list(ppList* l, const char* name) {
-  printf("%s: ", name);
-  ppList_print2(stdout, l);
 }
 
 //------------------------------------------------------------------------------

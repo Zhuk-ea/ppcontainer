@@ -1,6 +1,7 @@
 // test-pp-list-swap-move-copy.c - тестирование функций swap, move, copy обобщенного списка ppList
 #include <stdio.h> 
 #include "pplist.h"
+#include "test-pplist-common.h"
 
 //==============================================================================
 // Все, что сопровождает формируемую специализацию списка
@@ -14,38 +15,6 @@ void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
 }
 
-//------------------------------------------------------------------------------
-// Вспомогательные функции
-void check_condition(int condition, const char* msg, int* errors) {
-  if (condition) {
-    printf("Correct | %s\n", msg);
-  } else {
-    printf("Incorrect | %s\n", msg);
-    (*errors)++;
-  }
-}
-
-void check_list(ppList* l, ppList* anw, const char* name, int* errors) {
-  if (ppList_is_equal(l, anw, sizeof(int))) {
-    printf("Correct | %s: ", name);
-  } else {
-    printf("Incorrect | %s: ", name);
-    (*errors)++;
-  }
-  ppList_print2(stdout, l);
-}
-
-void print_list(ppList* l, const char* name) {
-  printf("%s: ", name);
-  ppList_print2(stdout, l);
-}
-
-void print_2_lists(ppList* l1, ppList* l2) {
-  printf("l1: ");
-  ppList_print2(stdout, l1);
-  printf("l2: ");
-  ppList_print2(stdout, l2);
-}
 
 //------------------------------------------------------------------------------
 int main(void) {

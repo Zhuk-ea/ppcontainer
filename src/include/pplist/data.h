@@ -23,20 +23,20 @@ typedef struct ppList {
 
 // Элемент списка
 typedef struct ppListNode {
-  struct ppListNode*  prev;   // указатель на предыдущий элемент списка
-  struct ppListNode*  next;   // указатель на следующий элемент списка
-  char*  data[];              // точка доступа к данным
+  struct ppListNode* prev;   // указатель на предыдущий элемент списка
+  struct ppListNode* next;   // указатель на следующий элемент списка
+  char data[];               // точка доступа к данным
 } ppListNode;
 
 //Итератор для списка
 typedef struct ppListIterator {
-  struct ppList * list; // указатель на список с которым связан
+  struct ppList* list;     // указатель на список с которым связан
   struct ppListNode* node; // указатель на элемент
 } <> ppListIterator;
 
 //Обратный итератор для списка
 typedef struct ppListRIterator {
-  struct ppList * list; // указатель на список с которым связан
+  struct ppList* list;     // указатель на список с которым связан
   struct ppListNode* node; // указатель на элемент
 } <> ppListRIterator;
 

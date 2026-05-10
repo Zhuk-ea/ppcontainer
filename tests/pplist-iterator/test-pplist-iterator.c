@@ -1,6 +1,7 @@
 // test-pplist-iterator.c - тестирование функций итераторов
 #include <stdio.h>
 #include "pplist.h"
+#include "test-pplist-common.h"
 
 //==============================================================================
 // Все, что сопровождает формируемую специализацию списка
@@ -15,21 +16,6 @@ void ppList_element_print<ppList.int* l>(FILE* f) {
   fprintf(f, "%d ", l->@);
 }
 
-//------------------------------------------------------------------------------
-// Вспомогательные функции
-void check_condition(int condition, const char* msg, int* errors) {
-  if (condition) {
-    printf("Correct | %s\n", msg);
-  } else {
-    printf("Incorrect | %s\n", msg);
-    (*errors)++;
-  }
-}
-
-void print_list(ppList* l, const char* label) {
-  printf("%s: ", label);
-  ppList_print2(stdout, l);
-}
 
 //------------------------------------------------------------------------------
 int main(void) {

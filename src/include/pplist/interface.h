@@ -129,6 +129,9 @@ void ppListIterator_erase(ppListIterator* iter);
 // Удаление из списка всех элементов, равных значению, занесённому в специализацию
 void ppList_remove(ppList* l);
 
+// Удаление из списка всех элементов, соответствующих предикату
+void ppList_remove_if(ppList* l, int (*pred)(char *data));
+
 // Объединение двух отсортированных однотипных списков
 // Требует функцию сравнения, реализованную для типа хранимых в списках данных
 void ppList_merge(ppList* dest, ppList* src,  int (*cmp)(char *a, char *b));

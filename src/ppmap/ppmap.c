@@ -19,7 +19,7 @@ static void* node_value(ppMap* map, ppMapNode* node) { return node->data + map->
 static ppMapNode* new_node(ppMap* map) {
   ppMapNode* node = (ppMapNode*)malloc(sizeof(ppMapNode) + map->foundation_size);
   if (!node) { 
-    fprintf(stderr, "Memory allocation failed\n"); 
+    printf("Memory allocation failed in new ppMapMode creation\n"); 
     exit(-1);
   }
   memcpy(node->data, map->foundation_addr, map->foundation_size);
@@ -123,7 +123,7 @@ static void fix_insert(ppMap* map, ppMapNode* z) {
 // Если ключ уже существует, заменяет значение
 void ppMap_insert(ppMap* map) {
   if (!map->cmp) {
-    fprintf(stderr, "Comparator not set\n");
+    printf("Comparator for map not set in ppMap_insert function\n");
     exit(-1);
   }
   ppMapNode* z = new_node(map);
@@ -184,6 +184,20 @@ _Bool ppMap_find(ppMap* map) {
   memcpy(map->foundation_addr + map->key_size, node_value(map, n), map->value_size);
   return 1;
 }
+  
+//------------------------------------------------------------------------------
+// Поиск значения по ключу, когда предполагается, что ключ должен существовать
+// Если ключ не найден, выдаёт ошибку. Если найден, копирует соответствующее ему значение в специализацию
+void ppMap_at(ppMap* map) {
+  ppMapNode* n = find_node(map);
+  if(!n) {
+    printf("Can't find node in ppMap_at function\n");
+    exit(-1);
+  }
+  // Копируем значение в область специализации
+  memcpy(map->foundation_addr + map->key_size, node_value(map, n), map->value_size);
+};
+
 
 //------------------------------------------------------------------------------
 // Вспомогательная функция, возвращает узел с минимальным ключом в поддереве x
@@ -462,21 +476,27 @@ _Bool ppMap_is_equal(ppMap* m1, ppMap* m2) {
 //------------------------------------------------------------------------------
 // Быстрый обмен содержимым двух map
 void ppMap_swap(ppMap* a, ppMap* b) {
-  ppMap tmp = *a;
-  *a = *b;
-  *b = tmp;
+  if(spec_index_cmp(a, b) < 1) {
+    // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in ppMap_swap function\n");
+    exit(-1);
+  }
+  uint32_t tmp_size = a->size; a->size = b->size; b->size = tmp_size;
+  ppMapNode* tmp_root = a->root; a->root = b->root; b->root = tmp_root;
+  int (*tmp_cmp)(const void*, const void*) = a->cmp; a->cmp = b->cmp; b->cmp = tmp_cmp;
 }
 
 //------------------------------------------------------------------------------
 // Перемещение данных из src в dest, src становится пустым
 void ppMap_move(ppMap* dest, ppMap* src) {
+  if(spec_index_cmp(dest, src) < 1) {
+    // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in ppMap_move function\n");
+    exit(-1);
+  }
   ppMap_clear(dest);
   dest->root = src->root;
   dest->size = src->size;
-  dest->key_size = src->key_size;
-  dest->value_size = src->value_size;
-  dest->foundation_size = src->foundation_size;
-  dest->foundation_addr = src->foundation_addr;
   dest->cmp = src->cmp;
   // Очищаем src, но не вызываем clear (чтобы не освобождать память)
   src->root = NULL;
@@ -500,6 +520,11 @@ static void copy_callback(void* key, void* value, void* user_data) {
 //------------------------------------------------------------------------------
 // Глубокое копирование map src в dest (предыдущее содержимое dest удаляется)
 void ppMap_copy(ppMap* dest, ppMap* src) {
+  if(spec_index_cmp(dest, src) < 1) {
+    // Или обобщение или специализации не совпадают
+    printf("Incompatible specializations in ppMap_copy function\n");
+    exit(-1);
+  }
   if (dest == src) return;
   ppMap_clear(dest);
   CopyData data = { dest };

@@ -10,7 +10,7 @@ set(SOURCE_FILES
     # headers
 
     #sources
-    test-ppmap-stress.c
+    test-ppmap-insert.c
 )
 
 # Для того, чтобы clang понимал файлы с другим расширением (ppc, например)
@@ -20,11 +20,11 @@ set(SOURCE_FILES
 #     LANGUAGE C
 # )
 
-add_executable(test-ppmap-stress ${SOURCE_FILES})
-add_test(NAME ppmap-stress COMMAND test-ppmap-stress)
+add_executable(test-ppmap-insert ${SOURCE_FILES})
+add_test(NAME ppmap-insert COMMAND test-ppmap-insert)
 
 # Линковка программы с библиотекой body
-target_link_libraries(test-ppmap-stress
+target_link_libraries(test-ppmap-insert
   -Wl,--whole-archive
   ppmap
   -Wl,--no-whole-archive

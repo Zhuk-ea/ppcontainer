@@ -196,4 +196,13 @@ void ppMap_print_tree(ppMap* m, const char* msg) {
     printf("\n");
 }
 
+void check_condition(int condition, const char* msg, int* errors) {
+  if (condition)
+    printf("Correct | %s\n", msg);
+  else {
+    printf("Incorrect | %s\n", msg);
+    (*errors)++;
+  }
+}
+
 #endif // TEST_PPMAP_COMMON_H

@@ -97,7 +97,7 @@ int main(void) {
   check_list((ppList*)&l2, (ppList*)&anw2, "l2", &errors);
   printf("\n-------------------------------------------\n\n");
 
-  // ==================== 2. MOVE ====================
+  // 2. MOVE
   printf("MOVE\n\n");
 
   // 2.1 move из непустого в пустой

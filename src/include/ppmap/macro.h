@@ -9,48 +9,62 @@
 
 //------------------------------------------------------------------------------
 // Создание специализированной переменной map
-#define ppMap_VAR(pair_type, map_name)                                      \
-    struct ppMap.pair_type map_name;                                        \
-    do {                                                                    \
-        map_name.key_size = sizeof(((pair_type*)0)->key);                   \
-        map_name.value_size = sizeof(((pair_type*)0)->value);               \
-        map_name.foundation_size = sizeof(pair_type);                       \
-        map_name.foundation_addr = &(map_name.@);                           \
-        map_name.size = 0;                                                  \
-        map_name.root = NULL;                                               \
-        map_name.cmp = NULL;                                                \
-    } while(0)
+#define ppMap_VAR(pair_type, map_name)                       \
+  struct ppMap.pair_type map_name;                           \
+  do {                                                       \
+    map_name.key_size = sizeof(((pair_type*)0)->key);        \
+    map_name.value_size = sizeof(((pair_type*)0)->value);    \
+    map_name.foundation_size = sizeof(pair_type);            \
+    map_name.foundation_addr = &(map_name.@);                \
+    map_name.size = 0;                                       \
+    map_name.root = NULL;                                    \
+    map_name.cmp = NULL;                                     \
+  } while(0)
 
 //------------------------------------------------------------------------------
 // Вставка пары (ключ, значение) в map
 // Обертывает функцию pMap_insert
-#define ppMap_INSERT(map_name, key_val, value_val)                          \
-    do {                                                                    \
-        (map_name).@.key = (key_val);                                       \
-        (map_name).@.value = (value_val);                                   \
-        ppMap_insert((ppMap*)&(map_name));                                  \
-    } while(0)
+#define ppMap_INSERT(map_name, key_val, value_val)             \
+  do {                                                         \
+    (map_name).@.key = (key_val);                              \
+    (map_name).@.value = (value_val);                          \
+    ppMap_insert((ppMap*)&(map_name));                         \
+  } while(0)
 
 //------------------------------------------------------------------------------
-// Поиск значения по ключу
-// (если ключ не найден, присваивается 0)
-// Обертывает функцию pMap_find
-#define ppMap_FIND(map_name, key_val, dest_var)                             \
-    do {                                                                    \
-        (map_name).@.key = (key_val);                                       \
-        if (ppMap_find((ppMap*)&(map_name))) {                              \
-            dest_var = (map_name).@.value;                                  \
-        } else {                                                            \
-            dest_var = (__typeof__(dest_var))0;                             \
-        }                                                                   \
-    } while(0)
+// Поиск значения по ключу.
+// Возвращает 1, если ключ найден, иначе 0
+// При успехе найденное значение присваивается переменной dest_var,
+// при неудаче dest_var присваивается 0 (или значение по умолчанию для типа)
+#define ppMap_FIND(map_name, key_val, dest_var)               \
+  ({                                                          \
+    (map_name).@.key = (key_val);                             \
+    _Bool _found = ppMap_find((ppMap*)&(map_name));           \
+    if (_found) {                                             \
+      dest_var = (map_name).@.value;                          \
+    } else {                                                  \
+      dest_var = (__typeof__(dest_var))0;                     \
+    }                                                         \
+    _found;                                                   \
+  })
+
+//------------------------------------------------------------------------------
+// Получение значения по ключу (предполагается, что ключ существует).
+// Если ключ не найден, программа аварийно завершается.
+// Обёртывает функцию ppMap_at.
+#define ppMap_AT(map_name, key_val)                                  \
+  do {                                                               \
+    (map_name).@.key = (key_val);                                    \
+    ppMap_at((ppMap*)&(map_name));                                   \
+  } while(0)
+
 
 //------------------------------------------------------------------------------
 // Удаление элемента по ключу
 // Возвращает 1, если элемент был удалён, иначе 0
 // Обертывает функцию pMap_erase
-#define ppMap_ERASE(map_name, key_val)                                      \
-    ((map_name).@.key = (key_val), ppMap_erase((ppMap*)&(map_name)))
+#define ppMap_ERASE(map_name, key_val)                             \
+  ((map_name).@.key = (key_val), ppMap_erase((ppMap*)&(map_name)))
 
 //------------------------------------------------------------------------------
 // Сравнение двух map на равенство
@@ -64,34 +78,34 @@
 
 //------------------------------------------------------------------------------
 // Заполнение map из двух массивов: ключей и значений одинаковой длины.
-#define ppMap_FILL_FROM_ARRAYS(map_name, keys_arr, vals_arr, count)          \
-    do {                                                                     \
-        for (size_t _i = 0; _i < (count); ++_i) {                            \
-            (map_name).@.key = (keys_arr)[_i];                               \
-            (map_name).@.value = (vals_arr)[_i];                             \
-            ppMap_insert((ppMap*)&(map_name));                               \
-        }                                                                    \
-    } while(0)
+#define ppMap_FILL_FROM_ARRAYS(map_name, keys_arr, vals_arr, count)     \
+  do {                                                                  \
+    for (size_t _i = 0; _i < (count); ++_i) {                           \
+      (map_name).@.key = (keys_arr)[_i];                                \
+      (map_name).@.value = (vals_arr)[_i];                              \
+      ppMap_insert((ppMap*)&(map_name));                                \
+    }                                                                   \
+  } while(0)
 
 //------------------------------------------------------------------------------
 // Заполнение map из массива пар (структура с полями key и value).
-#define ppMap_FILL_FROM_PAIRS(map_name, pairs_arr, count)                    \
-    do {                                                                     \
-        for (size_t _i = 0; _i < (count); ++_i) {                            \
-            (map_name).@ = (pairs_arr)[_i];                                  \
-            ppMap_insert((ppMap*)&(map_name));                               \
-        }                                                                    \
-    } while(0)
+#define ppMap_FILL_FROM_PAIRS(map_name, pairs_arr, count)          \
+  do {                                                             \
+    for (size_t _i = 0; _i < (count); ++_i) {                      \
+      (map_name).@ = (pairs_arr)[_i];                              \
+      ppMap_insert((ppMap*)&(map_name));                           \
+    }                                                              \
+  } while(0)
 
 //------------------------------------------------------------------------------
 // Заполнение map из одномерного массива, где ключи и значения чередуются.
-#define ppMap_FILL_FROM_INTERLEAVED(map_name, arr, count_pairs)              \
-    do {                                                                     \
-        for (size_t _i = 0; _i < (count_pairs); ++_i) {                      \
-            (map_name).@.key = (arr)[2 * _i];                                \
-            (map_name).@.value = (arr)[2 * _i + 1];                          \
-            ppMap_insert((ppMap*)&(map_name));                               \
-        }                                                                    \
-    } while(0)
+#define ppMap_FILL_FROM_INTERLEAVED(map_name, arr, count_pairs)       \
+  do {                                                                \
+    for (size_t _i = 0; _i < (count_pairs); ++_i) {                   \
+      (map_name).@.key = (arr)[2 * _i];                               \
+      (map_name).@.value = (arr)[2 * _i + 1];                         \
+      ppMap_insert((ppMap*)&(map_name));                              \
+    }                                                                 \
+  } while(0)
 
 #endif // __ppmap_macro__

@@ -10,7 +10,7 @@ set(SOURCE_FILES
     # headers
 
     #sources
-    test-ppmap-basic.c
+    test-ppmap-swap-move-copy.c
 )
 
 # Для того, чтобы clang понимал файлы с другим расширением (ppc, например)
@@ -20,11 +20,11 @@ set(SOURCE_FILES
 #     LANGUAGE C
 # )
 
-add_executable(test-ppmap-basic ${SOURCE_FILES})
-add_test(NAME ppmap-basic COMMAND test-ppmap-basic)
+add_executable(test-ppmap-swap-move-copy ${SOURCE_FILES})
+add_test(NAME ppmap-swap-move-copy COMMAND test-ppmap-swap-move-copy)
 
 # Линковка программы с библиотекой body
-target_link_libraries(test-ppmap-basic
+target_link_libraries(test-ppmap-swap-move-copy
   -Wl,--whole-archive
   ppmap
   -Wl,--no-whole-archive

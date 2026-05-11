@@ -1,0 +1,2449 @@
+Running tests...
+=== ./bin/test-ppcontainer-basic ===
+
+1. Initialization and filling
+Original list: 10 20 30 40 50 
+
+
+2. Checking size() and empty()
+ppContainer_size = 5 (expected 5)
+ppContainer_empty = 0 (expected 0)
+
+3. Printing contents via ppContainer_print
+Container contents: 10 20 30 40 50 
+
+
+4. Clearing the container (clear)
+After clear:
+ppContainer_empty = 1 (expected 1)
+ppContainer_size = 0 (expected 0)
+Refilled list: 100 200 300 
+
+Second list (other): 1000 2000 3000 
+
+
+5. Swapping contents (swap)
+Before swap:
+ Container 1: 100 200 300 
+
+ Container 2: 1000 2000 3000 
+
+After swap:
+ Container 1: 1000 2000 3000 
+
+ Container 2: 100 200 300 
+
+
+6. Copying (copy) from container 2 to container 1
+After clearing container 1: 
+After copy from container 2:
+ Container 1: 100 200 300 
+
+ Container 2: 100 200 300 
+
+(container 2 should remain unchanged)
+
+7. Moving (move) from container 2 to container 1
+After clearing container 1: 
+After move:
+ Container 1: 100 200 300 
+
+ Container 2: 
+(container 2 should become empty)
+
+8. Testing iterators
+Container1 contents via for_each: 100 200 300 
+
+All tests completed.
+
+=== ./bin/test-ppcontainer-list ===
+
+1. Initialization and filling
+Original list: 50 
+
+
+2. size() and empty()
+ppContainer_size = 1 (expected 5)
+ppContainer_empty = 0 (expected 0)
+
+3. ppContainer_print
+Container contents: 50 
+
+
+4. clear()
+After clear: empty = 1, size = 0
+
+5. swap()
+Before swap:
+ C1: 300 
+
+ C2: 3000 
+
+After swap:
+ C1: 3000 
+
+ C2: 300 
+
+
+6. copy()
+After copy from C2:
+ C1: 300 
+
+ C2: 300 
+
+
+7. move()
+After move:
+ C1: 300 
+
+ C2: 
+
+8. for_each() on C1
+C1 contents: 300 
+
+All tests completed.
+
+=== ./bin/test-ppcontainer-map ===
+
+1. Initialization and filling
+Original map: 1->100 2->200 3->300 4->400 5->500 
+
+
+2. size() and empty()
+ppContainer_size = 5 (expected 5)
+ppContainer_empty = 0 (expected 0)
+
+3. ppContainer_print
+Container contents: 1->100 2->200 3->300 4->400 5->500 
+
+
+4. clear()
+After clear: empty = 1, size = 0
+
+5. swap()
+Before swap:
+ C1: 1->100 2->200 3->300 
+
+ C2: 1->1000 2->2000 3->3000 
+
+After swap:
+ C1: 1->1000 2->2000 3->3000 
+
+ C2: 1->100 2->200 3->300 
+
+
+6. copy()
+After copy from C2:
+ C1: 1->100 2->200 3->300 
+
+ C2: 1->100 2->200 3->300 
+
+
+7. move()
+After move:
+ C1: 1->100 2->200 3->300 
+
+ C2: 
+
+
+8. for_each() on C1 (values only)
+C1 values: 100 200 300 
+
+All tests completed.
+
+=== ./bin/test-ppcontainer-vector ===
+
+1. Initialization and filling
+Original vector: 0: 10 1: 20 2: 30 3: 40 4: 50 
+
+
+2. size() and empty()
+ppContainer_size = 5 (expected 5)
+ppContainer_empty = 0 (expected 0)
+
+3. ppContainer_print
+Container contents: 0: 10 1: 20 2: 30 3: 40 4: 50 
+
+
+4. clear()
+After clear: empty = 1, size = 0
+
+5. swap()
+Before swap:
+ C1: 0: 300 
+
+ C2: 0: 3000 
+
+After swap:
+ C1: 0: 3000 
+
+ C2: 0: 300 
+
+
+6. copy()
+After copy from C2:
+ C1: 0: 300 
+
+ C2: 0: 300 
+
+
+7. move()
+After move:
+ C1: 0: 300 
+
+ C2: 
+
+
+8. for_each() on C1
+C1 contents: 300 
+
+All tests completed.
+
+=== ./bin/test-pplist-common ===
+l_int_ext.(foundation_size = 4, foundation_addr = 0x6419c23390c8, size = 0)
+Empty l_int:
+l_int after 4 push_back():
+0: 666
+1: 777
+2: 888
+3: 999
+
+Empty l_int_ext after clean:
+l_int after 10 push_back():
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+l_int_ext:
+0: 20
+1: 19
+2: 18
+3: 17
+4: 16
+
+front element = 1
+back element = 10
+FRONT element = 1
+BACK element = 10
+CURRENT element = 7
+l_int:
+0: 444
+1: 555
+2: 666
+3: 1
+4: 2
+5: 3
+6: 4
+7: 5
+8: 6
+9: 111
+10: 222
+11: 8
+12: 9
+13: 10
+14: 555
+15: 333
+
+back element = 333
+0: 444
+1: 555
+2: 666
+3: 1
+4: 2
+5: 3
+6: 4
+7: 5
+8: 6
+9: 111
+10: 222
+11: 8
+12: 9
+13: 10
+14: 555
+
+front element = 555
+0: 555
+1: 666
+2: 1
+3: 2
+4: 3
+5: 4
+6: 5
+7: 6
+8: 111
+9: 222
+10: 8
+11: 9
+12: 10
+13: 555
+
+0: 555
+1: 666
+2: 2
+3: 3
+4: 4
+5: 5
+6: 6
+7: 111
+8: 222
+9: 8
+10: 9
+11: 10
+12: 555
+
+
+=== ./bin/test-pplist-dev-tests ===
+l_int:
+0: 0
+1: -1
+2: -2
+3: -3
+4: -4
+5: -5
+6: -6
+7: -7
+8: -8
+9: -9
+
+l_int:
+0: 50
+1: 0
+2: -1
+3: -2
+4: -3
+5: -4
+6: -5
+7: -6
+8: -7
+9: -8
+10: -9
+
+
+=== ./bin/test-pplist-erase ===
+
+-------------------------------------------
+
+ERASE
+
+Test 1: Erase head element
+l: 10 20 30 
+Correct | l: 20 30 
+Correct | iterator points to 20
+
+Test 2: Erase tail element
+l: 10 20 30 
+Correct | l: 10 20 
+Correct | iterator points to 20
+
+Test 3: Erase middle element
+l: 10 20 30 40 
+Correct | l: 10 30 40 
+Correct | iterator points to 30
+
+Test 4: Erase single element
+l: 42 
+Correct | l: Correct | iterator is NULL
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-erase-range ===
+
+-------------------------------------------
+ERASE_RANGE
+
+1. Erase range from middle
+
+initial: 10 20 30 40 50 60 70 
+Correct | removed 3 elements (30,40,50)
+Correct | list after erase: 10 20 60 70 
+Correct | begin iterator moved to predecessor (20)
+Correct | end iterator unchanged (60)
+
+2. Erase range from beginning
+
+Correct | removed 3 elements (10,20,30)
+Correct | list after erase: 40 50 60 70 
+Correct | begin iterator becomes end (40)
+
+3. Erase range to the end
+
+Correct | removed 3 elements (50,60,70)
+Correct | list after erase: 10 20 30 40 
+Correct | begin iterator moved to predecessor (40)
+
+4. Erase whole list
+
+Correct | removed all 7 elements
+Correct | list becomes empty
+Correct | begin iterator becomes NULL (end)
+
+5. Empty range (begin == end)
+
+Correct | removed 0 elements
+Correct | list unchanged: 10 20 30 40 50 60 70 
+
+6. Invalid iterators
+
+Correct | end iterator invalid -> 0
+Correct | list unchanged: 10 20 30 40 50 60 70 
+Correct | different lists -> 0
+
+7. Current pointer adjustment
+
+Correct | removed 20,30,40,50
+Correct | current moved to next element (60)
+
+8. Head/tail update
+
+Correct | new head is 40
+Correct | new tail is 50
+Total errors: 0
+
+-------------------------------------------
+
+=== ./bin/test-pplist-insert ===
+
+-------------------------------------------
+
+INSERT_AFTER
+
+Test 1.1: Insert after first element (15 after 10)
+l: 10 20 30 
+Correct | l: 10 15 20 30 
+
+Test 1.2: Insert after tail (4 after 3)
+l: 1 2 3 
+Correct | l: 1 2 3 4 
+
+Test 1.3: Insert after middle element (7 after 6)
+l: 5 6 8 9 
+Correct | l: 5 6 7 8 9 
+
+Test 1.4: Insert after single element (200 after 100)
+l: 100 
+Correct | l: 100 200 
+
+-------------------------------------------
+
+INSERT_BEFORE
+
+Test 2.1: Insert before first element (10 before 20)
+l: 20 30 40 
+Correct | l: 10 20 30 40 
+
+Test 2.2: Insert before tail (3 before 4)
+l: 1 2 4 
+Correct | l: 1 2 3 4 
+
+Test 2.3: Insert before middle element (30 before 40)
+l: 10 20 40 50 
+Correct | l: 10 20 30 40 50 
+
+Test 2.4: Insert before single element (25 before 50)
+l: 50 
+Correct | l: 25 50 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-iterator ===
+
+-------------------------------------------
+
+BEGIN
+
+Test 1.1: begin on single-element list
+l: 99 
+Correct | begin points to 99
+
+Test 1.2: begin on multi-element list
+l: 10 20 30 40 
+Correct | begin points to first element (10)
+
+-------------------------------------------
+
+END
+
+Test 2.1: end on single-element list
+l: 55 
+Correct | end points to 55 (last element)
+
+Test 2.2: end on multi-element list
+l: 1 2 3 4 5 
+Correct | end points to last element (5)
+
+-------------------------------------------
+
+CURRENT_ITERATOR
+
+Test 3.1: current_iterator on empty list
+Correct | node is NULL
+
+Test 3.2: current_iterator on single element
+l: 77 
+Correct | current_iterator points to 77 (tail)
+
+Test 3.3: current_iterator after moving current to head
+l: 100 200 300 
+Correct | current_iterator points to head (100)
+
+Test 3.4: current_iterator after moving current to tail
+Correct | current_iterator points to tail (300)
+
+-------------------------------------------
+
+NEXT
+
+Test 4.1: next on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 4.2: next on single-element list
+l: 42 
+Correct | returns 1, node becomes NULL
+
+Test 4.3: next through list to NULL
+l: 5 6 7 8 
+Correct | first next -> 6, returns 1
+Correct | second next -> 7, returns 1
+Correct | third next -> 8, returns 1
+Correct | fourth next -> 1, node becomes NULL
+Correct | fifth next -> 0, stays NULL
+
+-------------------------------------------
+
+PREV
+
+Test 5.1: prev on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 5.2: prev on single-element list
+l: 99 
+Correct | returns 1, node becomes NULL
+
+Test 5.3: prev through list to NULL
+l: 5 6 7 8 
+Correct | first prev -> 7, returns 1
+Correct | second prev -> 6, returns 1
+Correct | third prev -> 5, returns 1
+Correct | fourth prev -> 1, node becomes NULL
+Correct | fifth prev -> 0, stays NULL
+
+-------------------------------------------
+
+GET_VALUE
+
+Test 6.1: get_value on begin, middle, end
+l: 1 2 3 4 
+Correct | get_value returns 1,3,4 correctly
+
+Test 6.2: get_value does not move iterator
+Correct | first get_value -> 1
+Correct | second get_value still -> 1 (iterator unchanged)
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-merge ===
+
+-------------------------------------------
+
+MERGE
+
+Test 1: Both lists empty
+l1: l2: 
+Correct | l1: Correct | l2: 
+Test 2: dest empty, src non-empty
+l1: l2: 1 3 5 
+
+Correct | l1: 1 3 5 
+Correct | l2: 
+Test 3: dest non-empty, src empty
+l1: 2 4 6 
+l2: 
+Correct | l1: 2 4 6 
+Correct | l2: 
+Test 4: dest == src (same list)
+l1: 1 2 3 
+l2 (same): 1 2 3 
+
+Correct | l1: 1 2 3 
+
+Test 5: Merge two sorted lists (interleaved)
+l1: 1 3 5 7 
+l2: 2 4 6 8 
+
+Correct | l1: 1 2 3 4 5 6 7 8 
+Correct | l2: 
+Test 6: src all elements smaller than dest
+l1: 10 20 30 
+l2: 1 2 3 
+
+Correct | l1: 1 2 3 10 20 30 
+Correct | l2: 
+Test 7: src all elements greater than dest
+l1: 1 2 3 
+l2: 10 20 30 
+
+Correct | l1: 1 2 3 10 20 30 
+Correct | l2: 
+Test 8: Merge with duplicates
+l1: 1 2 2 3 
+l2: 2 3 4 
+
+Correct | l1: 1 2 2 2 3 3 4 
+Correct | l2: 
+Test 9: Merge unsorted lists (no sorting guarantee, check sizes and l2 cleared)
+l1: 5 1 9 
+l2: 3 7 2 
+
+Correct | sizes: l1=6, l2=0
+l1: 3 5 1 7 2 9 
+
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-merge-ranges ===
+Incompatible specializations in ppListIterator_merge_ranges function
+
+-------------------------------------------
+
+MERGE_RANGES
+
+Test 1: Merge empty dest range at tail, src entire list
+Dest range: [NULL, NULL)
+Src range: [1, NULL)
+
+=== ./bin/test-pplist-mytests ===
+l_int.(foundation_size = 4, foundation_addr = 0x7ffdf13d59e0, size = 0)
+
+ -------------------------------------------
+
+Print empty l_int:
+
+ -------------------------------------------
+
+l_int after push_back(1):
+0: 1
+
+
+ -------------------------------------------
+
+l_int after push_front(2):
+0: 2
+1: 1
+
+
+ -------------------------------------------
+
+FRONT element = 2
+BACK element = 1
+CURRENT element = 1
+
+ -------------------------------------------
+
+l_int after push_after_current(3) and push_before_current(4):
+0: 2
+1: 1
+2: 4
+3: 3
+
+
+ -------------------------------------------
+
+l_int after pop_back():
+0: 2
+1: 1
+2: 4
+
+
+ -------------------------------------------
+
+l_int after pop_front():
+0: 1
+1: 4
+
+
+ -------------------------------------------
+
+
+=== ./bin/test-pplist-pop ===
+
+-------------------------------------------
+
+POP_BACK
+
+Test 1.1: pop_back on empty list (should do nothing)
+l: 
+Correct | l: 
+Test 1.2: pop_back on single element list
+l: 5 
+Correct | l: 
+Test 1.3: pop_back on [10,20,30,40]
+l: 10 20 30 40 
+Correct | l: 10 20 30 
+
+-------------------------------------------
+
+POP_FRONT
+
+Test 2.1: pop_front on empty list
+l: 
+Correct | l: 
+Test 2.2: pop_front on single element
+l: 7 
+Correct | l: 
+Test 2.3: pop_front on [100,200,300]
+l: 100 200 300 
+Correct | l: 200 300 
+
+-------------------------------------------
+
+POP_CURRENT
+
+Test 3.1: pop_current on head (1)
+l: 1 2 3 
+Correct | l: 2 3 
+
+Test 3.2: pop_current on tail (3)
+l: 1 2 3 
+Correct | l: 1 2 
+
+Test 3.3: pop_current on middle element (2)
+l: 1 2 3 4 
+Correct | l: 1 3 4 
+
+Test 3.4: pop_current on head of two-element list
+l: 9 10 
+Correct | l: 10 
+
+Test 3.5: pop_current on tail of two-element list
+l: 9 10 
+Correct | l: 9 
+
+Test 3.6: pop_current on empty list (current NULL)
+l: 
+Correct | l: 
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-push ===
+
+-------------------------------------------
+
+PUSH_BACK
+
+Test push_back on empty list:
+l: 
+Correct | l: 10 
+Correct | current after push = 10
+
+Test push_back sequence: 1,2,3
+Correct | l: 1 2 3 
+Correct | current after last push = 3
+
+Correct | after push_back 7, current = 7
+
+-------------------------------------------
+
+PUSH_FRONT
+
+Test push_front on empty list:
+l: 
+Correct | l: 20 
+Correct | current after push = 20
+
+Test push_front sequence: 10,20,30 (pushed front) -> expected: 30,20,10
+Correct | l: 30 20 10 
+DEBUG: cur_val = 30
+Correct | current after last push_front = 30
+
+-------------------------------------------
+
+PUSH_AFTER_CURRENT
+
+Test push_after_current after head (1 -> after):
+Correct | l: 1 2 3 4 
+Correct | current after push = 2
+
+Test push_after_current after tail (push_back equivalent):
+Correct | l: 1 3 4 5 
+Correct | current after push = 5
+
+Test push_after_current in the middle (after 2):
+Correct | l: 1 2 3 4 5 
+Correct | current after push = 3
+
+-------------------------------------------
+
+PUSH_BEFORE_CURRENT
+
+Test push_before_current before tail (insert before 5):
+Correct | l: 1 2 4 4 5 
+Correct | current after push = 4 (inserted node)
+
+Test push_before_current before head (push_front equivalent):
+Correct | l: 0 1 2 4 5 
+Correct | current after push = 0
+
+Test push_before_current in the middle (before 4):
+Correct | l: 1 2 3 4 5 
+Correct | current after push = 3
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-remove ===
+
+-------------------------------------------
+
+REMOVE
+
+Test 1: Remove from empty list
+l: Correct | l: 
+Test 2: Remove single matching element
+l: 42 
+Correct | l: 
+Test 3: Remove single non-matching element
+l: 100 
+Correct | l: 100 
+
+Test 4: Remove consecutive duplicates from middle
+l: 1 2 2 2 3 4 
+Correct | l: 1 3 4 
+
+Test 5: Remove head element
+l: 5 10 15 20 
+Correct | l: 10 15 20 
+
+Test 6: Remove tail element
+l: 10 20 30 40 
+Correct | l: 10 20 30 
+
+Test 7: Remove all elements (all match)
+l: 7 7 7 
+Correct | l: 
+Test 8: Remove non-consecutive duplicates
+l: 1 2 1 3 1 4 
+Correct | l: 2 3 4 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-remove-if ===
+
+-------------------------------------------
+
+REMOVE_IF
+
+Test 1: Remove_if on empty list
+l: Correct | l: 
+Test 2: Remove even numbers
+l: 1 2 3 4 5 6 
+Correct | l: 1 3 5 
+
+Test 3: Predicate always false
+l: 1 2 3 4 5 
+Correct | l: 1 2 3 4 5 
+
+Test 4: Remove all elements
+l: 10 20 30 
+Correct | l: 
+Test 5: Remove head element (10)
+l: 10 20 30 40 
+Correct | l: 20 30 40 
+
+Test 6: Remove tail element (40)
+l: 10 20 30 40 
+Correct | l: 10 20 30 
+
+Test 7: Remove consecutive duplicates from middle (2,2,2)
+l: 1 2 2 2 3 4 
+Correct | l: 1 3 4 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-replace ===
+
+-------------------------------------------
+
+REPLACE
+
+Test 1: Replace head element (10 -> 99)
+l: 10 20 30 
+Correct | l: 99 20 30 
+
+Test 2: Replace tail element (30 -> 77)
+l: 10 20 30 
+Correct | l: 10 20 77 
+
+Test 3: Replace middle element (20 -> 55)
+l: 10 20 30 40 
+Correct | l: 10 55 30 40 
+
+Test 4: Replace single element (42 -> 100)
+l: 42 
+Correct | l: 100 
+
+Test 5: Replace with iterator pointing to NULL
+l: 1 2 3 
+Correct | return value = 0 (no replacement)
+Correct | l: 1 2 3 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-reverse ===
+
+-------------------------------------------
+
+REVERSE
+
+Test 1: empty list
+l: 
+Correct | l: 
+Test 2: single element
+l: 42 
+
+Correct | l: 42 
+
+Test 3: two elements
+l: 1 2 
+
+Correct | l: 2 1 
+
+Test 4: three elements (odd)
+l: 1 2 3 
+
+Correct | l: 3 2 1 
+
+Test 5: four elements (even)
+l: 1 2 3 4 
+
+Correct | l: 4 3 2 1 
+
+Test 6: reverse twice (should restore original)
+l: 5 6 7 8 
+
+Correct | l: 5 6 7 8 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-riterator ===
+
+-------------------------------------------
+
+RBEGIN
+
+Test 1.1: rbegin on single-element list
+l: 99 
+Correct | rbegin points to 99 (tail)
+
+Test 1.2: rbegin on multi-element list
+l: 10 20 30 40 
+Correct | rbegin points to last element (40)
+
+-------------------------------------------
+
+REND
+
+Test 2.1: rend on single-element list
+l: 55 
+Correct | rend points to 55 (head)
+
+Test 2.2: rend on multi-element list
+l: 1 2 3 4 5 
+Correct | rend points to first element (1)
+
+-------------------------------------------
+
+CURRENT_RITERATOR
+
+Test 3.1: current_riterator on empty list
+Correct | node is NULL
+
+Test 3.2: current_riterator on single element
+l: 77 
+Correct | current_riterator points to 77 (tail)
+
+Test 3.3: current_riterator after moving current to head
+l: 100 200 300 
+Correct | current_riterator points to head (100)
+
+Test 3.4: current_riterator after moving current to tail
+Correct | current_riterator points to tail (300)
+
+-------------------------------------------
+
+NEXT
+
+Test 4.1: next on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 4.2: next on single-element list
+l: 42 
+Correct | returns 1, node becomes NULL
+
+Test 4.3: next through list to head and then NULL
+l: 5 6 7 8 
+Correct | first next -> 7, returns 1
+Correct | second next -> 6, returns 1
+Correct | third next -> 5, returns 1
+Correct | fourth next -> 1, node becomes NULL
+Correct | fifth next -> 0, stays NULL
+
+-------------------------------------------
+
+PREV
+
+Test 5.1: prev on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 5.2: prev on single-element list
+l: 99 
+Correct | returns 1, node becomes NULL
+
+Test 5.3: prev through list to tail and then NULL
+l: 5 6 7 8 
+Correct | first prev -> 6, returns 1
+Correct | second prev -> 7, returns 1
+Correct | third prev -> 8, returns 1
+Correct | fourth prev -> 1, node becomes NULL
+Correct | fifth prev -> 0, stays NULL
+
+-------------------------------------------
+
+GET_VALUE
+
+Test 6.1: get_value on rbegin (4), after next (3), after next (2)
+l: 1 2 3 4 
+Correct | get_value returns 4,3,2 correctly
+
+Test 6.2: get_value does not move iterator
+Correct | first get_value -> 4
+Correct | second get_value still -> 4 (iterator unchanged)
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-simple-functions ===
+
+-------------------------------------------
+
+EMPTY
+
+Test 1.1: empty list
+Correct | list is empty
+Test 1.2: non-empty list
+Correct | list is not empty
+
+-------------------------------------------
+
+SIZE
+
+Test 2.1: size = 0 (expected 0)
+Test 2.2: after push_back, size = 1 (expected 1)
+Test 2.3: after push_front, size = 2 (expected 2)
+Test 2.4: after clear, size = 0 (expected 0)
+
+-------------------------------------------
+
+CLEAR
+
+Test 3: before clear
+l: 1 2 3 
+Correct | l: 
+-------------------------------------------
+
+REPLACE_CURRENT
+
+Test 4.1: replace current in non-empty list
+Correct | l: 5 100 
+Correct | current after replace = 100
+
+Test 4.2: replace current in empty list
+Correct | returns 0 (no replacement)
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-simple-head-tail-current-functions ===
+
+-------------------------------------------
+
+front_current / back_current
+
+Test 1.1: front_current on empty list
+Correct | current becomes NULL
+Correct | back_current also keeps NULL
+
+Test 1.2: front_current on single element
+Correct | current = 42, points to head
+Test 1.3: back_current on single element
+Correct | current = 42, points to tail
+
+Test 1.4: front_current on 4-element list
+Correct | current = 10 (head)
+Test 1.5: back_current on same list
+Correct | current = 40 (tail)
+
+-------------------------------------------
+
+next_current / prev_current
+
+Test 2.1: next_current on empty list
+Correct | returns 0, current remains NULL
+Test 2.2: prev_current on empty list
+Correct | returns 0, current remains NULL
+
+Test 2.3: next_current on single element
+Correct | returns 0, current unchanged (100)
+Test 2.4: prev_current on single element
+Correct | returns 0, current unchanged (100)
+
+Test 2.5: step forward through list
+Correct | next_current step 1 -> current = 6
+Correct | next_current step 2 -> current = 7
+Correct | next_current step 3 -> current = 8
+Correct | next beyond tail returns 0, current stays at tail
+Test 2.6: step backward through list
+Correct | prev_current step -> current = 7
+Correct | prev_current step -> current = 6
+Correct | prev_current step -> current = 5
+Correct | prev before head returns 0, current stays at head
+
+-------------------------------------------
+
+is_head / is_tail
+
+Test 3.1: is_head on empty list (current = NULL)
+Correct | returns 1
+Correct | returns 1
+
+Test 3.2: single element
+Correct | is_head returns 1
+Correct | is_tail returns 1
+
+Test 3.3: head element
+Correct | is_head = 1
+Correct | is_tail = 0
+Test 3.4: middle element
+Correct | is_head = 0
+Correct | is_tail = 0
+Test 3.5: tail element
+Correct | is_head = 0
+Correct | is_tail = 1
+
+-------------------------------------------
+
+GET_FRONT_VAL / GET_BACK_VAL / GET_CURRENT_VAL
+
+Test 4.1: retrieving values (list = 7 8 9)
+Correct | front = 7
+Correct | back = 9
+Correct | current = 9 (tail)
+
+Test 4.2: front/back do not change current
+Correct | after front_current, current = 7
+Correct | after GET_FRONT_VAL, current still 7
+Correct | after GET_BACK_VAL, current still 7
+
+Test 4.3: GET_CURRENT_VAL after moving current
+Correct | after next, current = 8
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-splice ===
+Incompatible specializations in ppListIterator_splice_after function
+
+-------------------------------------------
+
+l1: 1 2 4 5 6 7 8 
+l2: 1 3 6 9 10 11 
+
+-------------------------------------------
+
+SPLICE_AFTER
+
+Test 1.1: Splice after head
+Dest position: after 1
+Src range: [1, NULL)
+
+=== ./bin/test-pplist-splice-after ===
+
+-------------------------------------------
+
+l1: 1 2 4 5 6 7 8 
+l2: 1 3 6 9 10 11 
+
+-------------------------------------------
+
+Test 1: Splice after head
+Dest position: after 1
+Src range: [1, NULL)
+l1: Correct  | 1 1 3 6 9 10 11 2 4 5 6 7 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 2: Splice after element in midle
+Dest position: after 4
+Src range: [1, NULL)
+l1: Correct  | 1 2 4 1 3 6 9 10 11 5 6 7 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 3: Splice after tail
+Dest position: after 8
+Src range: [1, NULL)
+l1: Correct  | 1 2 4 5 6 7 8 1 3 6 9 10 11 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 4: Splice after NULL (insert before head)
+Dest position: after NULL (before head)
+Src range: [1, NULL)
+l1: Correct  | 1 3 6 9 10 11 1 2 4 5 6 7 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 5: Splice single element after head
+Dest position: after 1
+Src range: [3, 6)
+l1: Correct  | 1 3 2 4 5 6 7 8 
+l2: Correct  | 1 6 9 10 11 
+
+-------------------------------------------
+
+Test 6: Splicing within one list without overlapping
+Dest position: after 7
+Src range: [2, 5)
+l1: Correct  | 1 5 6 7 2 4 8 
+l2: Correct  | 1 3 6 9 10 11 
+
+-------------------------------------------
+
+l1: 1 2 4 5 6 7 8 
+l2: 1 3 6 9 10 11 
+Test 7: Splice empty src (should do nothing)
+Dest position: after 1
+Src range: [1, 1)
+l1: Correct  | 1 2 4 5 6 7 8 
+l2: Correct  | 1 3 6 9 10 11 
+
+-------------------------------------------
+
+
+=== ./bin/test-pplist-splice-before ===
+
+-------------------------------------------
+
+l1: 1 2 4 5 6 7 8 
+l2: 1 3 6 9 10 11 
+
+-------------------------------------------
+
+Test 1: Splice before head
+Dest position: before 1
+Src range: [1, NULL)
+l1: Correct  | 1 3 6 9 10 11 1 2 4 5 6 7 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 2: Splice before element in middle
+Dest position: before 4
+Src range: [1, NULL)
+l1: Correct  | 1 2 1 3 6 9 10 11 4 5 6 7 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 3: Splice before tail
+Dest position: before 8
+Src range: [1, NULL)
+l1: Correct  | 1 2 4 5 6 7 1 3 6 9 10 11 8 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 4: Splice before NULL (insert after tail)
+Dest position: before NULL (after tail)
+Src range: [1, NULL)
+l1: Correct  | 1 2 4 5 6 7 8 1 3 6 9 10 11 
+l2: Correct  | 
+
+-------------------------------------------
+
+Test 5: Splice single element before head
+Dest position: before 1
+Src range: [3, 6)
+l1: Correct  | 3 1 2 4 5 6 7 8 
+l2: Correct  | 1 6 9 10 11 
+
+-------------------------------------------
+
+Test 6: Splicing within one list without overlapping
+Dest position: before 7
+Src range: [2, 5)
+l1: Correct  | 1 5 6 2 4 7 8 
+l2: Correct  | 1 3 6 9 10 11 
+
+-------------------------------------------
+
+Test 7: Splice empty src (should do nothing)
+Dest position: before 1
+Src range: [1, 1)
+l1: Correct  | 1 2 4 5 6 7 8 
+l2: Correct  | 1 3 6 9 10 11 
+
+-------------------------------------------
+
+
+=== ./bin/test-pplist-swap-move-copy ===
+
+-------------------------------------------
+
+SWAP
+
+Test 1.1: swap two empty lists
+l1: l2: Correct | l1: Correct | l2: 
+Test 1.2: swap empty and non-empty
+l1: l2: 5 6 7 
+Correct | l1: 5 6 7 
+Correct | l2: 
+Test 1.3: swap two non-empty lists
+l1: 1 2 3 
+l2: 10 20 
+Correct | l1: 10 20 
+Correct | l2: 1 2 3 
+
+-------------------------------------------
+
+MOVE
+
+Test 2.1: move from non-empty to empty
+l1: l2: 100 200 
+Correct | l1: 100 200 
+Correct | l2: 
+Test 2.2: move from non-empty to non-empty
+l1: 1 2 
+l2: 9 8 7 
+Correct | l1: 9 8 7 
+Correct | l2: 
+-------------------------------------------
+
+COPY
+
+Test 3.1: copy from empty to non-empty
+l1: 11 22 
+l2: Correct | l1: Correct | l2: 
+Test 3.2: copy from non-empty to empty
+l1: l2: 100 200 300 
+Correct | l1: 100 200 300 
+Correct | l2: 100 200 300 
+
+Test 3.3: copy from non-empty to non-empty
+l1: 5 6 
+l2: 7 8 9 
+Correct | l1: 7 8 9 
+Correct | l2: 7 8 9 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-pplist-unique ===
+
+-------------------------------------------
+
+UNIQUE
+
+Test 1: Empty list
+l: 
+Correct | l: 
+Test 2: Single element
+l: 42 
+
+Correct | l: 42 
+
+Test 3: All distinct, no consecutive duplicates
+l: 1 2 3 4 5 
+
+Correct | l: 1 2 3 4 5 
+
+Test 4: Consecutive duplicates in middle
+l: 1 2 2 2 3 4 
+
+Correct | l: 1 2 3 4 
+
+Test 5: Duplicates at head and tail
+l: 1 1 2 3 3 3 4 5 5 
+
+Correct | l: 1 2 3 4 5 
+
+Test 6: All elements identical
+l: 7 7 7 7 7 
+
+Correct | l: 7 
+
+Test 7: Non-consecutive duplicates (not removed)
+l: 1 2 1 2 1 
+
+Correct | l: 1 2 1 2 1 
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-ppmap-at ===
+
+-------------------------------------------
+TEST ppMap_AT
+
+initial map (10..50): 10->100 20->200 30->300 40->400 50->500 
+
+Test 1: at() for existing keys
+Correct | at(10) returns 100
+Correct | at(20) returns 200
+Correct | at(30) returns 300
+Correct | at(40) returns 400
+Correct | at(50) returns 500
+
+Test 2: at() does not modify map
+Correct | map unchanged after at() calls
+Correct | size remains 5
+
+Test 3: multiple at() calls for same key
+Correct | consistent value retrieval
+
+Test 4: at() then read value
+Correct | value after at(20) is 200
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppmap-basic ===
+
+-------------------------------------------
+
+BASIC TESTS
+
+Correct | initially empty
+Correct | size 0 after init
+Correct | size after insert
+Correct | not empty after insert
+Correct | empty after clear
+Correct | size 0 after clear
+Correct | equal maps
+Correct | different sizes -> not equal
+Correct | same keys, different values -> not equal
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-ppmap-erase ===
+
+-------------------------------------------
+ERASE
+
+initial map (1..7): 1->10 2->20 3->30 4->40 5->50 6->60 7->70 
+
+Test 1: Erase leaf node (key=1)
+Correct | erase returns 1
+Correct | key 1 removed
+Correct | size decreased to 6
+
+Test 2: Erase node with one child (key=2)
+Correct | key 2 removed
+Correct | size = 5
+
+Test 3: Erase node with two children (key=4)
+Correct | key 4 removed, structure preserved
+Correct | size = 4
+
+Test 4: Erase root (key=5)
+Correct | root removed
+Correct | size = 3
+
+Test 5: Erase non-existing key
+Correct | erase returns 0
+Correct | size unchanged
+
+Test 6: Erase all remaining elements
+Correct | map becomes empty
+Correct | size = 0
+
+Test 7: Erase from empty map
+Correct | erase on empty returns 0
+Correct | still empty
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppmap-erase-range ===
+
+-------------------------------------------
+TEST ppMapIterator_ERASE_RANGE
+
+Initial map: : 10->100 20->200 30->300 40->400 50->500 60->600 70->700 
+Correct | removed 3 elements (30,40,50)
+Correct | after erase [30,60)
+Correct | begin moved to predecessor (20)
+Correct | end unchanged (60)
+
+Correct | removed 10,20,30
+Correct | after erase [10,40)
+Correct | begin becomes end (40)
+
+Correct | removed 50,60,70
+Correct | after erase [50, NULL)
+Correct | begin moved to predecessor (40)
+
+Correct | removed all 7
+Correct | map empty
+Correct | begin = NULL
+
+Correct | empty range -> 0
+Correct | map unchanged
+
+Correct | invalid begin -> 0
+Correct | map unchanged
+Correct | invalid end -> 0
+Correct | map unchanged
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppmap-find ===
+
+-------------------------------------------
+FIND
+
+initial map: 10->100 20->200 30->300 40->400 50->500 
+
+Test 1: Find existing keys
+Correct | key 10 found, value = 100
+Correct | key 20 found, value = 200
+Correct | key 30 found, value = 300
+Correct | key 40 found, value = 400
+Correct | key 50 found, value = 500
+
+Test 2: Find non-existing keys
+Correct | key 5 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+Correct | key 15 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+Correct | key 25 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+Correct | key 35 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+Correct | key 45 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+Correct | key 55 not found (returns 0, value unchanged)
+Correct | found_val set to 0
+
+Test 3: Find after inserting more elements
+Correct | new key 60 found
+Correct | new key 70 found
+
+Test 4: Find after erase
+Correct | key 40 no longer exists
+Correct | found_val set to 0
+
+Test 5: Find in empty map
+Correct | empty map returns 0
+Correct | found_val = 0
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppmap-insert ===
+
+-------------------------------------------
+INSERT
+
+Test 1: Insert into empty map
+map: 10->100 
+Correct | insert single element
+
+Test 2: Insert multiple elements
+map: 3->30 5->50 10->100 15->150 20->200 
+Correct | multiple inserts in order
+Correct | size = 5 after inserts
+
+Test 3: Insert existing key (value update)
+map: 3->30 5->50 10->999 15->150 20->200 
+Correct | update existing key
+Correct | size unchanged after update
+
+Test 4: Insert many elements (stress)
+Correct | size = 100 after 100 inserts
+Correct | key 42 has value 420
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppmap-insert-find-erase ===
+=== TEST insert/find/erase ===
+Correct | size after inserts
+Correct | find existing key 20
+Correct | find existing key 5
+Correct | find non-existing key returns unchanged dest
+Correct | re-insert updates value
+Correct | size unchanged after update
+Correct | erase returns true for existing key
+Correct | size decreased
+Correct | key 20 no longer exists
+Correct | erase returns false for non-existing key
+Correct | size unchanged
+Correct | empty after erasing all
+
+Total errors: 0
+
+=== ./bin/test-ppmap-iterator ===
+
+-------------------------------------------
+
+BEGIN
+
+Test 1.1: begin on empty map
+Correct | iterator node is NULL
+
+Test 1.2: begin on single-element map
+map: 99->999 
+Correct | key=99, value=999
+
+Test 1.3: begin on multi-element map
+map: 10->100 20->200 30->300 50->500 70->700 
+Correct | min key = 10, value = 100
+
+-------------------------------------------
+
+END
+
+Test 2.1: end on empty map
+Correct | iterator node is NULL
+
+Test 2.2: end on single-element map
+map: 42->4242 
+Correct | key=42, value=4242
+
+Test 2.3: end on multi-element map
+map: 10->100 20->200 30->300 50->500 70->700 
+Correct | max key = 70, value = 700
+
+-------------------------------------------
+
+RBEGIN / REND
+
+Test 3.1: rbegin points to max key
+Correct | rbegin -> 70->700
+
+Test 3.2: rend points to min key
+Correct | rend -> 10->100
+
+-------------------------------------------
+
+ITERATOR NEXT
+
+Test 4.1: next on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 4.2: next on single-element -> NULL
+map: 5->55 
+Correct | returns 1, node becomes NULL
+
+Test 4.3: next through all elements
+map: 10->100 20->200 30->300 40->400 
+Correct | next -> 20, returns 1
+Correct | next -> 30, returns 1
+Correct | next -> 40, returns 1
+Correct | next -> NULL, returns 1
+Correct | next on NULL -> 0
+
+-------------------------------------------
+
+ITERATOR PREV
+
+Test 5.1: prev on NULL iterator
+Correct | returns 0, node stays NULL
+
+Test 5.2: prev on single-element -> NULL
+map: 7->77 
+Correct | returns 1, node becomes NULL
+
+Test 5.3: prev through all elements
+map: 10->100 20->200 30->300 40->400 
+Correct | prev -> 30, returns 1
+Correct | prev -> 20, returns 1
+Correct | prev -> 10, returns 1
+Correct | prev -> NULL, returns 1
+Correct | prev on NULL -> 0
+
+-------------------------------------------
+
+REVERSE ITERATOR NEXT
+
+Test 6.1: reverse next moves to smaller keys
+map: 10->100 20->200 30->300 40->400 
+Correct | reverse next -> 30
+Correct | reverse next -> 20
+Correct | reverse next -> 10
+Correct | reverse next -> NULL
+
+-------------------------------------------
+
+REVERSE ITERATOR PREV
+
+Correct | reverse prev -> 20
+Correct | reverse prev -> 30
+Correct | reverse prev -> 40
+Correct | reverse prev -> NULL
+
+-------------------------------------------
+
+GET_VALUE / GET_KEY no move
+
+Correct | first read
+Correct | second read same values (iterator unchanged)
+
+-------------------------------------------
+
+ERASE ITERATOR
+
+Test 9.1: erase root (30)
+map: 10->100 20->200 30->300 50->500 70->700 
+Correct | erase returns 1
+Correct | key 30 no longer exists
+map: 10->100 20->200 50->500 70->700 
+
+Test 9.2: erase leaf (10)
+map: 10->100 20->200 30->300 40->400 
+Correct | erase returns 1
+Correct | key 10 no longer exists
+map: 20->200 30->300 40->400 
+
+Test 9.3: erase on NULL iterator
+Correct | returns 0
+
+Test 9.4: erase all elements via iterator
+Correct | map becomes empty after erasing all
+
+-------------------------------------------
+
+FIND_ITERATOR
+
+Test 10.1: find_iterator on existing key 30
+Correct | find_iterator returns 1
+Correct | iterator points to 30->300
+
+Test 10.2: find_iterator on non-existing key 35
+Correct | find_iterator returns 0
+Correct | iterator set to end() (max element 70)
+
+Test 10.3: find_iterator on empty map
+Correct | returns 0
+Correct | iterator is end()
+
+-------------------------------------------
+
+LOWER_BOUND
+
+Test 11.1: lower_bound(30)
+Correct | returns iterator to 30
+
+Test 11.2: lower_bound(25)
+Correct | returns iterator to 30 (first >= 25)
+
+Test 11.3: lower_bound(5)
+Correct | returns iterator to 10 (first >= 5)
+
+Test 11.4: lower_bound(75)
+Correct | returns end() (max element 70)
+
+Test 11.5: lower_bound on empty map
+Correct | returns end()
+
+-------------------------------------------
+
+UPPER_BOUND
+
+Test 12.1: upper_bound(30)
+Correct | returns iterator to 50 (first > 30)
+
+Test 12.2: upper_bound(25)
+Correct | returns iterator to 30 (first > 25)
+
+Test 12.3: upper_bound(5)
+Correct | returns iterator to 10 (first > 5)
+
+Test 12.4: upper_bound(75)
+Correct | returns end() (max element 70)
+
+Test 12.5: upper_bound on empty map
+Correct | returns end()
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-ppmap-rb ===
+=== RB Tree Visual Test ===
+
+Inserting 1..10:
+After insert 5:
+2(BLK) 
+    1(BLK)  (L)
+        NULL (black)
+        NULL (black)
+    4(BLK)  (R)
+        3(RED)  (L)
+            NULL (black)
+            NULL (black)
+        5(RED)  (R)
+            NULL (black)
+            NULL (black)
+
+RB properties OK (black height = 2)
+After insert 10:
+4(BLK) 
+    2(BLK)  (L)
+        1(BLK)  (L)
+            NULL (black)
+            NULL (black)
+        3(BLK)  (R)
+            NULL (black)
+            NULL (black)
+    6(BLK)  (R)
+        5(BLK)  (L)
+            NULL (black)
+            NULL (black)
+        8(RED)  (R)
+            7(BLK)  (L)
+                NULL (black)
+                NULL (black)
+            9(BLK)  (R)
+                NULL (black)
+                10(RED)  (R)
+                    NULL (black)
+                    NULL (black)
+
+RB properties OK (black height = 3)
+
+Erasing 5
+After erase 5:
+4(BLK) 
+    2(BLK)  (L)
+        1(BLK)  (L)
+            NULL (black)
+            NULL (black)
+        3(BLK)  (R)
+            NULL (black)
+            NULL (black)
+    8(BLK)  (R)
+        6(BLK)  (L)
+            NULL (black)
+            7(RED)  (R)
+                NULL (black)
+                NULL (black)
+        9(BLK)  (R)
+            NULL (black)
+            10(RED)  (R)
+                NULL (black)
+                NULL (black)
+
+RB properties OK (black height = 3)
+
+Erasing 3
+After erase 3:
+4(BLK) 
+    2(BLK)  (L)
+        1(RED)  (L)
+            NULL (black)
+            NULL (black)
+        NULL (black)
+    8(RED)  (R)
+        6(BLK)  (L)
+            NULL (black)
+            7(RED)  (R)
+                NULL (black)
+                NULL (black)
+        9(BLK)  (R)
+            NULL (black)
+            10(RED)  (R)
+                NULL (black)
+                NULL (black)
+
+RB properties OK (black height = 2)
+
+Erasing 7
+After erase 7:
+4(BLK) 
+    2(BLK)  (L)
+        1(RED)  (L)
+            NULL (black)
+            NULL (black)
+        NULL (black)
+    8(RED)  (R)
+        6(BLK)  (L)
+            NULL (black)
+            NULL (black)
+        9(BLK)  (R)
+            NULL (black)
+            10(RED)  (R)
+                NULL (black)
+                NULL (black)
+
+RB properties OK (black height = 2)
+
+Total errors: 0
+
+=== ./bin/test-ppmap-rb-tree ===
+Stress test with RB properties check
+RB properties OK (black height = 3)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+Stress test completed with 0 errors.
+
+=== ./bin/test-ppmap-simple ===
+ Test ppMap_insert 
+Correct | insert works
+
+Test ppMap_find
+Correct | find existing key
+Correct | find non-existing key returns 0
+
+Test ppMap_erase
+Correct | erase removes key
+Correct | other keys unchanged
+
+Test ppMap_size / empty
+Correct | size after erase = 2
+Correct | not empty
+Correct | clear size = 0
+Correct | empty after clear
+
+Test ppMap_traverse
+Correct | traverse step 1
+Correct | traverse step 2
+Correct | traverse step 3
+
+Total errors: 0
+
+=== ./bin/test-ppmap-stress ===
+=== STRESS TEST with RB properties check ===
+RB properties OK (black height = 3)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 4)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 5)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+RB properties OK (black height = 6)
+Stress test completed with 0 errors.
+
+=== ./bin/test-ppmap-swap-move-copy ===
+
+-------------------------------------------
+
+SWAP
+
+Test 1.1: swap two empty maps
+map1: 
+map2: 
+Correct | map1 empty after swap
+Correct | map2 empty after swap
+
+Test 1.2: swap empty and non-empty
+map1: 
+map2: 5->50 6->60 7->70 
+Correct | map1 gets content
+Correct | map2 becomes empty
+
+Test 1.3: swap two non-empty maps
+map1: 1->10 2->20 3->30 
+map2: 10->100 20->200 
+Correct | map1 gets second content
+Correct | map2 gets first content
+
+-------------------------------------------
+
+MOVE
+
+Test 2.1: move from non-empty to empty
+map1: 
+map2: 100->1000 200->2000 
+Correct | map1 gets content
+Correct | map2 becomes empty after move
+
+Test 2.2: move from non-empty to non-empty (overwrites)
+map1: 1->10 2->20 
+map2: 7->70 8->80 9->90 
+Correct | map1 gets new content
+Correct | map2 becomes empty
+
+-------------------------------------------
+
+COPY
+
+Test 3.1: copy from empty to non-empty (clears target)
+map1: 11->110 22->220 
+map2: 
+Correct | map1 becomes empty
+Correct | map2 remains empty
+
+Test 3.2: copy from non-empty to empty
+map1: 
+map2: 100->1000 200->2000 300->3000 
+Correct | map1 gets copy
+Correct | map2 unchanged
+Correct | map2 unchanged after modifying map1
+
+Test 3.3: copy from non-empty to non-empty (replaces)
+map1: 5->50 6->60 
+map2: 7->70 8->80 9->90 
+Correct | map1 replaced by copy
+Correct | map2 unchanged
+
+-------------------------------------------
+
+Total errors: 0
+
+=== ./bin/test-ppmap-traverse ===
+
+-------------------------------------------
+TRAVERSE
+
+Test 1: Insert elements in random order
+map after inserts: 10->100 20->200 30->300 50->500 60->600 70->700 80->800 
+Correct | size = 7 after inserts
+
+Test 2: Traverse and verify sorted order
+Correct | traverse passes sorted order check
+
+Test 3: traverse_with_data collects correct key-value pairs
+Correct | collected pairs match expected
+
+Test 4: Clear map and traverse
+Correct | map becomes empty
+Correct | traverse on empty map does not call callback
+
+Test 5: Traverse after single insert
+Correct | single element traversal OK
+Correct | value 42->4242 present
+
+Test 6: Traverse after erasing an element
+Correct | map after erase (10,30)
+Correct | traversal after erase works
+
+
+-------------------------------------------
+Total errors: 0
+
+=== ./bin/test-ppvector-common ===
+v_int:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+v_int_ext:
+0: 20
+1: 19
+2: 18
+3: 17
+4: 16
+
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+front element = 1
+back element = 10
+back element = 777
+0: 1
+1: 666
+2: 2
+3: 666
+4: 3
+5: 777
+6: 4
+7: 5
+8: 6
+9: 777
+10: 7
+11: 8
+12: 9
+13: 666
+14: 10
+15: 888
+
+value = 888; size = 16; capacity = 32
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 32
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+10: 0
+11: 0
+12: 0
+13: 0
+14: 0
+15: 0
+16: 0
+17: 0
+18: 0
+19: 0
+20: 0
+21: 0
+22: 0
+23: 0
+24: 0
+25: 0
+26: 0
+27: 0
+28: 0
+29: 0
+30: 0
+31: 0
+32: 0
+33: 0
+34: 0
+
+value = 0; size = 35; capacity = 35
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 35
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 10
+v_int_ext:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 10
+v_int:
+0: 20
+1: 19
+2: 18
+3: 17
+4: 16
+
+value = 16; size = 5; capacity = 8
+v_int_ext:
+
+value = 10; size = 0; capacity = 0
+v_int:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 10
+v_int_ext:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 10
+v_int:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 5
+5: 6
+6: 7
+7: 8
+8: 9
+9: 10
+
+value = 10; size = 10; capacity = 16
+

@@ -2,7 +2,7 @@
 
 ### Установка
 
-Скачайте **ppc_standard_containers_lib_installer.run** из [последнего релиза](https://github.com/Zhuk-ea/ppcontainer/releases/tag/v1.0.0)
+Скачайте **ppc_standard_containers_lib_installer.run** из [последнего релиза](https://github.com/Zhuk-ea/ppcontainer/releases/tag/v1.0.1)
 
 Выполните команды:
 

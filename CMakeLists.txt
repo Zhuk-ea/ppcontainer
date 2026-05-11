@@ -61,4 +61,6 @@ add_subdirectory(src/ppcontainer)
 #add_subdirectory(tests/ppmap-iterator)
 #add_subdirectory(tests/ppmap-erase-range)
 
-add_subdirectory(tests/ppcontainer-basic)
+add_subdirectory(tests/ppcontainer-list)
+add_subdirectory(tests/ppcontainer-vector)
+add_subdirectory(tests/ppcontainer-map)

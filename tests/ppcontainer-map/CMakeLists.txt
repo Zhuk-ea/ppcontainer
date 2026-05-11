@@ -10,7 +10,7 @@ set(SOURCE_FILES
     # headers
 
     #sources
-    test-ppcontainer-basic.c
+    test-ppcontainer-map.c
 )
 
 # Для того, чтобы clang понимал файлы с другим расширением (ppc, например)
@@ -20,12 +20,12 @@ set(SOURCE_FILES
 #     LANGUAGE C
 # )
 
-add_executable(test-ppcontainer-basic ${SOURCE_FILES})
-add_test(NAME ppcontainer-basic COMMAND test-ppcontainer-basic)
+add_executable(test-ppcontainer-map ${SOURCE_FILES})
+add_test(NAME ppcontainer-map COMMAND test-ppcontainer-map)
 
 
 # Линковка программы с библиотекой body
-target_link_libraries(test-ppcontainer-basic
+target_link_libraries(test-ppcontainer-map
   -Wl,--whole-archive
   pplist
   ppvector

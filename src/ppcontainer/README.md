@@ -8,8 +8,8 @@
 - [x] move()
 - [x] swap()
 - [x] copy()
-- [ ] Iterator
-	- [ ] begin()
-	- [ ] end()
-	- [ ] rbegin()
-	- [ ] rend()
+- [x] Iterator
+	- [x] begin()
+	- [x] end()
+	- [x] rbegin()
+	- [x] rend()

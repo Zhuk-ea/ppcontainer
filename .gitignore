@@ -7,6 +7,7 @@
 *.zip
 *.bak
 *.cmake
+*.run
 
 # User-specific stuff
 **/.vscode/**
@@ -17,6 +18,7 @@
 **/build/**
 **/bin/**
 **/lib/**
+**/dist/**
 **/.cache/**
 !**/build/.gitkeep
 **/src/result/**

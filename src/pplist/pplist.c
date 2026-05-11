@@ -22,7 +22,7 @@ void ppList_init(ppList* l) {
 // Определение текущего размера списка
 uint32_t ppList_size(ppList* l) {
   if(!l) {
-    printf("Incorrect list in  ppList_size function\n");
+    fprintf(stderr, "Incorrect list in  ppList_size function\n");
     exit(-1);
   }
   return l->size;
@@ -47,7 +47,7 @@ void ppList_push_back(ppList* l) {
   // Создание элемента списка под данные размером в основу специализации
   ppListNode* node = malloc(sizeof(ppListNode) + l->foundation_size);
   if(node == NULL) {
-    printf("Incorrect node creation in ppList_push_back function\n");
+    fprintf(stderr, "Incorrect node creation in ppList_push_back function\n");
     exit(-1);
   }
   // Перенос значения из специализации в узел
@@ -75,7 +75,7 @@ void ppList_push_front(ppList* l) {
   // Создание элемента списка под данные размером в основу специализации
   ppListNode* node = malloc(sizeof(ppListNode) + l->foundation_size);
   if(node == NULL) {
-    printf("Incorrect node creation in ppList_push_back function\n");
+    fprintf(stderr, "Incorrect node creation in ppList_push_back function\n");
     exit(-1);
   }
   // Перенос значения из специализации в узел
@@ -101,13 +101,13 @@ void ppList_push_front(ppList* l) {
 void ppList_push_after_current(ppList* l) {
   // Проверка существования текущего узла
   if(l->current == NULL) {
-    printf("Incorrect current value in ppList_push_after_current function\n");
+    fprintf(stderr, "Incorrect current value in ppList_push_after_current function\n");
     exit(-1);
   }
   // Создание элемента списка под данные размером в основу специализации
   ppListNode* node = malloc(sizeof(ppListNode) + l->foundation_size);
   if(node == NULL) {
-    printf("Incorrect node creation in ppList_push_after_current function\n");
+    fprintf(stderr, "Incorrect node creation in ppList_push_after_current function\n");
     exit(-1);
   }
   // Перенос значения из специализации в узел
@@ -130,13 +130,13 @@ void ppList_push_after_current(ppList* l) {
 void ppList_push_before_current(ppList* l) {
   // Проверка существования текущего узла
   if(l->current == NULL) {
-    printf("Incorrect current value in ppList_push_before_current function\n");
+    fprintf(stderr, "Incorrect current value in ppList_push_before_current function\n");
     exit(-1);
   }
   // Создание элемента списка под данные размером в основу специализации
   ppListNode* node = malloc(sizeof(ppListNode) + l->foundation_size);
   if(node == NULL) {
-    printf("Incorrect node creation in ppList_push_before_current function\n");
+    fprintf(stderr, "Incorrect node creation in ppList_push_before_current function\n");
     exit(-1);
   }
   // Перенос значения из специализации в узел
@@ -302,7 +302,7 @@ void ppList_clear(ppList* l) {
 void ppList_swap(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in ppList_swap function\n");
+    fprintf(stderr, "Incompatible specializations in ppList_swap function\n");
     exit(-1);
   }
   // Осуществление обмена
@@ -317,7 +317,7 @@ void ppList_swap(ppList* dest, ppList* src) {
 void ppList_move(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in ppList_move function\n");
+    fprintf(stderr, "Incompatible specializations in ppList_move function\n");
     exit(-1);
   }
 
@@ -336,7 +336,7 @@ void ppList_move(ppList* dest, ppList* src) {
 void ppList_copy(ppList* dest, ppList* src) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in ppList_copy function\n");
+    fprintf(stderr, "Incompatible specializations in ppList_copy function\n");
     exit(-1);
   }
   // Очистка списка в который идёт копирование
@@ -348,7 +348,7 @@ void ppList_copy(ppList* dest, ppList* src) {
     // Создание элемента списка под данные размером в основу специализации
     struct ppListNode* node = malloc(sizeof(struct ppListNode) + dest->foundation_size);
     if(node == NULL) {
-      printf("Incorrect node creation in ppList_copy function\n");
+      fprintf(stderr, "Incorrect node creation in ppList_copy function\n");
       exit(-1);
     }
     // Перенос значения узла в узел
@@ -375,7 +375,7 @@ void ppList_copy(ppList* dest, ppList* src) {
 void ppList_begin(ppList* l, ppListIterator* iter) {
   // Проверка, что список не пуст
   if(l->head == NULL) {
-    printf("Trying to get the beginning of an empty list in ppListIterator_begin function\n");
+    fprintf(stderr, "Trying to get the beginning of an empty list in ppListIterator_begin function\n");
     exit(-1);
   }
   // Установка итератора на голову списка
@@ -388,7 +388,7 @@ void ppList_begin(ppList* l, ppListIterator* iter) {
 void ppList_end(ppList* l, ppListIterator* iter) {
   // Проверка, что список не пуст
   if(l->tail == NULL) {
-    printf("Trying to get the end of an empty list in ppListIterator_end function\n");
+    fprintf(stderr, "Trying to get the end of an empty list in ppListIterator_end function\n");
     exit(-1);
   }
   // Установка итератора на хвост списка
@@ -442,7 +442,7 @@ _Bool ppListIterator_get_value(ppListIterator* iter) {
 void ppList_rbegin(ppList* l, ppListRIterator* riter) {
   // Проверка, что список не пуст
   if(l->tail == NULL) {
-    printf("Trying to get the beginning of an empty list in ppListRIterator_begin function\n");
+    fprintf(stderr, "Trying to get the beginning of an empty list in ppListRIterator_begin function\n");
     exit(-1);
   }
   riter->list = l;
@@ -454,7 +454,7 @@ void ppList_rbegin(ppList* l, ppListRIterator* riter) {
 void ppList_rend(ppList* l, ppListRIterator* riter) {
   // Проверка, что список не пуст
   if(l->head == NULL) {
-    printf("Trying to get the end of an empty list in ppListRIterator_end function\n");
+    fprintf(stderr, "Trying to get the end of an empty list in ppListRIterator_end function\n");
     exit(-1);
   }
   riter->list = l;
@@ -507,14 +507,14 @@ _Bool ppListRIterator_get_value(ppListRIterator* riter) {
 void ppListIterator_insert_after(ppListIterator* iter) {
   // Проверка существования узла
   if(iter->node == NULL) {
-    printf("Incorrect current value in ppListIterator_insert_after function\n");
+    fprintf(stderr, "Incorrect current value in ppListIterator_insert_after function\n");
     exit(-1);
   }
   // Создание нового узла
   ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
   ppList * l = iter->list;
   if(node == NULL) {
-    printf("Incorrect node creation in ppListIterator_insert_after function\n");
+    fprintf(stderr, "Incorrect node creation in ppListIterator_insert_after function\n");
     exit(-1);
   }
   // Копирование данных из специализации
@@ -536,14 +536,14 @@ void ppListIterator_insert_after(ppListIterator* iter) {
 void ppListIterator_insert_before(ppListIterator* iter) {
   // Проверка существования узла
   if(iter->node == NULL) {
-    printf("Incorrect node value in ppListIterator_insert_before function\n");
+    fprintf(stderr, "Incorrect node value in ppListIterator_insert_before function\n");
     exit(-1);
   }
   // Создание нового узла
   ppListNode* node = malloc(sizeof(ppListNode) + iter->list->foundation_size);
   ppList * l = iter->list;
   if(node == NULL) {
-    printf("Incorrect node creation in ppListIterator_insert_before function\n");
+    fprintf(stderr, "Incorrect node creation in ppListIterator_insert_before function\n");
     exit(-1);
   }
   // Копирование данных из специализации
@@ -577,7 +577,7 @@ void ppListIterator_erase(ppListIterator* iter) {
   ppListNode * t;
   // Проверка валидности итератора
   if(iter->node == NULL) {
-    printf("Incorrect node value in ppListIterator_erase function\n");
+    fprintf(stderr, "Incorrect node value in ppListIterator_erase function\n");
     exit(-1);
   }
   // Переподвязываем связи, обходя удаляемый узел
@@ -665,7 +665,7 @@ void ppList_remove_if(ppList* l, int (*pred)(char *data)) {
 void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
   // Проверка однотипности списоков
   if(spec_index_cmp(dest, src) < 1) {
-    printf("Incompatible specializations in ppList_merge function\n");
+    fprintf(stderr, "Incompatible specializations in ppList_merge function\n");
     exit(-1);
   }
   // Если списки одинаковы или src пуст – ничего не делаем
@@ -716,7 +716,7 @@ void ppList_merge(ppList* dest, ppList* src, int (*cmp)(char *a, char *b)) {
 _Bool ppList_is_equal(ppList* l1, ppList* l2, size_t size) {
   // Проверка однотипности списоков
   if(spec_index_cmp(l1, l2) < 1) {
-    printf("Incompatible specializations in ppListIterator_is_equal function\n");
+    fprintf(stderr, "Incompatible specializations in ppListIterator_is_equal function\n");
     exit(-1);
   }
   // Размеры должны совпадать
@@ -799,16 +799,16 @@ static void insert_range(ppList *target, ExtractedRange *range, ppListNode *prev
 void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
   // Проверка однотипности списоков
   if(spec_index_cmp(pos->list, src_begin->list) < 1) {
-    printf("Incompatible specializations in ppListIterator_splice_after function\n");
+    fprintf(stderr, "Incompatible specializations in ppListIterator_splice_after function\n");
     exit(-1);
   }
   // Проверки корректности итераторов
   if(src_begin->list != src_end->list ) {
-    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_after function\n");
+    fprintf(stderr, "Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_after function\n");
     exit(-1);
   }
   if (!pos->list) {
-    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_after function\n");
+    fprintf(stderr, "Incorrect pos iterator(list is NULL) in ppListIterator_splice_after function\n");
     exit(-1);
   }
   if (src_begin->node == src_end->node) return;
@@ -832,16 +832,16 @@ void ppList_splice_after(ppListIterator* pos, ppListIterator* src_begin, ppListI
 void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppListIterator* src_end) {
   // Проверка однотипности списоков
   if(spec_index_cmp(pos->list, src_begin->list) < 1) {
-    printf("Incompatible specializations in ppListIterator_splice_before function\n");
+    fprintf(stderr, "Incompatible specializations in ppListIterator_splice_before function\n");
     exit(-1);
   }
   // Проверки корректности
   if(src_begin->list != src_end->list ) {
-    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_before function\n");
+    fprintf(stderr, "Incorrect iterators(begin and end from different lists) in  ppListIterator_splice_before function\n");
     exit(-1);
   }
   if (!pos->list) {
-    printf("Incorrect pos iterator(list is NULL) in ppListIterator_splice_before function\n");
+    fprintf(stderr, "Incorrect pos iterator(list is NULL) in ppListIterator_splice_before function\n");
     exit(-1);
   }
   if (src_begin->node == src_end->node) return;
@@ -867,11 +867,11 @@ void ppList_splice_before(ppListIterator* pos, ppListIterator* src_begin, ppList
 void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* dest_end, ppListIterator* src_begin, ppListIterator* src_end,  int (*cmp)(char *a, char *b)) {
   // Проверка однотипности списоков
   if(spec_index_cmp( dest_begin->list, src_begin->list) < 1) {
-    printf("Incompatible specializations in ppListIterator_merge_ranges function\n");
+    fprintf(stderr, "Incompatible specializations in ppListIterator_merge_ranges function\n");
     exit(-1);
   }
   if(dest_begin->list != dest_end->list || src_begin->list != src_end->list ) {
-    printf("Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
+    fprintf(stderr, "Incorrect iterators(begin and end from different lists) in  ppListIterator_merge_ranges function\n");
     exit(-1);
   }
   if (src_begin->node == src_end->node) return;
@@ -898,7 +898,7 @@ void ppListIterator_merge_ranges(ppListIterator* dest_begin, ppListIterator* des
 void ppList_unique(ppList* l, size_t size) {
   // Проверка корректности списка
   if(!l) {
-    printf("Incorrect list in ppList_unique function\n");
+    fprintf(stderr, "Incorrect list in ppList_unique function\n");
     exit(-1);
   }
   if (l == NULL || l->head == NULL) return;
@@ -928,13 +928,13 @@ void ppList_unique(ppList* l, size_t size) {
 // (есть указатели куда-либо, несмотря на то, что размер = 0) и в таком случае выдаёт ошибку
 _Bool ppList_empty(ppList* list) {
   if(!list) {
-    printf("Incorrect list in ppList_empty function\n");
+    fprintf(stderr, "Incorrect list in ppList_empty function\n");
     exit(-1);
   }
   // Если размер не нулевой, должны быть head и tail
   if (list->size != 0) {
     if (list->head == NULL || list->tail== NULL) {
-      printf("Incorrect head or tail in non-empty list in ppList_empty function\n");
+      fprintf(stderr, "Incorrect head or tail in non-empty list in ppList_empty function\n");
       exit(-1);
     }
     return 0;
@@ -942,7 +942,7 @@ _Bool ppList_empty(ppList* list) {
   // Если размер нулевой, head и tail должны быть NULL
   if (list->size == 0) {
     if (list->head != NULL || list->tail != NULL) {
-      printf("Incorrect head or tail in empty list in ppList_empty function\n");
+      fprintf(stderr, "Incorrect head or tail in empty list in ppList_empty function\n");
       exit(-1);
     }
   }
@@ -953,7 +953,7 @@ _Bool ppList_empty(ppList* list) {
 // Переворачивание списка
 void ppList_reverse(ppList* l) {
   if(!l) {
-    printf("Incorrect list in ppList_reverse function\n");
+    fprintf(stderr, "Incorrect list in ppList_reverse function\n");
     exit(-1);
   }
   if (ppList_empty(l)) return;

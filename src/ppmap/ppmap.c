@@ -19,7 +19,7 @@ static void* node_value(ppMap* map, ppMapNode* node) { return node->data + map->
 static ppMapNode* new_node(ppMap* map) {
   ppMapNode* node = (ppMapNode*)malloc(sizeof(ppMapNode) + map->foundation_size);
   if (!node) { 
-    printf("Memory allocation failed in new ppMapMode creation\n"); 
+    fprintf(stderr, "Memory allocation failed in new ppMapMode creation\n"); 
     exit(-1);
   }
   memcpy(node->data, map->foundation_addr, map->foundation_size);
@@ -123,7 +123,7 @@ static void fix_insert(ppMap* map, ppMapNode* z) {
 // Если ключ уже существует, заменяет значение
 void ppMap_insert(ppMap* map) {
   if (!map->cmp) {
-    printf("Comparator for map not set in ppMap_insert function\n");
+    fprintf(stderr, "Comparator for map not set in ppMap_insert function\n");
     exit(-1);
   }
   ppMapNode* z = new_node(map);
@@ -191,7 +191,7 @@ _Bool ppMap_find(ppMap* map) {
 void ppMap_at(ppMap* map) {
   ppMapNode* n = find_node(map);
   if(!n) {
-    printf("Can't find node in ppMap_at function\n");
+    fprintf(stderr, "Can't find node in ppMap_at function\n");
     exit(-1);
   }
   // Копируем значение в область специализации
@@ -510,7 +510,7 @@ _Bool ppMap_is_equal(ppMap* m1, ppMap* m2) {
 void ppMap_swap(ppMap* a, ppMap* b) {
   if(spec_index_cmp(a, b) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in ppMap_swap function\n");
+    fprintf(stderr, "Incompatible specializations in ppMap_swap function\n");
     exit(-1);
   }
   uint32_t tmp_size = a->size; a->size = b->size; b->size = tmp_size;
@@ -523,7 +523,7 @@ void ppMap_swap(ppMap* a, ppMap* b) {
 void ppMap_move(ppMap* dest, ppMap* src) {
   if(spec_index_cmp(dest, src) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in ppMap_move function\n");
+    fprintf(stderr, "Incompatible specializations in ppMap_move function\n");
     exit(-1);
   }
   ppMap_clear(dest);
@@ -554,7 +554,7 @@ static void copy_callback(void* key, void* value, void* user_data) {
 void ppMap_copy(ppMap* dest, ppMap* src) {
   if(spec_index_cmp(dest, src) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in ppMap_copy function\n");
+    fprintf(stderr, "Incompatible specializations in ppMap_copy function\n");
     exit(-1);
   }
   if (dest == src) return;

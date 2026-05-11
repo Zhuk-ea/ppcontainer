@@ -91,13 +91,13 @@ void ppVector_shrink_to_fit(ppVector* v) {
 void ppVector_push_back(ppVector* v) {
   if(v->capacity == 0 && v->size == 0) {
     v->capacity = 1;
-    // printf("v->capacity = %u\n", v->capacity);
+    // fprintf(stderr, "v->capacity = %u\n", v->capacity);
     v->vec_memory = calloc(1, v->foundation_size);
-    // printf("calloc\n");
+    // fprintf(stderr, "calloc\n");
     memcpy(v->vec_memory, v->foundation_addr, v->foundation_size);
-    // printf("memcpy\n");
+    // fprintf(stderr, "memcpy\n");
     v->size = 1;
-    // printf("v->size = %u\n", v->size);
+    // fprintf(stderr, "v->size = %u\n", v->size);
   } else if(v->capacity == v->size) {
     v->capacity *= 2;
     v->vec_memory = reallocarray(v->vec_memory, v->capacity, v->foundation_size);
@@ -221,7 +221,7 @@ void ppVector_erase(ppVector* v, uint32_t first, uint32_t last) {
   // Получение позиции для переноса оставшихся элементов
   void* first_moving_position = v->vec_memory + (last + 1) * v->foundation_size;
   // Перемещение данных справа на освобождающееся место
-  // printf("[%p, %p, %p]\n",
+  // fprintf(stderr, "[%p, %p, %p]\n",
   //        v->vec_memory, first_erase_position, first_moving_position);
   if(first != v->size - 1) {
     memmove(first_erase_position, first_moving_position,
@@ -262,7 +262,7 @@ void ppVector_swap(ppVector* v1, ppVector* v2) {
   // Проверка однотипности векторов
   if(spec_index_cmp(v1, v2) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in swap function\n");
+    fprintf(stderr, "Incompatible specializations in swap function\n");
     exit(-1);
   }
   // Или осуществление обмена
@@ -279,7 +279,7 @@ void ppVector_move(ppVector* dest, ppVector* src) {
   // Проверка однотипности векторов
   if(spec_index_cmp(dest, src) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in move function\n");
+    fprintf(stderr, "Incompatible specializations in move function\n");
     exit(-1);
   }
   // Или осуществление пересылки
@@ -298,7 +298,7 @@ void ppVector_copy(ppVector* dest, ppVector* src) {
   // Проверка однотипности векторов
   if(spec_index_cmp(dest, src) < 1) {
     // Или обобщение или специализации не совпадают
-    printf("Incompatible specializations in copy function\n");
+    fprintf(stderr, "Incompatible specializations in copy function\n");
     exit(-1);
   }
   // Если массив в источнике отсутствует, то обнулить массив и в приемнике
